@@ -6,20 +6,13 @@ const canvasHeight = 600;
 const cardScaleX = canvasWidth / 2000;
 const cardScaleY = canvasHeight / 2000;
 
-export const app = new PIXI.Application();
+export const app = new PIXI.Application({
+  width: canvasWidth,
+  height: canvasHeight,
+  backgroundColor: 0xdddddd,
+});
 
-const renderer = app.renderer;
-
-renderer.backgroundColor = 0xdddddd;
-renderer.view.width = canvasWidth;
-renderer.view.height = canvasHeight;
-
-const loader = app.loader;
-const stage = app.stage;
-
-const view = app.view;
-
-const cardFiles = [
+export const cardFiles = [
   "img/cards/1B.svg", "img/cards/2J.svg", "img/cards/4C.svg",
   "img/cards/5H.svg", "img/cards/7C.svg", "img/cards/8H.svg",
   "img/cards/AC.svg", "img/cards/JH.svg", "img/cards/QC.svg",
@@ -43,13 +36,13 @@ const cardFiles = [
 
 function textureName(fileName: string) {
   const regex = /(.+)*\/(.+)\.svg$/;
-  const res = regex.exec(fileName);
+  const matches = regex.exec(fileName);
 
-  if (res == null || res.length < 3) {
+  if (matches == null || matches.length < 3) {
     throw new Error('could not parse filename: ' + fileName);
   }
 
-  return res[2];
+  return matches[2];
 }
 
 function isLoaded(loader: PIXI.Loader, textureName: string): boolean {
@@ -64,7 +57,7 @@ function addTexture(loader: PIXI.Loader, fileName: string) {
   }
 }
 
-function loadTextures(
+export function loadTextures(
   loader: PIXI.Loader,
   files: string[],
   callback: () => void
@@ -127,23 +120,20 @@ function drawDeck(
 
 function removeChildren(container: PIXI.Container) {
   while (container.children.length > 0) {
-    const child = stage.getChildAt(0);
-    stage.removeChild(child);
+    const child = container.getChildAt(0);
+    container.removeChild(child);
   }
 }
 
 export function draw(elem: HTMLElement, app: PIXI.Application) {
-  const loader = app.loader;
-  const stage = app.stage;
-
-  // removeChildren(stage);
-  drawDeck(loader, stage, app.view.width, app.view.height);
+  removeChildren(app.stage);
+  drawDeck(app.loader, app.stage, app.view.width, app.view.height);
 
   elem.appendChild(app.view);
 }
 
 export function initPixi() {
-  loadTextures(loader, cardFiles, () => {
+  loadTextures(app.loader, cardFiles, () => {
     console.log('textures loaded...');
   });
 }

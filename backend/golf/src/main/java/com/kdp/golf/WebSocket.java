@@ -16,6 +16,7 @@ import java.util.concurrent.ConcurrentHashMap;
         value = "/ws"
 )
 public class WebSocket {
+
     private final Map<String, Session> sessions = new ConcurrentHashMap<>();
     private final Logger log = Logger.getLogger(WebSocket.class);
 

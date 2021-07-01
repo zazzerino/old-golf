@@ -14,9 +14,7 @@ export function GameCanvas() {
   React.useEffect(() => {
     const elem = canvasRef.current;
 
-    if (elem != null) {
-      console.log(app.loader);
-
+    if (elem) {
       if (elem?.children) {
         removeChildren(elem);
       }
