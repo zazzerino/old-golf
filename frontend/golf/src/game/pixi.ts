@@ -1,7 +1,11 @@
 import * as PIXI from 'pixi.js';
+import { Game } from './logic';
 
 const canvasWidth = 600;
 const canvasHeight = 600;
+
+const cardImageWidth = 240;
+const cardImageHeight = 336;
 
 const cardScaleX = canvasWidth / 2000;
 const cardScaleY = canvasHeight / 2000;
@@ -99,44 +103,80 @@ function makeCardSprite(
   return sprite;
 }
 
-function deckPosition(canvasWidth: number, canvasHeight: number): Position {
-  const x = canvasWidth / 2;
+function deckPosition(game: Game, canvasWidth: number, canvasHeight: number): Position {
+  let x = canvasWidth / 2;
+  const y = canvasHeight / 2;
+  const angle = 0;
+
+  if (game.hasStarted) {
+    // move deck to the left so we can draw the table card to the right
+    x -= 0.5 * cardImageWidth * cardScaleX;
+  }
+
+  return { x, y, angle };
+}
+
+function drawDeck(
+  game: Game,
+  loader: PIXI.Loader,
+  stage: PIXI.Container,
+  canvasWidth: number,
+  canvasHeight: number
+) {
+  const position = deckPosition(game, canvasWidth, canvasHeight);
+  const sprite = makeCardSprite(loader, '2B', position);
+
+  stage.addChild(sprite);
+}
+
+function tableCardPosition(canvasWidth: number, canvasHeight: number): Position {
+  const x = (canvasWidth / 2) + (1/2 * cardScaleX * cardImageWidth) + 2;
   const y = canvasHeight / 2;
   const angle = 0;
 
   return { x, y, angle };
 }
 
-function drawDeck(
+function drawTableCard(
+  game: Game,
   loader: PIXI.Loader,
   stage: PIXI.Container,
   canvasWidth: number,
   canvasHeight: number
 ) {
-  const position = deckPosition(canvasWidth, canvasHeight);
-  const sprite = makeCardSprite(loader, '2B', position);
+  const tableCard = game.tableCard;
+
+  if (tableCard == null) {
+    throw new Error("table card is null");
+  }
+
+  const position = tableCardPosition(canvasWidth, canvasHeight);
+  const sprite = makeCardSprite(loader, tableCard, position);
 
   stage.addChild(sprite);
 }
 
-function tableCardCoord(canvasWidth: number, canvasHeight: number) {
-
+function removeChildren(container: PIXI.Container) {
+  while (container.children.length > 0) {
+    const child = container.getChildAt(0);
+    container.removeChild(child);
+  }
 }
 
-// function removeChildren(container: PIXI.Container) {
-//   while (container.children.length > 0) {
-//     const child = container.getChildAt(0);
-//     container.removeChild(child);
-//   }
-// }
-
-export function draw(elem: HTMLElement, app: PIXI.Application) {
+export function draw(game: Game, elem: HTMLElement, app: PIXI.Application) {
   const loader = app.loader;
   const stage = app.stage;
   const view = app.view;
+  const width = view.width;
+  const height = view.height;
 
-  // removeChildren(stage);
-  drawDeck(loader, stage, view.width, view.height);
+  removeChildren(stage);
+  drawDeck(game, loader, stage, width, height);
+
+  if (game.hasStarted) {
+    drawTableCard(game, loader, stage, width, height);
+  }
+
   elem.appendChild(view);
 }
 

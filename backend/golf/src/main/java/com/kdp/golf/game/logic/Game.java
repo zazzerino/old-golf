@@ -10,9 +10,9 @@ import java.util.Optional;
 public class Game {
 
     public final Long id;
-    private Long hostId;
     private final List<Player> players = new ArrayList<>();
     private final @JsonIgnore Deck deck = new Deck(DECK_COUNT);
+    private Long hostId;
     private Card tableCard;
     private @JsonProperty boolean hasStarted = false;
 
