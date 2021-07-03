@@ -6,7 +6,7 @@ import { Navbar } from './Navbar';
 import { Game } from './pages/Game';
 import { Home } from './pages/Home';
 import { selectUser } from './user';
-import { selectGame } from './game/game';
+import { selectGame } from './game/gameSlice';
 
 function Footer() {
   const user = useAppSelector(selectUser);

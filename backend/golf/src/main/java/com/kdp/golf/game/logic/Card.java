@@ -1,10 +1,13 @@
 package com.kdp.golf.game.logic;
 
-public record Card(Suit suit,
-                   Rank rank) {
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+
+@JsonSerialize(using = CardSerializer.class)
+public record Card(Rank rank,
+                   Suit suit) {
 
     public int golfValue() {
-        return switch (this.rank) {
+        return switch (rank) {
             case KING -> 0;
             case ACE -> 1;
             case TWO -> 2;
@@ -19,13 +22,8 @@ public record Card(Suit suit,
         };
     }
 
-    enum Suit {
-        CLUBS("C"),
-        DIAMONDS("D"),
-        HEARTS("H"),
-        SPADES("S");
-
-        Suit(String val) {}
+    public String name() {
+        return rank.value + suit.value;
     }
 
     enum Rank {
@@ -43,6 +41,23 @@ public record Card(Suit suit,
         QUEEN("Q"),
         KING("K");
 
-        Rank(String val) {}
+        private String value;
+
+        Rank(String value) {
+            this.value = value;
+        }
+    }
+
+    enum Suit {
+        CLUBS("C"),
+        DIAMONDS("D"),
+        HEARTS("H"),
+        SPADES("S");
+
+        private String value;
+
+        Suit(String value) {
+            this.value = value;
+        }
     }
 }

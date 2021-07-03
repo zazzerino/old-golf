@@ -1,33 +1,6 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { RootState } from "../app/store";
-
-type Suit =  'CLUBS' | 'DIAMONDS' | 'HEARTS' | 'SPADES';
-
-type Rank = 'ACE' | 'TWO' | 'THREE' | 'FOUR' | 'FIVE' | 'SIX' 
-| 'SEVEN' | 'EIGHT' | 'NINE' | 'TEN' | 'JACK' | 'QUEEN' | 'KING';
-
-export interface Card {
-  suit: Suit;
-  rank: Rank;
-}
-
-export interface Deck {
-  cards: Card[];
-}
-
-export interface Player {
-  id: number;
-  name: string;
-  cards: Card[];
-}
-
-export interface Game {
-  id: number;
-  players: Player[];
-  hostId: number;
-  deck: Deck;
-  tableCard: Card | null;
-}
+import { Game } from "./logic";
 
 type GameState = Game | null;
 

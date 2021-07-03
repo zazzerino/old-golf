@@ -65,8 +65,8 @@ export function loadTextures(
   files.forEach(file => {
     addTexture(loader, file);
   });
- 
-  loader.load(callback);
+
+  loader.load(callback); // calls the given callback after textures are loaded
 }
 
 function getTexture(loader: PIXI.Loader, name: string) {
@@ -99,11 +99,12 @@ function makeCardSprite(
   return sprite;
 }
 
-function deckCoord(canvasWidth: number, canvasHeight: number): Coord {
+function deckPosition(canvasWidth: number, canvasHeight: number): Position {
   const x = canvasWidth / 2;
   const y = canvasHeight / 2;
+  const angle = 0;
 
-  return { x, y };
+  return { x, y, angle };
 }
 
 function drawDeck(
@@ -112,10 +113,14 @@ function drawDeck(
   canvasWidth: number,
   canvasHeight: number
 ) {
-  const coord = deckCoord(canvasWidth, canvasHeight);
-  const sprite = makeCardSprite(loader, '2B', { ...coord, angle: 0 });
+  const position = deckPosition(canvasWidth, canvasHeight);
+  const sprite = makeCardSprite(loader, '2B', position);
 
   stage.addChild(sprite);
+}
+
+function tableCardCoord(canvasWidth: number, canvasHeight: number) {
+
 }
 
 // function removeChildren(container: PIXI.Container) {

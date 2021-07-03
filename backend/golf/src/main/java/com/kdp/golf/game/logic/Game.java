@@ -1,6 +1,7 @@
 package com.kdp.golf.game.logic;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -13,6 +14,7 @@ public class Game {
     private final List<Player> players = new ArrayList<>();
     private final @JsonIgnore Deck deck = new Deck(DECK_COUNT);
     private Card tableCard;
+    private @JsonProperty boolean hasStarted = false;
 
     public final static int HAND_SIZE = 6;
     public final static int DECK_COUNT = 2; // use two decks worth of cards
@@ -27,6 +29,7 @@ public class Game {
         deck.shuffle();
         dealStartingHands();
         dealTableCard();
+        hasStarted = true;
         return this;
     }
 
@@ -83,6 +86,10 @@ public class Game {
 
     public Optional<Card> getTableCard() {
         return Optional.ofNullable(tableCard);
+    }
+
+    public boolean hasStarted() {
+        return hasStarted;
     }
 
     @Override

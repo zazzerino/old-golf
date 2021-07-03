@@ -1,67 +1,40 @@
 import * as _ from 'lodash';
 
-export type Suit = 'C' | 'D' | 'H' | 'S';
-
-export type Rank = 'A' | '2' | '3' | '4' | '5' | '6' | '7' | '8' | '9' | 'T' | 'J' | 'Q' | 'K';
-
-export interface Card {
-  suit: Suit;
-  rank: Rank;
-}
-
-export const suits: Suit[] = ['C', 'D', 'H', 'S'];
-
-export const ranks: Rank[] = ['A', '2', '3', '4', '5', '6', '7', '8', '9', 'T', 'J', 'Q', 'K'];
+type Card = string;
 
 export interface Player {
   id: number;
   name: string;
-  hand: Card[];
+  cards: Card[];
 }
 
 export interface Game {
   id: number;
   players: Player[];
+  hostId: number;
   deck: Card[];
+  tableCard: Card | null;
+  hasStarted: boolean;
 }
 
 // export function valueOf(rank: Rank): number {
-//   const values = {
-//     'K': 0,
-//     'A': 1,
-//     '2': 2,
-//     '3': 3,
-//     '4': 4,
-//     '5': 5,
-//     '6': 6,
-//     '7': 7,
-//     '8': 8,
-//     '9': 9,
-//     'T': 10,
-//     'J': 10,
-//     'Q': 10,
+//   const values: Record<Rank, number> = {
+//     'KING': 0,
+//     'ACE': 1,
+//     'TWO': 2,
+//     'THREE': 3,
+//     'FOUR': 4,
+//     'FIVE': 5,
+//     'SIX': 6,
+//     'SEVEN': 7,
+//     'EIGHT': 8,
+//     'NINE': 9,
+//     'TEN': 10,
+//     'JACK': 10,
+//     'QUEEN': 10,
 //   };
 
 //   return values[rank];
-// }
-
-// export function makeDeck(): Card[] {
-//   const deck: Card[] = [];
-
-//   for (const suit of suits) {
-//     for (const rank of ranks) {
-//       deck.push({ suit, rank });
-//     }
-//   }
-
-//   return deck;
-// }
-
-// export function dealCard(deck: Card[]): { card: Card, deck: Card[] } {
-//   return {
-//     card: deck[0],
-//     deck: _.drop(deck),
-//   }
 // }
 
 // export function score(hand: Card[]): number {

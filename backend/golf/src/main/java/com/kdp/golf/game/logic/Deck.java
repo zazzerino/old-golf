@@ -7,6 +7,7 @@ import java.util.Objects;
 import java.util.Optional;
 
 public class Deck {
+
     private List<Card> cards;
 
     public Deck() {
@@ -32,7 +33,7 @@ public class Deck {
 
         for (var suit : Card.Suit.values()) {
             for (var rank : Card.Rank.values()) {
-                cards.add(new Card(suit, rank));
+                cards.add(new Card(rank, suit));
             }
         }
 
@@ -66,7 +67,7 @@ public class Deck {
 
         List<Card> dealtCards = new ArrayList<>();
 
-        while (n-- > 0) {
+        for (int i = 0; i < n; i++) {
             dealtCards.add(cards.get(0));
             cards.remove(0);
         }

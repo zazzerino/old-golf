@@ -1,5 +1,6 @@
 import { store } from '../app/store';
-import { Game, setGame } from '../game/game';
+import { setGame } from '../game/gameSlice';
+import { Game } from '../game/logic';
 import { setUser, User } from "../user";
 
 type ResponseType = 'LOGIN' | 'GAME';
