@@ -1,4 +1,4 @@
-package com.kdp.golf.game;
+package com.kdp.golf.game.logic;
 
 public record Card(Suit suit,
                    Rank rank) {

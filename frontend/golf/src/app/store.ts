@@ -1,10 +1,20 @@
 import { configureStore, ThunkAction, Action } from '@reduxjs/toolkit';
-import counterReducer from '../features/counter/counterSlice';
+import { userReducer } from '../user';
+import { gameReducer } from '../game/game';
 
 export const store = configureStore({
   reducer: {
-    counter: counterReducer,
+    user: userReducer,
+    game: gameReducer,
   },
+});
+
+console.log('initial state:')
+console.log(store.getState());
+
+store.subscribe(() => {
+  console.log('state updated:');
+  console.log(store.getState());
 });
 
 export type AppDispatch = typeof store.dispatch;

@@ -1,7 +1,7 @@
 import React from 'react';
 import { app, draw } from './pixi';
 
-function removeChildren(elem: Element) {
+function empty(elem: Element) {
   while (elem.firstChild) {
     elem.firstChild.remove();
   }
@@ -15,11 +15,13 @@ export function GameCanvas() {
     const elem = canvasRef.current;
 
     if (elem) {
-      if (elem?.children) {
-        removeChildren(elem);
-      }
-
       app.loader.load(() => draw(elem, app));
+    }
+
+    return () => {
+      if (elem) {
+        empty(elem);
+      }
     }
   });
 

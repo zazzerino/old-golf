@@ -12,8 +12,8 @@ class GameTest {
 
     @Test
     void create() {
-        var game = Game.create(0L);
-        log.info(game);
+//        var game = Game.create(0L);
+//        log.info(game);
     }
 
     @Test

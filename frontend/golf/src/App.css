@@ -2,7 +2,11 @@
   text-align: center;
 }
 
-.App-logo {
+button {
+  padding: 0.2rem;
+}
+
+/* .App-logo {
   height: 40vmin;
   pointer-events: none;
 }
@@ -36,4 +40,4 @@
   100% {
     transform: translateY(0px);
   }
-}
+} */

@@ -118,18 +118,21 @@ function drawDeck(
   stage.addChild(sprite);
 }
 
-function removeChildren(container: PIXI.Container) {
-  while (container.children.length > 0) {
-    const child = container.getChildAt(0);
-    container.removeChild(child);
-  }
-}
+// function removeChildren(container: PIXI.Container) {
+//   while (container.children.length > 0) {
+//     const child = container.getChildAt(0);
+//     container.removeChild(child);
+//   }
+// }
 
 export function draw(elem: HTMLElement, app: PIXI.Application) {
-  removeChildren(app.stage);
-  drawDeck(app.loader, app.stage, app.view.width, app.view.height);
+  const loader = app.loader;
+  const stage = app.stage;
+  const view = app.view;
 
-  elem.appendChild(app.view);
+  // removeChildren(stage);
+  drawDeck(loader, stage, view.width, view.height);
+  elem.appendChild(view);
 }
 
 export function initPixi() {

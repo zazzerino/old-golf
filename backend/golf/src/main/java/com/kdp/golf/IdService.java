@@ -5,14 +5,15 @@ import java.util.concurrent.atomic.AtomicLong;
 
 @ApplicationScoped
 public class IdService {
-    private final AtomicLong nextPlayerId = new AtomicLong(0);
+
+    private final AtomicLong nextUserId = new AtomicLong(0);
     private final AtomicLong nextGameId = new AtomicLong(0);
 
-    public Long generatePlayerId() {
-        return nextPlayerId.getAndIncrement();
+    public Long nextUserId() {
+        return nextUserId.getAndIncrement();
     }
 
-    public Long generateGameId() {
+    public Long nextGameId() {
         return nextGameId.getAndIncrement();
     }
 }

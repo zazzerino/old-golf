@@ -1,3 +1,6 @@
+import { Message } from "./message";
+import { GameResponse, handleGame, handleLogin, LoginResponse, Response } from "./response";
+
 const WS_URL = 'ws://localhost:8080/ws';
 
 let socket: WebSocket;
@@ -12,9 +15,9 @@ export function initWebSocket() {
   socket.onmessage = onMessage;
 }
 
-// export function send(message: Message) {
-//   socket.send(JSON.stringify(message));
-// }
+export function send(message: Message) {
+  socket.send(JSON.stringify(message));
+}
 
 function onOpen() {
   console.log('websocket connection established');
@@ -29,13 +32,12 @@ function onError(event: Event) {
 }
 
 function onMessage(event: MessageEvent) {
-  // const response = JSON.parse(event.data) as Response;
-  // console.log("message received:")
-  // console.log(response);
+  const response = JSON.parse(event.data) as Response;
+  console.log("message received:")
+  console.log(response);
 
-  // switch (response.type) {
-  //   case 'LOGIN': return handleLogin(response as Login);
-  //   case 'GAMES': return handleGames(response as Games);
-  //   case 'CREATE_GAME': return handleCreateGame(response as CreateGame);
-  // }
+  switch (response.type) {
+    case 'LOGIN': return handleLogin(response as LoginResponse);
+    case 'GAME': return handleGame(response as GameResponse);
+  }
 }
