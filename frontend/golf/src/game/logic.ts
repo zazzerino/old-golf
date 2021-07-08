@@ -1,5 +1,3 @@
-import * as _ from 'lodash';
-
 type Card = string;
 
 export interface Player {

@@ -156,6 +156,63 @@ function drawTableCard(
   stage.addChild(sprite);
 }
 
+type HandPlacement =  'bottom' | 'left' | 'top' | 'right';
+
+function handPlacements(playerCount: 1 | 2 | 3 | 4): HandPlacement[] {
+  const placements: Record<1 | 2 | 3 | 4, HandPlacement[]> = {
+    1: ['bottom'],
+    2: ['bottom', 'top'],
+    3: ['bottom', 'left', 'right'],
+    4: ['bottom', 'left', 'top', 'right']
+  }
+
+  return placements[playerCount];
+}
+
+function handPosition(
+  placement: HandPlacement,
+  canvasWidth: number,
+  canvasHeight: number
+): Position {
+  const angle = 0;
+  const positions: Record<HandPlacement, Position> = {
+    'bottom': {
+      x: canvasWidth / 2,
+      y: canvasHeight - (1.1 * cardImageHeight * cardScaleY),
+      angle: 0,
+    },
+    'left': {
+      x: 1.5 * cardImageWidth * cardScaleX,
+      y: canvasHeight / 2,
+      angle: 90,
+    },
+    'top': {
+      x: canvasWidth / 2,
+      y: 1.1 * cardImageHeight * cardScaleY,
+      angle: 180,
+    },
+    'right': {
+      x: canvasWidth - (1.5 * cardImageWidth * cardScaleX),
+      y: canvasHeight / 2,
+      angle: 270,
+    }
+  };
+
+  return positions[placement];
+}
+
+function drawPlayerHand(
+  game: Game,
+  loader: PIXI.Loader,
+  stage: PIXI.Container,
+
+) {
+
+}
+
+/**
+ * Removes all child elements from the given container.
+ */
 function removeChildren(container: PIXI.Container) {
   while (container.children.length > 0) {
     const child = container.getChildAt(0);

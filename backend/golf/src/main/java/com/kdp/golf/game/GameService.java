@@ -42,6 +42,10 @@ public class GameService {
                 .getById(gameId)
                 .orElseThrow();
 
+        if (game.hasStarted()) {
+            throw new IllegalStateException("game already started");
+        }
+
         game.start();
         gameDao.save(game);
 
