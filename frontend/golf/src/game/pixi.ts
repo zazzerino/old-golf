@@ -1,14 +1,31 @@
 import * as PIXI from 'pixi.js';
 import { Game } from './logic';
 
-const canvasWidth = 600;
-const canvasHeight = 600;
+const canvasWidth = 500;
+const canvasHeight = 500;
 
 const cardImageWidth = 240;
 const cardImageHeight = 336;
 
 const cardScaleX = canvasWidth / 2000;
 const cardScaleY = canvasHeight / 2000;
+
+const cardWidth = cardImageWidth * cardScaleX;
+const cardHeight = cardImageHeight * cardScaleY;
+
+interface Coord {
+  x: number;
+  y: number;
+}
+
+interface Position extends Coord {
+  angle: number;
+}
+
+interface Size {
+  width: number;
+  height: number;
+}
 
 export const app = new PIXI.Application({
   width: canvasWidth,
@@ -61,11 +78,7 @@ function addTexture(loader: PIXI.Loader, fileName: string) {
   }
 }
 
-export function loadTextures(
-  loader: PIXI.Loader,
-  files: string[],
-  callback: () => void
-) {
+export function loadTextures(loader: PIXI.Loader, files: string[], callback: () => void) {
   files.forEach(file => {
     addTexture(loader, file);
   });
@@ -77,28 +90,16 @@ function getTexture(loader: PIXI.Loader, name: string) {
   return loader.resources[name].texture;
 }
 
-interface Coord {
-  x: number;
-  y: number;
-}
-
-interface Position extends Coord {
-  angle: number;
-}
-
-function makeCardSprite(
-  loader: PIXI.Loader,
-  name: string,
-  position: Position
-): PIXI.Sprite {
+function makeCardSprite(loader: PIXI.Loader, name: string, position: Position): PIXI.Sprite {
   const texture = getTexture(loader, name);
   const sprite = new PIXI.Sprite(texture);
 
   sprite.x = position.x;
   sprite.y = position.y;
   sprite.angle = position.angle;
+
   sprite.scale.set(cardScaleX, cardScaleY);
-  sprite.anchor.set(0.5, 0.5);
+  // sprite.anchor.set(0.5, 0.5);
 
   return sprite;
 }
@@ -110,56 +111,46 @@ function deckPosition(game: Game, canvasWidth: number, canvasHeight: number): Po
 
   if (game.hasStarted) {
     // move deck to the left so we can draw the table card to the right
-    x -= 0.5 * cardImageWidth * cardScaleX;
+    x -= cardWidth / 2;
   }
 
   return { x, y, angle };
 }
 
-function drawDeck(
-  game: Game,
-  loader: PIXI.Loader,
-  stage: PIXI.Container,
-  canvasWidth: number,
-  canvasHeight: number
-) {
-  const position = deckPosition(game, canvasWidth, canvasHeight);
+function drawDeck(game: Game, loader: PIXI.Loader, stage: PIXI.Container, size: Size) {
+  const { width, height } = size;
+  const position = deckPosition(game, width, height);
   const sprite = makeCardSprite(loader, '2B', position);
 
   stage.addChild(sprite);
 }
 
 function tableCardPosition(canvasWidth: number, canvasHeight: number): Position {
-  const x = (canvasWidth / 2) + (1/2 * cardScaleX * cardImageWidth) + 2;
+  const x = (canvasWidth / 2) + (cardWidth / 2) + 2;
   const y = canvasHeight / 2;
-  const angle = 0;
 
-  return { x, y, angle };
+  return { x, y, angle: 0 };
 }
 
-function drawTableCard(
-  game: Game,
-  loader: PIXI.Loader,
-  stage: PIXI.Container,
-  canvasWidth: number,
-  canvasHeight: number
-) {
+function drawTableCard(game: Game, loader: PIXI.Loader, stage: PIXI.Container, size: Size) {
+  const { width, height } = size;
   const tableCard = game.tableCard;
 
   if (tableCard == null) {
     throw new Error("table card is null");
   }
 
-  const position = tableCardPosition(canvasWidth, canvasHeight);
+  const position = tableCardPosition(width, height);
   const sprite = makeCardSprite(loader, tableCard, position);
 
   stage.addChild(sprite);
 }
 
 type HandPlacement =  'bottom' | 'left' | 'top' | 'right';
+type PlayerCount = 1 | 2 | 3 | 4;
 
-function handPlacements(playerCount: 1 | 2 | 3 | 4): HandPlacement[] {
-  const placements: Record<1 | 2 | 3 | 4, HandPlacement[]> = {
+function handPlacements(playerCount: PlayerCount): HandPlacement[] {
+  const placements: Record<PlayerCount, HandPlacement[]> = {
     1: ['bottom'],
     2: ['bottom', 'top'],
     3: ['bottom', 'left', 'right'],
@@ -169,31 +160,28 @@ function handPlacements(playerCount: 1 | 2 | 3 | 4): HandPlacement[] {
   return placements[playerCount];
 }
 
-function handPosition(
-  placement: HandPlacement,
-  canvasWidth: number,
-  canvasHeight: number
-): Position {
-  const angle = 0;
+function handPosition(placement: HandPlacement, canvasSize: Size): Position {
+  const { width, height } = canvasSize;
+
   const positions: Record<HandPlacement, Position> = {
     'bottom': {
-      x: canvasWidth / 2,
-      y: canvasHeight - (1.1 * cardImageHeight * cardScaleY),
+      x: width / 2,
+      y: height - (1.1 * cardHeight),
       angle: 0,
     },
     'left': {
-      x: 1.5 * cardImageWidth * cardScaleX,
-      y: canvasHeight / 2,
+      x: 1.5 * cardWidth,
+      y: height / 2,
       angle: 90,
     },
     'top': {
-      x: canvasWidth / 2,
-      y: 1.1 * cardImageHeight * cardScaleY,
+      x: width / 2,
+      y: 1.1 * cardHeight,
       angle: 180,
     },
     'right': {
-      x: canvasWidth - (1.5 * cardImageWidth * cardScaleX),
-      y: canvasHeight / 2,
+      x: width - (1.5 * cardWidth),
+      y: height / 2,
       angle: 270,
     }
   };
@@ -201,14 +189,63 @@ function handPosition(
   return positions[placement];
 }
 
-function drawPlayerHand(
-  game: Game,
-  loader: PIXI.Loader,
-  stage: PIXI.Container,
+function makeHandContainer(loader: PIXI.Loader, cards: string[]): PIXI.Container {
+  const container = new PIXI.Container();
+  const spacing = 5;
 
-) {
+  for (let i = 0; i < 3; i++) {
+    const x = cardWidth * i + spacing * i;
+    const y = 0;
+    const sprite = makeCardSprite(loader, cards[i], { x, y, angle: 0 });
+    container.addChild(sprite);
+  }
 
+  for (let i = 3; i < 6; i++) {
+    const j = i - 3;
+    const x = cardWidth * j + spacing * j;
+    const y = cardHeight + spacing;
+    const sprite = makeCardSprite(loader, cards[i], { x, y, angle: 0 });
+    container.addChild(sprite);
+  }
+
+  container.pivot.x = 0.5 * container.width / container.scale.x;
+  container.pivot.y = 0.5 * container.height / container.scale.y;
+
+  return container;
 }
+
+// function makeHandContainer(loader: PIXI.Loader, cards: string[]) {
+//   const container = new PIXI.Container();
+//   const xSpacing = 5;
+//   const ySpacing = 5;
+
+//   for (let i = 0; i < 3; i++) {
+//     const x = i * cardImageWidth + xSpacing * i;
+//     const y = 0;
+//     // const sprite = makeCardSprite(
+//     //   cards[i],
+//     //   i * cardWidth * cardScaleX + xSpacing * i,
+//     //   0
+//     // );
+//     const sprite = makeCardSprite(loader, cards[i], { x, y });
+//     container.addChild(sprite);
+//   }
+
+//   // for (let i = 3; i < 6; i++) {
+//   //   const j = i - 3;
+//   //   const sprite = makeCardSprite(
+//   //     cards[i],
+//   //     j * cardWidth * cardScaleX + xSpacing * j,
+//   //     cardHeight * cardScaleY + ySpacing
+//   //   );
+//   //   container.addChild(sprite);
+//   // }
+
+//   // container.pivot.x = container.width / 2;
+//   // container.pivot.y = container.height / 2;
+
+//   // return container;
+// }
 
 /**
  * Removes all child elements from the given container.
@@ -221,18 +258,21 @@ function removeChildren(container: PIXI.Container) {
 }
 
 export function draw(game: Game, elem: HTMLElement, app: PIXI.Application) {
-  const loader = app.loader;
-  const stage = app.stage;
-  const view = app.view;
-  const width = view.width;
-  const height = view.height;
+  const { loader, stage, view } = app;
+  const size = { width: view.width, height: view.height };
 
   removeChildren(stage);
-  drawDeck(game, loader, stage, width, height);
+  // drawDeck(game, loader, stage, size);
 
-  if (game.hasStarted) {
-    drawTableCard(game, loader, stage, width, height);
-  }
+  // if (game.hasStarted) {
+  //   drawTableCard(game, loader, stage, size);
+  // }
+
+  const container = makeHandContainer(loader, ['KC','KC','KC','KC','KC','KC',])
+  container.x = size.width / 2;
+  container.y = size.height / 2;
+  container.angle = 270;
+  stage.addChild(container);
 
   elem.appendChild(view);
 }
