@@ -1,6 +1,5 @@
-package com.kdp.golf.game;
+package com.kdp.golf.game.logic;
 
-import com.kdp.golf.game.logic.Deck;
 import io.quarkus.test.junit.QuarkusTest;
 import org.jboss.logging.Logger;
 import org.junit.jupiter.api.Test;
@@ -23,8 +22,12 @@ class DeckTest {
         var firstCard = deck.getCards().get(0);
         var dealtCard = deck.deal();
 
+        if (dealtCard.isEmpty()) {
+            throw new IllegalStateException();
+        }
+
         assertEquals(51, deck.getCards().size());
-        assertEquals(firstCard, dealtCard);
+        assertEquals(firstCard, dealtCard.get());
     }
 
     @Test

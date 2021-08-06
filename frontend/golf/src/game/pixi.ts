@@ -1,5 +1,5 @@
 import * as PIXI from 'pixi.js';
-import { Game } from './logic';
+import { Player, Game } from './logic';
 
 const canvasWidth = 500;
 const canvasHeight = 500;
@@ -87,7 +87,11 @@ export function loadTextures(loader: PIXI.Loader, files: string[], callback: () 
 }
 
 function getTexture(loader: PIXI.Loader, name: string) {
-  return loader.resources[name].texture;
+  try {
+    return loader.resources[name].texture;
+  } catch (e) {
+    console.log(`could not load texture: ${name}`);
+  }
 }
 
 function makeCardSprite(loader: PIXI.Loader, name: string, position: Position): PIXI.Sprite {
@@ -121,6 +125,8 @@ function drawDeck(game: Game, loader: PIXI.Loader, stage: PIXI.Container, size: 
   const { width, height } = size;
   const position = deckPosition(game, width, height);
   const sprite = makeCardSprite(loader, '2B', position);
+  sprite.anchor.x = 0.5;
+  sprite.anchor.y = 0.5;
 
   stage.addChild(sprite);
 }
@@ -142,15 +148,16 @@ function drawTableCard(game: Game, loader: PIXI.Loader, stage: PIXI.Container, s
 
   const position = tableCardPosition(width, height);
   const sprite = makeCardSprite(loader, tableCard, position);
+  sprite.anchor.x = 0.5;
+  sprite.anchor.y = 0.5;
 
   stage.addChild(sprite);
 }
 
 type HandPlacement =  'bottom' | 'left' | 'top' | 'right';
-type PlayerCount = 1 | 2 | 3 | 4;
 
-function handPlacements(playerCount: PlayerCount): HandPlacement[] {
-  const placements: Record<PlayerCount, HandPlacement[]> = {
+function handPlacements(playerCount: number): HandPlacement[] {
+  const placements: Record<number, HandPlacement[]> = {
     1: ['bottom'],
     2: ['bottom', 'top'],
     3: ['bottom', 'left', 'right'],
@@ -214,38 +221,25 @@ function makeHandContainer(loader: PIXI.Loader, cards: string[]): PIXI.Container
   return container;
 }
 
-// function makeHandContainer(loader: PIXI.Loader, cards: string[]) {
-//   const container = new PIXI.Container();
-//   const xSpacing = 5;
-//   const ySpacing = 5;
+function setPosition(container: PIXI.Container, position: Position) {
+  const { x, y, angle } = position;
+  container.x = x;
+  container.y = y;
+  container.angle = angle;
+}
 
-//   for (let i = 0; i < 3; i++) {
-//     const x = i * cardImageWidth + xSpacing * i;
-//     const y = 0;
-//     // const sprite = makeCardSprite(
-//     //   cards[i],
-//     //   i * cardWidth * cardScaleX + xSpacing * i,
-//     //   0
-//     // );
-//     const sprite = makeCardSprite(loader, cards[i], { x, y });
-//     container.addChild(sprite);
-//   }
+function drawHands(players: Player[], loader: PIXI.Loader, stage: PIXI.Container, canvasSize: Size) {
+  const placements = handPlacements(players.length);
 
-//   // for (let i = 3; i < 6; i++) {
-//   //   const j = i - 3;
-//   //   const sprite = makeCardSprite(
-//   //     cards[i],
-//   //     j * cardWidth * cardScaleX + xSpacing * j,
-//   //     cardHeight * cardScaleY + ySpacing
-//   //   );
-//   //   container.addChild(sprite);
-//   // }
+  for (let i = 0; i < players.length; i++) {
+    const cards = players[i].cards;
+    const container = makeHandContainer(loader, cards);
+    const position = handPosition(placements[i], canvasSize);
 
-//   // container.pivot.x = container.width / 2;
-//   // container.pivot.y = container.height / 2;
-
-//   // return container;
-// }
+    setPosition(container, position);
+    stage.addChild(container);
+  }
+}
 
 /**
  * Removes all child elements from the given container.
@@ -262,17 +256,17 @@ export function draw(game: Game, elem: HTMLElement, app: PIXI.Application) {
   const size = { width: view.width, height: view.height };
 
   removeChildren(stage);
-  // drawDeck(game, loader, stage, size);
+  drawDeck(game, loader, stage, size);
 
-  // if (game.hasStarted) {
-  //   drawTableCard(game, loader, stage, size);
-  // }
+  if (game.hasStarted) {
+    drawTableCard(game, loader, stage, size);
+    drawHands(game.players, loader, stage, size);
+  }
 
-  const container = makeHandContainer(loader, ['KC','KC','KC','KC','KC','KC',])
-  container.x = size.width / 2;
-  container.y = size.height / 2;
-  container.angle = 270;
-  stage.addChild(container);
+  // const container = makeHandContainer(loader, ['KC','KC','KC','KC','KC','KC',])
+  // const pos = handPosition('bottom', size);
+  // setPosition(container, pos);
+  // stage.addChild(container);
 
   elem.appendChild(view);
 }

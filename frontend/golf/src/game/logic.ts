@@ -1,17 +1,15 @@
-type Card = string;
-
 export interface Player {
   id: number;
   name: string;
-  cards: Card[];
+  cards: string[];
 }
 
 export interface Game {
   id: number;
   players: Player[];
   hostId: number;
-  deck: Card[];
-  tableCard: Card | null;
+  deck: string[];
+  tableCard: string | null;
   hasStarted: boolean;
 }
 

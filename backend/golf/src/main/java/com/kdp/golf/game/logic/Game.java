@@ -3,38 +3,55 @@ package com.kdp.golf.game.logic;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 public class Game {
 
     public final Long id;
-    private final List<Player> players = new ArrayList<>();
+
+    private final Map<Long, Player> players = new HashMap<>();
     private final @JsonIgnore Deck deck = new Deck(DECK_COUNT);
+    private final List<Long> playerOrder = new ArrayList<>();
+
     private Long hostId;
     private Card tableCard;
-    private @JsonProperty boolean hasStarted = false;
+    private State state;
+    private int turn;
 
     public final static int HAND_SIZE = 6;
-    public final static int DECK_COUNT = 2; // use two decks worth of cards
+    public final static int DECK_COUNT = 2; // the game is played with two decks
+
+    enum State {
+        INIT,
+        PLAYER_TURN,
+        FINAL_TURN,
+        GAME_OVER
+    }
+
+    enum CardSource {
+        TABLE,
+        DECK
+    }
 
     public Game(Long id, Player host) {
         this.id = id;
-        hostId = host.id;
-        players.add(host);
+        this.hostId = host.id;
+        this.state = State.INIT;
+        this.turn = 0;
+        addPlayer(host);
     }
 
     public Game start() {
         deck.shuffle();
         dealStartingHands();
         dealTableCard();
-        hasStarted = true;
+
+        this.state = State.PLAYER_TURN;
         return this;
     }
 
     public Game dealStartingHands() {
-        for (var player : players) {
+        for (var player : players.values()) {
             var cards = deck.deal(HAND_SIZE);
 
             if (cards.isEmpty()) {
@@ -58,18 +75,45 @@ public class Game {
         return this;
     }
 
+    public List<Card> getPlayerHand(Long playerId) {
+        return players.get(playerId).getCards();
+    }
+
+    public Game handleTurn(Long playerId, CardSource cardSource, int cardToDiscardIndex) {
+        var hand = getPlayerHand(playerId);
+        var cardToDiscard = hand.get(cardToDiscardIndex);
+
+        if (cardSource == CardSource.TABLE) {
+            hand.set(cardToDiscardIndex, tableCard);
+        } else {
+            var deckCard = deck.deal().orElseThrow();
+            hand.set(cardToDiscardIndex, deckCard);
+        }
+
+        tableCard = cardToDiscard;
+        turn++;
+        return this;
+    }
+
+    @JsonProperty
+    public Long nextPlayerTurn() {
+        return playerOrder.get(turn % players.size());
+    }
+
     public Game addPlayer(Player player) {
-        players.add(player);
+        players.put(player.id, player);
+        playerOrder.add(player.id);
         return this;
     }
 
     public Game removePlayer(Player player) {
-        players.remove(player);
+        players.remove(player.id);
+        playerOrder.remove(player.id);
         return this;
     }
 
-    public List<Player> getPlayers() {
-        return players;
+    public Collection<Player> getPlayers() {
+        return players.values();
     }
 
     public Long getHostId() {
@@ -88,8 +132,17 @@ public class Game {
         return Optional.ofNullable(tableCard);
     }
 
+    @JsonProperty
     public boolean hasStarted() {
-        return hasStarted;
+        return state != State.INIT;
+    }
+
+    public State getState() {
+        return state;
+    }
+
+    public int getTurn() {
+        return turn;
     }
 
     @Override
@@ -98,8 +151,11 @@ public class Game {
                 "id=" + id +
                 ", hostId=" + hostId +
                 ", players=" + players +
+                ", state=" + state +
                 ", deck=" + deck +
                 ", tableCard=" + tableCard +
+                ", turn=" + turn +
+                ", playerOrder=" + playerOrder +
                 '}';
     }
 }
