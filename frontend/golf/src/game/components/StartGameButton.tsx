@@ -1,10 +1,10 @@
 import React from 'react';
 import { useAppSelector } from '../../app/hooks';
 import { sendStartGame } from '../../websocket/message';
-import { selectGameId } from '../gameSlice';
+import { selectCurrentGameId } from '../gameSlice';
 
 export function StartGameButton() {
-  const gameId = useAppSelector(selectGameId);
+  const gameId = useAppSelector(selectCurrentGameId);
 
   const onClick = () => {
     if (gameId != null) {

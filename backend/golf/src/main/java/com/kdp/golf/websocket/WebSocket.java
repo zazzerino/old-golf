@@ -41,6 +41,7 @@ public class WebSocket {
         log.info("websocket connected: " + session.getId());
         sessions.put(session.getId(), session);
         userController.loginAnonymous(session);
+        gameController.getAll(session);
     }
 
     @OnClose

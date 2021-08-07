@@ -79,19 +79,33 @@ public class Game {
         return players.get(playerId).getCards();
     }
 
-    public Game handleTurn(Long playerId, CardSource cardSource, int cardToDiscardIndex) {
+    public Game takeTableCard(Long playerId, int cardIndex) {
         var hand = getPlayerHand(playerId);
-        var cardToDiscard = hand.get(cardToDiscardIndex);
+        var discard = hand.get(cardIndex);
 
-        if (cardSource == CardSource.TABLE) {
-            hand.set(cardToDiscardIndex, tableCard);
-        } else {
-            var deckCard = deck.deal().orElseThrow();
-            hand.set(cardToDiscardIndex, deckCard);
-        }
-
-        tableCard = cardToDiscard;
+        hand.set(cardIndex, tableCard);
+        tableCard = discard;
         turn++;
+
+        return this;
+    }
+
+    public Game takeDeckCard(Long playerId, int cardIndex) {
+        var hand = getPlayerHand(playerId);
+        var discard = hand.get(cardIndex);
+        var deckCard = deck.deal().orElseThrow();
+
+        hand.set(cardIndex, deckCard);
+        tableCard = discard;
+        turn++;
+
+        return this;
+    }
+
+    public Game discardDeckCard(Long playerId) {
+        tableCard = deck.deal().orElseThrow();
+        turn++;
+
         return this;
     }
 

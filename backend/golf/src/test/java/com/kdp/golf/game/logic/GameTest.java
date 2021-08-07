@@ -35,16 +35,16 @@ class GameTest {
         assertEquals(6, hand.size());
     }
 
-    @Test
-    void handleTurn() {
-        var player = new Player(0L, "Alice");
-        var game = new Game(0L, player);
-        game.start();
-
-        log.info(game);
-        assertEquals(0, game.getTurn());
-
-        game.handleTurn(0L, Game.CardSource.TABLE, 0);
-        log.info(game);
-    }
+//    @Test
+//    void handleTurn() {
+//        var player = new Player(0L, "Alice");
+//        var game = new Game(0L, player);
+//        game.start();
+//
+//        log.info(game);
+//        assertEquals(0, game.getTurn());
+//
+//        game.handleTurn(0L, Game.CardSource.TABLE, 0);
+//        log.info(game);
+//    }
 }

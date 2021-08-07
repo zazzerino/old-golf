@@ -9,6 +9,7 @@ public interface Response {
 
     enum Type {
         LOGIN,
-        GAME
+        GAME,
+        GAMES
     }
 }

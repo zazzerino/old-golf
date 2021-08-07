@@ -6,11 +6,11 @@ import { Navbar } from './Navbar';
 import { Game } from './pages/Game';
 import { Home } from './pages/Home';
 import { selectUser } from './user';
-import { selectGame } from './game/gameSlice';
+import { selectCurrentGame } from './game/gameSlice';
 
 function Footer() {
   const user = useAppSelector(selectUser);
-  const game = useAppSelector(selectGame);
+  const game = useAppSelector(selectCurrentGame);
 
   return (
     <div className="Footer">

@@ -1,6 +1,6 @@
 import React from 'react';
 import { useAppSelector } from '../app/hooks';
-import { selectGame } from './gameSlice';
+import { selectCurrentGame } from './gameSlice';
 import { app, draw } from './pixi';
 
 function empty(elem: Element) {
@@ -12,7 +12,7 @@ function empty(elem: Element) {
 export function GameCanvas() {
   const className = 'GameCanvas';
   const canvasRef = React.useRef<HTMLDivElement>(null);
-  const game = useAppSelector(selectGame);
+  const game = useAppSelector(selectCurrentGame);
 
   React.useEffect(() => {
     const elem = canvasRef.current;

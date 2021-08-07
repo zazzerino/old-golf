@@ -1,9 +1,9 @@
 import { store } from '../app/store';
-import { setGame } from '../game/gameSlice';
+import { setCurrentGame, setGames } from '../game/gameSlice';
 import { Game } from '../game/logic';
 import { setUser, User } from "../user";
 
-type ResponseType = 'LOGIN' | 'GAME';
+type ResponseType = 'LOGIN' | 'GAME' | 'GAMES';
 
 export interface Response {
   type: ResponseType;
@@ -26,5 +26,15 @@ export interface GameResponse extends Response {
 
 export function handleGame(response: GameResponse) {
   const game = response.game;
-  store.dispatch(setGame(game));
+  store.dispatch(setCurrentGame(game));
+}
+
+export interface GamesResponse extends Response {
+  type: 'GAMES';
+  games: Game[];
+}
+
+export function handleGames(response: GamesResponse) {
+  const games = response.games;
+  store.dispatch(setGames(games));
 }

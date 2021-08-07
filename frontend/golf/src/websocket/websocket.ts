@@ -1,5 +1,5 @@
 import { Message } from "./message";
-import { GameResponse, handleGame, handleLogin, LoginResponse, Response } from "./response";
+import { GameResponse, GamesResponse, handleGame, handleGames, handleLogin, LoginResponse, Response } from "./response";
 
 const WS_URL = 'ws://localhost:8080/ws';
 
@@ -39,5 +39,6 @@ function onMessage(event: MessageEvent) {
   switch (response.type) {
     case 'LOGIN': return handleLogin(response as LoginResponse);
     case 'GAME': return handleGame(response as GameResponse);
+    case 'GAMES': return handleGames(response as GamesResponse);
   }
 }

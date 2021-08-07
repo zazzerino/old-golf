@@ -1,5 +1,6 @@
 import React from 'react';
 import { CreateGameButton } from '../game/components/CreateGameButton';
+import { GamesTable } from '../game/components/GamesTable';
 import { StartGameButton } from '../game/components/StartGameButton';
 
 export function Home() {
@@ -12,7 +13,9 @@ export function Home() {
           flexDirection: "column",
           alignItems: "center",
           justifyContent: "center"
-        }}>
+        }}
+      >
+        <GamesTable />
         <CreateGameButton />
         <StartGameButton />
       </div>

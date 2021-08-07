@@ -2,6 +2,7 @@ package com.kdp.golf.game;
 
 import com.kdp.golf.websocket.WebSocket;
 import com.kdp.golf.websocket.response.GameResponse;
+import com.kdp.golf.websocket.response.GamesResponse;
 import org.jboss.logging.Logger;
 
 import javax.enterprise.context.ApplicationScoped;
@@ -32,6 +33,12 @@ public class GameController {
         log.info("game started: " + game);
 
         var response = new GameResponse(game);
+        webSocket.sendToSession(session, response);
+    }
+
+    public void getAll(Session session) {
+        var games = gameService.getAll();
+        var response = new GamesResponse(games);
         webSocket.sendToSession(session, response);
     }
 }

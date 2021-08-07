@@ -151,6 +151,14 @@ function drawTableCard(game: Game, loader: PIXI.Loader, stage: PIXI.Container, s
   sprite.anchor.x = 0.5;
   sprite.anchor.y = 0.5;
 
+  const graphics = new PIXI.Graphics();
+  const spacing = 4;
+  graphics.beginFill(0x00ff00);
+  const x = position.x - cardWidth / 2;
+  const y = position.y - cardHeight / 2;
+  graphics.drawRect(x - spacing / 2, y - spacing / 2, cardWidth + spacing, cardHeight + spacing);
+
+  stage.addChild(graphics);
   stage.addChild(sprite);
 }
 
@@ -262,11 +270,6 @@ export function draw(game: Game, elem: HTMLElement, app: PIXI.Application) {
     drawTableCard(game, loader, stage, size);
     drawHands(game.players, loader, stage, size);
   }
-
-  // const container = makeHandContainer(loader, ['KC','KC','KC','KC','KC','KC',])
-  // const pos = handPosition('bottom', size);
-  // setPosition(container, pos);
-  // stage.addChild(container);
 
   elem.appendChild(view);
 }

@@ -6,6 +6,7 @@ import com.kdp.golf.game.logic.Player;
 import com.kdp.golf.user.UserService;
 
 import javax.enterprise.context.ApplicationScoped;
+import java.util.Collection;
 
 @ApplicationScoped
 public class GameService {
@@ -50,5 +51,9 @@ public class GameService {
         gameDao.save(game);
 
         return game;
+    }
+
+    public Collection<Game> getAll() {
+        return gameDao.getAll();
     }
 }
