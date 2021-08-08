@@ -113,8 +113,33 @@ function drawCard(svg: SVGElement, card: string, coord: Coord, highlight = false
   svg.appendChild(img);
 }
 
-function drawGame(svg: SVGElement) {
-  drawCard(svg, 'QH', { x: 50, y: 100 }, true);
+function deckCoord(size: Size): Coord {
+  const x = size.width / 2 - cardSize.width / 2;
+  const y = size.height / 2 - cardSize.height / 2;
+
+  return { x, y };
+}
+
+function drawDeck(svg: SVGElement, size: Size) {
+  const coord = deckCoord(size);
+  drawCard(svg, '2B', coord);
+}
+
+function tableCardCoord(size: Size): Coord {
+  const x = size.width / 2 + cardSize.width / 2;
+  const y = size.height / 2 - cardSize.height / 2;
+
+  return { x, y };
+}
+
+function drawTableCard(svg: SVGElement, size: Size, card: string) {
+  const coord = tableCardCoord(size);
+  drawCard(svg, card, coord);
+}
+
+function drawGame(svg: SVGElement, size: Size) {
+  drawDeck(svg, size);
+  drawTableCard(svg, size, 'KC');
 }
 
 export function GameCanvas() {
@@ -127,7 +152,7 @@ export function GameCanvas() {
     const elem = svgRef.current;
 
     if (elem && game) {
-      drawGame(elem);
+      drawGame(elem, size);
     }
 
     return () => {
