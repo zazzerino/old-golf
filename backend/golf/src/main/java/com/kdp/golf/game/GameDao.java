@@ -10,6 +10,7 @@ import java.util.concurrent.ConcurrentHashMap;
 
 @ApplicationScoped
 public class GameDao {
+
     private final Map<Long, Game> games = new ConcurrentHashMap<>();
 
     public Collection<Game> getAll() {

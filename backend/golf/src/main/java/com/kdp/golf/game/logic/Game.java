@@ -9,8 +9,8 @@ public class Game {
 
     public final Long id;
 
+    private final Deck deck = new Deck(DECK_COUNT);
     private final Map<Long, Player> players = new HashMap<>();
-    private final @JsonIgnore Deck deck = new Deck(DECK_COUNT);
     private final List<Long> playerOrder = new ArrayList<>();
 
     private Long hostId;
@@ -28,16 +28,12 @@ public class Game {
         GAME_OVER
     }
 
-    enum CardSource {
-        TABLE,
-        DECK
-    }
-
     public Game(Long id, Player host) {
         this.id = id;
-        this.hostId = host.id;
         this.state = State.INIT;
         this.turn = 0;
+        this.hostId = host.id;
+
         addPlayer(host);
     }
 
@@ -46,7 +42,7 @@ public class Game {
         dealStartingHands();
         dealTableCard();
 
-        this.state = State.PLAYER_TURN;
+        state = State.PLAYER_TURN;
         return this;
     }
 
@@ -111,7 +107,8 @@ public class Game {
 
     @JsonProperty
     public Long nextPlayerTurn() {
-        return playerOrder.get(turn % players.size());
+        var index = turn % players.size();
+        return playerOrder.get(index);
     }
 
     public Game addPlayer(Player player) {
@@ -138,6 +135,7 @@ public class Game {
         this.hostId = hostId;
     }
 
+    @JsonIgnore
     public Deck getDeck() {
         return deck;
     }

@@ -31,7 +31,7 @@ public class WebSocket {
     private final Logger log = Logger.getLogger(WebSocket.class);
 
     public WebSocket(UserController userController, GameController gameController) {
-        sessions = new ConcurrentHashMap<>();
+        this.sessions = new ConcurrentHashMap<>();
         this.userController = userController;
         this.gameController = gameController;
     }
