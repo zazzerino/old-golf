@@ -8,7 +8,6 @@ export interface Game {
   id: number;
   players: Player[];
   hostId: number;
-  deck: string[];
   tableCard: string | null;
   hasStarted: boolean;
 }
