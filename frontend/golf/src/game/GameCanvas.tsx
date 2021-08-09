@@ -21,6 +21,9 @@ const xlinkNS = 'http://www.w3.org/1999/xlink';
 const cardScale = '10%';
 const cardSize: Size = { width: 60, height: 84 };
 
+const hlPadding = 1;
+const handPadding = 2;
+
 function empty(elem: Element) {
   while (elem.firstChild) {
     elem.firstChild.remove();
@@ -38,7 +41,7 @@ function makeRect(coord: Coord, size: Size, color = '#44ff00') {
   return rect;
 }
 
-function makeCard(card: string, coord: Coord, onClick = (card: string) => {}) {
+function makeCard(card: string, coord: Coord, onClick = (_card: string) => {}) {
   const img = document.createElementNS(svgNS, 'image');
 
   img.setAttribute('width', cardScale);
@@ -52,14 +55,12 @@ function makeCard(card: string, coord: Coord, onClick = (card: string) => {}) {
 }
 
 function makeCardHighlight(coord: Coord) {
-    const padding = 2;
-
-    const x = coord.x - padding;
-    const y = coord.y - padding;
+    const x = coord.x - hlPadding;
+    const y = coord.y - hlPadding;
     const hlCoord = { x, y };
 
-    const width = cardSize.width + padding * 2;
-    const height = cardSize.height + padding * 2;
+    const width = cardSize.width + hlPadding * 2;
+    const height = cardSize.height + hlPadding * 2;
     const hlSize = { width, height };
 
     const rect = makeRect(hlCoord, hlSize);
@@ -73,12 +74,11 @@ interface DrawCardOpts {
 
 function drawCard(svg: SVGElement, card: string, coord: Coord, opts: DrawCardOpts = {}) {
   const { onClick, highlight } = opts;
-
   const img = makeCard(card, coord, onClick);
 
   if (highlight === true) {
-    const hl = makeCardHighlight(coord);
-    svg.appendChild(hl);
+    const rect = makeCardHighlight(coord);
+    svg.appendChild(rect);
   }
 
   svg.appendChild(img);
@@ -104,7 +104,6 @@ function tableCardCoord(size: Size): Coord {
 }
 
 function tableCardClicked() {
-  console.log('table card clicked');
   store.dispatch(cardClicked('table'));
 }
 
@@ -116,18 +115,62 @@ function drawTableCard(svg: SVGElement, size: Size, card: string, clickedCard: C
   drawCard(svg, card, coord, { highlight, onClick });
 }
 
+function makeHand(cards: string[]) {
+  const group = document.createElementNS(svgNS, 'g');
+  const spacing = 2;
+
+  for (let i = 0; i < cards.length; i++) {
+    const inTopRow = i < 3;
+    const offset = inTopRow ? i : i - 3;
+    const x = cardSize.width * offset + spacing * offset;
+    const y = inTopRow ? 0 : cardSize.height + spacing;
+
+    const card = makeCard(cards[i], { x, y });
+    group.appendChild(card);
+  }
+
+  return group;
+}
+
+type HandPos = 'bottom' | 'left' | 'top' | 'right';
+
+function drawHand(svg: SVGElement, cards: string[], pos: HandPos) {
+  const boundingRect = svg.getBoundingClientRect();
+  const canvasWidth = boundingRect.width;
+  const canvasHeight = boundingRect.height;
+
+  const midX = canvasWidth / 2 - cardSize.width * 1.5;
+  const bottomY = canvasHeight - cardSize.height * 2 - handPadding * 2;
+
+  const hand = makeHand(cards);
+
+  switch (pos) {
+    case 'bottom':
+      hand.setAttribute('transform', `translate(${midX}, ${bottomY})`);
+      break;
+    case 'top':
+      hand.setAttribute('transform', `translate(${midX + cardSize.width * 3 + handPadding * 2}, ${cardSize.height * 2 + handPadding * 2}), rotate(180)`);
+      break;
+  }
+
+  svg.appendChild(hand);
+}
+
 function drawGame(svg: SVGElement, size: Size, game: Game, clickedCard: ClickedCard) {
   drawDeck(svg, size);
 
   if (game.tableCard) {
     drawTableCard(svg, size, game.tableCard, clickedCard);
   }
+
+  drawHand(svg, ['AC', '2C', '3C', '4H', '5H', '6H'], 'bottom');
+  drawHand(svg, ['AC', '2C', '3C', '4H', '5H', '6H'], 'top');
 }
 
 export function GameCanvas() {
   const className = 'GameCanvas';
   const svgRef = React.useRef<SVGSVGElement>(null);
-  const size: Size = { width: 600, height: 400 };
+  const size: Size = { width: 600, height: 500 };
   const game = useAppSelector(selectCurrentGame);
   const clickedCard = useAppSelector(selectClickedCard);
 
