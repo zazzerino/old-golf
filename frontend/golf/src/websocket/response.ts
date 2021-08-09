@@ -1,5 +1,5 @@
 import { store } from '../app/store';
-import { setCurrentGame, setGames } from '../game/gameSlice';
+import { setGame, setGames } from '../game/gameSlice';
 import { Game } from '../game/logic';
 import { setUser, User } from "../user";
 
@@ -26,7 +26,7 @@ export interface GameResponse extends Response {
 
 export function handleGame(response: GameResponse) {
   const game = response.game;
-  store.dispatch(setCurrentGame(game));
+  store.dispatch(setGame(game));
 }
 
 export interface GamesResponse extends Response {

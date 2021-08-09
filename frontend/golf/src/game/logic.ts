@@ -9,6 +9,7 @@ export interface Game {
   players: Player[];
   hostId: number;
   tableCard: string | null;
+  deckCard: string | null;
   hasStarted: boolean;
 }
 

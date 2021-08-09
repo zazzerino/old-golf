@@ -106,7 +106,7 @@ public class Game {
     }
 
     @JsonProperty
-    public Long nextPlayerTurn() {
+    public Long playerTurn() {
         var index = turn % players.size();
         return playerOrder.get(index);
     }
@@ -142,6 +142,10 @@ public class Game {
 
     public Optional<Card> getTableCard() {
         return Optional.ofNullable(tableCard);
+    }
+
+    public Optional<Card> getDeckCard() {
+        return Optional.ofNullable(deck.getCards().get(0));
     }
 
     @JsonProperty

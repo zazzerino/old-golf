@@ -42,9 +42,9 @@ function empty(elem: Element) {
   }
 }
 
-function handleClick(clickedCard: ClickedCard) {
-  console.log('clicked: ' + clickedCard);
-  store.dispatch(cardClicked(clickedCard));
+function handleClick(card: ClickedCard) {
+  console.log('clicked: ' + card);
+  store.dispatch(cardClicked(card));
 }
 
 function makeRect(coord: Coord, size: Size, color = '#44ff00') {
@@ -131,11 +131,11 @@ function makeHand(cards: string[], opts: HandOpts) {
   const { clickedCard, onClick } = opts;
   const group = document.createElementNS(svgNS, 'g');
 
-  for (let i = 0; i < cards.length; i++) {
-    const inTopRow = i < 3;
-    const offset = inTopRow ? i : i - 3;
+  for (let i = 0; i < 6; i++) {
+    const offset = i % 3;
+
     const x = cardSize.width * offset + handPadding * offset;
-    const y = inTopRow ? 0 : cardSize.height + handPadding;
+    const y = i < 3 ? 0 : cardSize.height + handPadding;
     const coord = { x, y };
 
     const card = makeCard(cards[i], coord);
@@ -190,7 +190,7 @@ function drawGame(svg: SVGElement, size: Size, game: Game, clickedCard: ClickedC
   }
 
   drawPlayerHand(svg, ['AC', '2C', '3C', '4H', '5H', '6H'], clickedCard);
-  drawHand(svg, ['AC', '2C', '3C', '4H', '5H', '6H'], 'top');
+  // drawHand(svg, ['AC', '2C', '3C', '4H', '5H', '6H'], 'top');
 }
 
 export function GameCanvas() {
@@ -220,6 +220,7 @@ export function GameCanvas() {
     <div className={className}>
       <svg
         ref={svgRef}
+        viewBox={`0 0 ${size.width} ${size.height}`}
         width={size.width}
         height={size.height}
         style={{ backgroundColor: 'aliceblue' }}
