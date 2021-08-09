@@ -17,12 +17,12 @@ interface Size {
 
 interface HandOpts {
   clickedCard?: ClickedCard;
-  onClick?: (index: number) => void;
+  onClick?: (index: ClickedCard) => void;
 }
 
 interface DrawCardOpts {
   highlight?: boolean;
-  onClick?: (card: string) => void;
+  onClick?: (card: ClickedCard) => void;
 }
 
 type HandPos = 'bottom' | 'left' | 'top' | 'right';
@@ -42,6 +42,11 @@ function empty(elem: Element) {
   }
 }
 
+function handleClick(clickedCard: ClickedCard) {
+  console.log('clicked: ' + clickedCard);
+  store.dispatch(cardClicked(clickedCard));
+}
+
 function makeRect(coord: Coord, size: Size, color = '#44ff00') {
   const rect = document.createElementNS(svgNS, 'rect');
 
@@ -54,7 +59,7 @@ function makeRect(coord: Coord, size: Size, color = '#44ff00') {
   return rect;
 }
 
-function makeCard(card: string, coord: Coord, onClick = (card: string) => {}) {
+function makeCard(card: string, coord: Coord, onClick = (card: ClickedCard) => {}) {
   const img = document.createElementNS(svgNS, 'image');
 
   img.setAttribute('width', cardScale);
@@ -62,7 +67,7 @@ function makeCard(card: string, coord: Coord, onClick = (card: string) => {}) {
   img.setAttribute('y', coord.y.toString());
   img.setAttributeNS(xlinkNS, 'xlink:href', images[card]);
 
-  img.onclick = () => onClick(card);
+  img.onclick = () => onClick(card as ClickedCard);
 
   return img;
 }
@@ -101,7 +106,9 @@ function deckCoord(size: Size): Coord {
 
 function drawDeck(svg: SVGElement, size: Size) {
   const coord = deckCoord(size);
-  drawCard(svg, '2B', coord);
+  const onClick = () => handleClick('deck');
+
+  drawCard(svg, '2B', coord, { onClick });
 }
 
 function tableCardCoord(size: Size): Coord {
@@ -111,14 +118,11 @@ function tableCardCoord(size: Size): Coord {
   return { x, y };
 }
 
-function tableCardClicked() {
-  store.dispatch(cardClicked('table'));
-}
-
 function drawTableCard(svg: SVGElement, size: Size, card: string, clickedCard: ClickedCard) {
   const coord = tableCardCoord(size);
   const highlight = clickedCard === 'table';
-  const opts = { highlight, onClick: tableCardClicked }
+  const onClick = () => handleClick('table');
+  const opts = { highlight, onClick }
 
   drawCard(svg, card, coord, opts);
 }
@@ -142,7 +146,7 @@ function makeHand(cards: string[], opts: HandOpts) {
     }
 
     if (onClick) {
-      card.onclick = () => onClick(i);
+      card.onclick = () => onClick(i as ClickedCard);
     }
 
     group.appendChild(card);
@@ -173,19 +177,15 @@ function drawHand(svg: SVGElement, cards: string[], pos: HandPos, opts: HandOpts
   svg.appendChild(hand);
 }
 
-function playerHandClicked(index: ClickedCard) {
-  store.dispatch(cardClicked(index));
-}
-
 function drawPlayerHand(svg: SVGElement, cards: string[], clickedCard: ClickedCard = null) {
-  const onClick = (i: number) => playerHandClicked(i as ClickedCard);
+  const onClick = (i: ClickedCard) => handleClick(i as ClickedCard);
   drawHand(svg, cards, 'bottom', { clickedCard, onClick });
 }
 
 function drawGame(svg: SVGElement, size: Size, game: Game, clickedCard: ClickedCard) {
   drawDeck(svg, size);
 
-  if (game.tableCard) {
+  if (game.tableCard && game.players) {
     drawTableCard(svg, size, game.tableCard, clickedCard);
   }
 
