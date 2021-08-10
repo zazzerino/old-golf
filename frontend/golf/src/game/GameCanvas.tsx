@@ -1,7 +1,7 @@
 import React from 'react';
 import { useAppSelector } from '../app/hooks';
 import { store } from '../app/store';
-import { cardClicked, ClickedCard, selectClickedCard, selectCurrentGame } from './gameSlice';
+import { cardClicked, ClickedCard, selectClickedCard, selectCurrentGame, selectDeckCard, selectShowDeck } from './gameSlice';
 import { images } from './images';
 import { Game } from './logic';
 
@@ -104,11 +104,14 @@ function deckCoord(size: Size): Coord {
   return { x, y };
 }
 
-function drawDeck(svg: SVGElement, size: Size) {
+function drawDeck(svg: SVGElement, size: Size, clickedCard: ClickedCard, showDeckCard: boolean, deckCard: string) {
   const coord = deckCoord(size);
+  const highlight = clickedCard === 'deck';
   const onClick = () => handleClick('deck');
+  const opts = { highlight, onClick };
+  const cardToDraw = showDeckCard ? deckCard : '2B';
 
-  drawCard(svg, '2B', coord, { onClick });
+  drawCard(svg, cardToDraw, coord, opts);
 }
 
 function tableCardCoord(size: Size): Coord {
@@ -170,7 +173,9 @@ function drawHand(svg: SVGElement, cards: string[], pos: HandPos, opts: HandOpts
       hand.setAttribute('transform', `translate(${midX}, ${bottomY})`);
       break;
     case 'top':
-      hand.setAttribute('transform', `translate(${midX + cardSize.width * 3 + handPadding * 2}, ${cardSize.height * 2 + handPadding * 2}), rotate(180)`);
+      let x = midX + cardSize.width * 3 + handPadding * 2;
+      let y = cardSize.height * 2 + handPadding * 2;
+      hand.setAttribute('transform', `translate(${x}, ${y}), rotate(180)`);
       break;
   }
 
@@ -182,8 +187,8 @@ function drawPlayerHand(svg: SVGElement, cards: string[], clickedCard: ClickedCa
   drawHand(svg, cards, 'bottom', { clickedCard, onClick });
 }
 
-function drawGame(svg: SVGElement, size: Size, game: Game, clickedCard: ClickedCard) {
-  drawDeck(svg, size);
+function drawGame(svg: SVGElement, size: Size, game: Game, clickedCard: ClickedCard, showDeckCard: boolean, deckCard: string | null | undefined) {
+  drawDeck(svg, size, clickedCard, showDeckCard, deckCard || '2B');
 
   if (game.tableCard && game.players) {
     drawTableCard(svg, size, game.tableCard, clickedCard);
@@ -201,12 +206,14 @@ export function GameCanvas() {
 
   const game = useAppSelector(selectCurrentGame);
   const clickedCard = useAppSelector(selectClickedCard);
+  const deckCard = useAppSelector(selectDeckCard);
+  const showDeck = useAppSelector(selectShowDeck);
 
   React.useEffect(() => {
     const elem = svgRef.current;
 
     if (elem && game) {
-      drawGame(elem, size, game, clickedCard);
+      drawGame(elem, size, game, clickedCard, showDeck || false, deckCard);
     }
 
     return () => {

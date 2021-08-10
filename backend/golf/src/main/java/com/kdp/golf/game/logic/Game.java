@@ -23,7 +23,7 @@ public class Game {
 
     enum State {
         INIT,
-        PLAYER_TURN,
+        TURN,
         FINAL_TURN,
         GAME_OVER
     }
@@ -42,7 +42,7 @@ public class Game {
         dealStartingHands();
         dealTableCard();
 
-        state = State.PLAYER_TURN;
+        state = State.TURN;
         return this;
     }
 

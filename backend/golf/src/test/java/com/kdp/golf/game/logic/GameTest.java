@@ -27,7 +27,7 @@ class GameTest {
         var game = new Game(0L, player);
         game.start();
 
-        assertEquals(Game.State.PLAYER_TURN, game.getState());
+        assertEquals(Game.State.TURN, game.getState());
         assertTrue(game.getTableCard().isPresent());
 
         var hand = game.getPlayerHand(0L);

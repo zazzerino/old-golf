@@ -46,6 +46,8 @@ export const selectGames = (state: RootState) => state.game.games;
 export const selectCurrentGame = (state: RootState) => state.game.game;
 export const selectCurrentGameId = (state: RootState) => state.game.game?.id;
 export const selectClickedCard = (state: RootState) => state.game.clickedCard;
+export const selectDeckCard = (state: RootState) => state.game.game?.deckCard;
+export const selectShowDeck = (state: RootState) => state.game.game?.showDeck;
 
 export const { setGames, setGame, cardClicked } = gameSlice.actions;
 export const gameReducer = gameSlice.reducer;

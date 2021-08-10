@@ -10,6 +10,7 @@ export interface Game {
   hostId: number;
   tableCard: string | null;
   deckCard: string | null;
+  showDeck: boolean;
   hasStarted: boolean;
 }
 
