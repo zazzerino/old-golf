@@ -2,16 +2,14 @@ package com.kdp.golf.game.logic;
 
 import com.kdp.golf.user.User;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.NoSuchElementException;
-import java.util.Objects;
+import java.util.*;
 
 public class Player {
 
     public final Long id;
     public final String name;
     private final List<Card> cards;
+    private Card heldCard;
 
     public Player(Long id, String name, List<Card> cards) {
         this.id = id;
@@ -31,6 +29,15 @@ public class Player {
 
     public List<Card> getCards() {
         return cards;
+    }
+
+    public Optional<Card> getHeldCard() {
+        return Optional.ofNullable(heldCard);
+    }
+
+    public Player setHeldCard(Card card) {
+        heldCard = card;
+        return this;
     }
 
     public Player giveCard(Card card) {
@@ -58,6 +65,7 @@ public class Player {
                 "id=" + id +
                 ", name='" + name + '\'' +
                 ", cards=" + cards +
+                ", heldCard=" + heldCard +
                 '}';
     }
 
@@ -66,11 +74,11 @@ public class Player {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Player player = (Player) o;
-        return id.equals(player.id) && name.equals(player.name) && cards.equals(player.cards);
+        return id.equals(player.id) && name.equals(player.name) && cards.equals(player.cards) && Objects.equals(heldCard, player.heldCard);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, name, cards);
+        return Objects.hash(id, name, cards, heldCard);
     }
 }

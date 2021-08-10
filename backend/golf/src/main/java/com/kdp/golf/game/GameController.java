@@ -20,6 +20,12 @@ public class GameController {
         this.webSocket = webSocket;
     }
 
+    public void getAll(Session session) {
+        var games = gameService.getAll();
+        var response = new GamesResponse(games);
+        webSocket.sendToSession(session, response);
+    }
+
     public void createGame(Session session) {
         var game = gameService.createGame(session.getId());
         log.info("game created: " + game);
@@ -33,12 +39,6 @@ public class GameController {
         log.info("game started: " + game);
 
         var response = new GameResponse(game);
-        webSocket.sendToSession(session, response);
-    }
-
-    public void getAll(Session session) {
-        var games = gameService.getAll();
-        var response = new GamesResponse(games);
         webSocket.sendToSession(session, response);
     }
 }

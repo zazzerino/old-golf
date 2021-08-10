@@ -2,6 +2,7 @@ package com.kdp.golf.game.logic;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.kdp.golf.game.logic.actions.*;
 
 import java.util.*;
 
@@ -23,8 +24,10 @@ public class Game {
 
     enum State {
         INIT,
-        TURN,
-        FINAL_TURN,
+        PICKUP,
+        DISCARD,
+        FINAL_PICKUP,
+        FINAL_DISCARD,
         GAME_OVER
     }
 
@@ -42,7 +45,7 @@ public class Game {
         dealStartingHands();
         dealTableCard();
 
-        state = State.TURN;
+        state = State.PICKUP;
         return this;
     }
 
@@ -75,32 +78,64 @@ public class Game {
         return players.get(playerId).getCards();
     }
 
-    public Game takeTableCard(Long playerId, int cardIndex) {
-        var hand = getPlayerHand(playerId);
-        var discard = hand.get(cardIndex);
-
-        hand.set(cardIndex, tableCard);
-        tableCard = discard;
-        turn++;
-
-        return this;
-    }
-
-    public Game takeDeckCard(Long playerId, int cardIndex) {
-        var hand = getPlayerHand(playerId);
-        var discard = hand.get(cardIndex);
+    public Game takeFromDeck(Long playerId) {
+        var player = players.get(playerId);
         var deckCard = deck.deal().orElseThrow();
 
-        hand.set(cardIndex, deckCard);
-        tableCard = discard;
+        player.setHeldCard(deckCard);
+        state = State.DISCARD;
+
+        return this;
+    }
+
+    public Game takeFromTable(TakeFromTableAction action) {
+        var player = players.get(action.playerId());
+        player.setHeldCard(tableCard);
+
+        tableCard = deck.deal().orElseThrow();
+        state = State.DISCARD;
+
+        return this;
+    }
+
+    public Game discard(DiscardAction action) {
+        var player = players.get(action.playerId());
+        tableCard = player.getHeldCard().orElseThrow();
+        player.setHeldCard(null);
+
+        state = State.PICKUP;
         turn++;
 
         return this;
     }
 
-    public Game discardDeckCard(Long playerId) {
-        tableCard = deck.deal().orElseThrow();
+    public Game swapCard(SwapCardAction action) {
+        var player = players.get(action.playerId());
+        var hand = player.getCards();
+        var heldCard = player.getHeldCard().orElseThrow();
+
+        tableCard = hand.get(action.index());
+        hand.set(action.index(), heldCard);
+        player.setHeldCard(null);
+
+        state = State.PICKUP;
         turn++;
+
+        return this;
+    }
+
+    public Game handleAction(Action action) {
+        if (action instanceof TakeFromDeckAction a) {
+            takeFromDeck(a.playerId());
+        } else if (action instanceof TakeFromTableAction a) {
+            takeFromTable(a);
+        } else if (action instanceof DiscardAction a) {
+            discard(a);
+        } else if (action instanceof SwapCardAction a) {
+            swapCard(a);
+        } else {
+            throw new UnsupportedOperationException();
+        }
 
         return this;
     }

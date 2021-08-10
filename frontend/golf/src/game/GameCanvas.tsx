@@ -81,8 +81,7 @@ function makeHighlight(coord: Coord) {
   const height = cardSize.height + hlPadding * 2;
   const hlSize = { width, height };
 
-  const rect = makeRect(hlCoord, hlSize);
-  return rect;
+  return makeRect(hlCoord, hlSize);
 }
 
 function drawCard(svg: SVGElement, card: string, coord: Coord, opts: DrawCardOpts = {}) {

@@ -1,5 +1,9 @@
 package com.kdp.golf.game.logic;
 
+import com.kdp.golf.game.logic.actions.DiscardAction;
+import com.kdp.golf.game.logic.actions.SwapCardAction;
+import com.kdp.golf.game.logic.actions.TakeFromDeckAction;
+import com.kdp.golf.game.logic.actions.TakeFromTableAction;
 import io.quarkus.test.junit.QuarkusTest;
 import org.jboss.logging.Logger;
 import org.junit.jupiter.api.Test;
@@ -27,7 +31,7 @@ class GameTest {
         var game = new Game(0L, player);
         game.start();
 
-        assertEquals(Game.State.TURN, game.getState());
+        assertEquals(Game.State.PICKUP, game.getState());
         assertTrue(game.getTableCard().isPresent());
 
         var hand = game.getPlayerHand(0L);
@@ -35,16 +39,73 @@ class GameTest {
         assertEquals(6, hand.size());
     }
 
-//    @Test
-//    void handleTurn() {
-//        var player = new Player(0L, "Alice");
-//        var game = new Game(0L, player);
-//        game.start();
-//
-//        log.info(game);
-//        assertEquals(0, game.getTurn());
-//
-//        game.handleTurn(0L, Game.CardSource.TABLE, 0);
-//        log.info(game);
-//    }
+    @Test
+    void takeFromDeck() {
+        var playerId = 2L;
+        var player = new Player(playerId, "Alice");
+
+        var gameId = 8L;
+        var game = new Game(gameId, player);
+
+        game.start();
+        log.info(game);
+
+        var action = new TakeFromDeckAction(playerId);
+        game.handleAction(action);
+        log.info(game);
+
+        assertEquals(0, game.getTurn());
+    }
+
+    @Test
+    void takeFromTable() {
+        var playerId = 3L;
+        var player = new Player(playerId, "Bob");
+
+        var gameId = 23L;
+        var game = new Game(gameId, player);
+
+        game.start();
+        log.info(game);
+
+        var action = new TakeFromTableAction(playerId);
+        game.handleAction(action);
+        log.info(game);
+    }
+
+    @Test
+    void discard() {
+        var playerId = 4L;
+        var player = new Player(playerId, "Charlie");
+
+        var gameId = 32L;
+        var game = new Game(gameId, player);
+
+        game.start();
+        log.info(game);
+
+        game.handleAction(new TakeFromDeckAction(playerId));
+        log.info(game);
+
+        game.handleAction(new DiscardAction(playerId));
+        log.info(game);
+    }
+
+    @Test
+    void swapCard() {
+        var playerId = 4L;
+        var player = new Player(playerId, "Charlie");
+
+        var gameId = 32L;
+        var game = new Game(gameId, player);
+
+        game.start();
+        log.info(game);
+
+        game.handleAction(new TakeFromTableAction(playerId));
+        log.info(game);
+
+        game.handleAction(new SwapCardAction(playerId, 0));
+        log.info(game);
+    }
 }

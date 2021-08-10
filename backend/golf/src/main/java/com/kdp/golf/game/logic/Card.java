@@ -26,6 +26,11 @@ public record Card(Rank rank,
         return rank.value + suit.value;
     }
 
+    @Override
+    public String toString() {
+        return name();
+    }
+
     enum Rank {
         ACE("A"),
         TWO("2"),
