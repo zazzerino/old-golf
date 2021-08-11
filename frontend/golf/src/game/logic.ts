@@ -8,10 +8,29 @@ export interface Game {
   id: number;
   players: Player[];
   hostId: number;
+  hasStarted: boolean;
   tableCard: string | null;
   deckCard: string | null;
-  showDeck: boolean;
-  hasStarted: boolean;
+}
+
+export type ActionType = 'TAKE_FROM_DECK' | 'TAKE_FROM_TABLE' | 'SWAP_CARD' | 'DISCARD';
+
+export interface Action {
+  type: ActionType;
+  playerId: number;
+}
+
+export interface TakeFromDeckAction extends Action {
+  type: 'TAKE_FROM_DECK';
+}
+
+export interface TakeFromTableAction extends Action {
+  type: 'TAKE_FROM_TABLE';
+}
+
+export interface SwapCardAction extends Action {
+  type: 'SWAP_CARD';
+  index: number;
 }
 
 // export function valueOf(rank: Rank): number {

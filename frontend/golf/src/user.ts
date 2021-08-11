@@ -17,6 +17,7 @@ const userSlice = createSlice({
 });
 
 export const selectUser = (state: RootState) => state.user;
+export const selectUserId = (state: RootState) => state.user?.id;
 
 export const { setUser } = userSlice.actions;
 
