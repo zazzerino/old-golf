@@ -14,6 +14,7 @@ export interface Game {
   hostId: number;
   hasStarted: boolean;
   tableCard: string | null;
+  tableCards: string[];
   deckCard: string | null;
 }
 

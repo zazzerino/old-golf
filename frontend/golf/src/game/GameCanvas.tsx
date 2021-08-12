@@ -59,16 +59,23 @@ function handleClick(context: Context, card: ClickedCard) {
   const { game, playerId } = context;
 
   console.log('clicked: ' + card);
-  store.dispatch(cardClicked(card));
 
+  if (game.hasStarted) {
+    store.dispatch(cardClicked(card));
 
-  if (card === 'deck') {
-    sendTakeFromDeck(game.id, playerId);
-  } else if (card === 'table') {
-    if (game.state === 'PICKUP') {
-      sendTakeFromTable(game.id, playerId);
+    if (card === 'deck') {
+      sendTakeFromDeck(game.id, playerId);
+    } else if (card === 'table') {
+      if (game.state === 'PICKUP') {
+        sendTakeFromTable(game.id, playerId);
+      }
+    } else if (card === 'held') {
+      if (game.state === 'DISCARD') {
+        console.log('discarding...');
+        sendDiscard(game.id, playerId);
+      }
     } else {
-      sendDiscard(game.id, playerId);
+      console.log('hand clicked: ' + card);
     }
   }
 }
@@ -180,9 +187,10 @@ function heldCardCoord(size: Size): Coord {
 function drawHeldCard(context: Context) {
   const { svg, size, heldCard } = context;
   const coord = heldCardCoord(size);
+  const onClick = () => handleClick(context, 'held');
 
   if (heldCard) {
-    drawCard(svg, heldCard, coord, {});
+    drawCard(svg, heldCard, coord, { onClick });
   }
 }
 
@@ -254,12 +262,16 @@ function drawPlayerHand(context: Context) {
 
 function drawGame(context: Context) {
   const { game, heldCard } = context;
+  const tableCard = game.tableCard;
 
   drawDeck(context);
 
   if (game.hasStarted) {
-    drawTableCard(context);
     drawPlayerHand(context);
+
+    if (tableCard) {
+      drawTableCard(context);
+    }
 
     if (heldCard) {
       drawHeldCard(context);

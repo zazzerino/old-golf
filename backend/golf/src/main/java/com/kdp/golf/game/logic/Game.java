@@ -13,11 +13,11 @@ public class Game {
     private final Deck deck = new Deck(DECK_COUNT);
     private final Map<Long, Player> players = new HashMap<>();
     private final List<Long> playerOrder = new ArrayList<>();
+    private final Stack<Card> tableCards = new Stack<>();
 
     private int turn;
     private Long hostId;
     private State state;
-    private Card tableCard;
 
     public final static int HAND_SIZE = 6;
     public final static int DECK_COUNT = 2; // the game is played with two decks
@@ -59,7 +59,8 @@ public class Game {
     }
 
     public Game dealTableCard() {
-        tableCard =  deck.deal().orElseThrow();
+        var card =  deck.deal().orElseThrow();
+        tableCards.push(card);
         return this;
     }
 
@@ -79,9 +80,7 @@ public class Game {
 
     public Game takeFromTable(Long playerId) {
         var player = players.get(playerId);
-        player.setHeldCard(tableCard);
-
-        tableCard = deck.deal().orElseThrow();
+        player.setHeldCard(tableCards.pop());
         state = State.DISCARD;
 
         return this;
@@ -89,7 +88,8 @@ public class Game {
 
     public Game discard(Long playerId) {
         var player = players.get(playerId);
-        tableCard = player.getHeldCard().orElseThrow();
+        var card = player.getHeldCard().orElseThrow();
+        tableCards.push(card);
         player.setHeldCard(null);
 
         state = State.PICKUP;
@@ -103,7 +103,9 @@ public class Game {
         var hand = player.getCards();
         var heldCard = player.getHeldCard().orElseThrow();
 
-        tableCard = hand.get(index);
+        var cardAtIndex = hand.get(index);
+        tableCards.push(cardAtIndex);
+
         hand.set(index, heldCard);
         player.setHeldCard(null);
 
@@ -173,7 +175,11 @@ public class Game {
     }
 
     public Optional<Card> getTableCard() {
-        return Optional.ofNullable(tableCard);
+        try {
+            return Optional.of(tableCards.peek());
+        } catch (EmptyStackException e) {
+            return Optional.empty();
+        }
     }
 
     public Optional<Card> getDeckCard() {
@@ -201,7 +207,7 @@ public class Game {
                 ", players=" + players +
                 ", state=" + state +
                 ", deck=" + deck +
-                ", tableCard=" + tableCard +
+                ", tableCards=" + tableCards +
                 ", turn=" + turn +
                 ", playerOrder=" + playerOrder +
                 '}';

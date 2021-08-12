@@ -3,7 +3,7 @@ import { RootState } from "../app/store";
 import { Game } from "./logic";
 
 // can click the deck, table card, or one of the 6 cards in hand
-export type ClickedCard = 'deck' | 'table' | 0 | 1 | 2 | 3 | 4 | 5;
+export type ClickedCard = 'deck' | 'table' | 'held' | 0 | 1 | 2 | 3 | 4 | 5;
 
 interface GameState {
   games: Game[] | null;
