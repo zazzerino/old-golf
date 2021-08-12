@@ -72,18 +72,40 @@ export function sendTakeFromTable(gameId: number, playerId: number) {
   send(takeFromTableMessage(gameId, playerId));
 }
 
-// export function sendPlayerAction(gameId: number, action: Action) {
-//   send(playerActionMessage(gameId, action));
-// }
+export interface DiscardMessage extends Message {
+  type: 'DISCARD';
+  gameId: number;
+  playerId: number;
+}
 
-// export function sendTakeFromDeck(gameId: number, playerId: number) {
-//   const action = takeFromDeck(playerId);
-//   const message = playerActionMessage(gameId, action);
-//   send(message);
-// }
+export function discardMessage(gameId: number, playerId: number): DiscardMessage {
+  return {
+    type: 'DISCARD',
+    gameId,
+    playerId,
+  }
+}
 
-// export function sendTakeFromTable(gameId: number, playerId: number) {
-//   const action = takeFromTable(playerId);
-//   const message = playerActionMessage(gameId, action);
-//   send(message);
-// }
+export function sendDiscard(gameId: number, playerId: number) {
+  send(discardMessage(gameId, playerId));
+}
+
+export interface SwapCardMessage extends Message {
+  type: 'SWAP_CARD';
+  gameId: number;
+  playerId: number;
+  index: number;
+}
+
+export function swapCardMessage(gameId: number, playerId: number, index: number): SwapCardMessage {
+  return {
+    type: 'SWAP_CARD',
+    gameId,
+    playerId,
+    index,
+  }
+}
+
+export function sendSwapCard(gameId: number, playerId: number, index: number) {
+  send(swapCardMessage(gameId, playerId, index));
+}

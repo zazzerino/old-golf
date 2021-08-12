@@ -1,4 +1,4 @@
-import { createSlice, PayloadAction } from "@reduxjs/toolkit";
+import { createSelector, createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { RootState } from "../app/store";
 import { Game } from "./logic";
 
@@ -47,13 +47,21 @@ export const selectClickedCard = (state: RootState) => state.game.clickedCard;
 export const selectDeckCard = (state: RootState) => state.game.game?.deckCard;
 export const selectShowDeckCard = (state: RootState) => state.game.showDeckCard;
 
-export const selectPlayerHand = (state: RootState) => {
+export const selectPlayer = (state: RootState) => {
   const playerId = state.user?.id;
-  const player = state.game.game?.players.find(p => p.id === playerId);
-  let cards = player?.cards;
-
-  return cards === undefined ? null : cards;
+  const players = state.game.game?.players;
+  return players?.find(p => p.id === playerId);
 }
+
+export const selectPlayerHand =  createSelector(
+  selectPlayer,
+  player => player?.cards === undefined ? null : player.cards
+);
+
+export const selectHeldCard = createSelector(
+  selectPlayer,
+  player => player?.heldCard
+);
 
 export const { setGames, setGame, cardClicked } = gameSlice.actions;
 export const gameReducer = gameSlice.reducer;

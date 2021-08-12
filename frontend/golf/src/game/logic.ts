@@ -5,8 +5,11 @@ export interface Player {
   heldCard: string;
 }
 
+export type GameState = 'INIT' | 'PICKUP' | 'DISCARD' | 'FINAL_PICKUP' | 'FINAL_DISCARD' | 'GAME_OVER';
+
 export interface Game {
   id: number;
+  state: GameState;
   players: Player[];
   hostId: number;
   hasStarted: boolean;

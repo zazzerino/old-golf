@@ -115,13 +115,21 @@ public class Game {
 
     public Game handleAction(Action action) {
         if (action instanceof TakeFromDeckAction a) {
-            takeFromDeck(a.playerId());
+            if (state == State.PICKUP) {
+                takeFromDeck(a.playerId());
+            }
         } else if (action instanceof TakeFromTableAction a) {
-            takeFromTable(a.playerId());
+            if (state == State.PICKUP) {
+                takeFromTable(a.playerId());
+            }
         } else if (action instanceof DiscardAction a) {
-            discard(a.playerId());
+            if (state == State.DISCARD) {
+                discard(a.playerId());
+            }
         } else if (action instanceof SwapCardAction a) {
-            swapCard(a.playerId(), a.index());
+            if (state == State.DISCARD) {
+                swapCard(a.playerId(), a.index());
+            }
         } else {
             throw new UnsupportedOperationException();
         }

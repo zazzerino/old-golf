@@ -1,11 +1,11 @@
 import React from 'react';
 import { useAppSelector } from '../app/hooks';
 import { store } from '../app/store';
-import { cardClicked, ClickedCard, selectClickedCard, selectCurrentGame, selectDeckCard, selectPlayerHand, selectShowDeckCard } from './gameSlice';
+import { cardClicked, ClickedCard, selectClickedCard, selectCurrentGame, selectHeldCard, selectPlayerHand, selectShowDeckCard } from './gameSlice';
 import { images } from './images';
 import { Game } from './logic';
 import { selectUserId } from '../user';
-import { sendTakeFromDeck, sendTakeFromTable } from '../websocket/message';
+import { sendDiscard, sendTakeFromDeck, sendTakeFromTable } from '../websocket/message';
 
 interface Coord {
   x: number;
@@ -23,8 +23,8 @@ interface HandOpts {
 }
 
 interface DrawCardOpts {
-  highlight: boolean;
-  onClick: (card: ClickedCard) => void;
+  highlight?: boolean;
+  onClick?: (card: ClickedCard) => void;
 }
 
 type HandPos = 'bottom' | 'left' | 'top' | 'right';
@@ -37,6 +37,7 @@ interface Context {
   showDeckCard: boolean;
   clickedCard: ClickedCard | null;
   playerHand: string[] | null;
+  heldCard: string | undefined;
 }
 
 const svgNS = 'http://www.w3.org/2000/svg';
@@ -64,7 +65,11 @@ function handleClick(context: Context, card: ClickedCard) {
   if (card === 'deck') {
     sendTakeFromDeck(game.id, playerId);
   } else if (card === 'table') {
-    sendTakeFromTable(game.id, playerId);
+    if (game.state === 'PICKUP') {
+      sendTakeFromTable(game.id, playerId);
+    } else {
+      sendDiscard(game.id, playerId);
+    }
   }
 }
 
@@ -80,7 +85,7 @@ function makeRect(coord: Coord, size: Size, color = '#44ff00') {
   return rect;
 }
 
-function makeCard(card: string, coord: Coord, onClick: (card: ClickedCard) => void) {
+function makeCard(card: string, coord: Coord, onClick?: (card: ClickedCard) => void) {
   const img = document.createElementNS(svgNS, 'image');
 
   img.setAttribute('width', cardScale);
@@ -88,7 +93,9 @@ function makeCard(card: string, coord: Coord, onClick: (card: ClickedCard) => vo
   img.setAttribute('y', coord.y.toString());
   img.setAttributeNS(xlinkNS, 'xlink:href', images[card]);
 
-  img.onclick = () => onClick(card as ClickedCard);
+  if (onClick) {
+    img.onclick = () => onClick(card as ClickedCard);
+  }
 
   return img;
 }
@@ -105,7 +112,7 @@ function makeHighlight(coord: Coord) {
   return makeRect(hlCoord, hlSize);
 }
 
-function drawCard(svg: SVGElement, card: string, coord: Coord, opts: DrawCardOpts) {
+function drawCard(svg: SVGElement, card: string, coord: Coord, opts: DrawCardOpts = {}) {
   const { onClick, highlight } = opts;
   const img = makeCard(card, coord, onClick);
 
@@ -128,7 +135,7 @@ function deckCoord(size: Size, hasStarted: boolean): Coord {
 }
 
 function drawDeck(context: Context) {
-  const { svg, size, game, playerId, clickedCard, showDeckCard} = context;
+  const { svg, size, game, clickedCard, showDeckCard} = context;
   const { deckCard, hasStarted } = game;
 
   const coord = deckCoord(size, hasStarted);
@@ -148,7 +155,7 @@ function tableCardCoord(size: Size): Coord {
 }
 
 function drawTableCard(context: Context) {
-  const { svg, size, clickedCard, playerId, game } = context;
+  const { svg, size, clickedCard, game } = context;
   const tableCard = game.tableCard;
 
   const coord = tableCardCoord(size);
@@ -160,6 +167,22 @@ function drawTableCard(context: Context) {
     drawCard(svg, tableCard, coord, opts);
   } else { 
     throw new Error('table card is null');
+  }
+}
+
+function heldCardCoord(size: Size): Coord {
+  const x = size.width * 0.75;
+  const y = size.height - cardSize.height * 1.5;
+
+  return { x, y };
+}
+
+function drawHeldCard(context: Context) {
+  const { svg, size, heldCard } = context;
+  const coord = heldCardCoord(size);
+
+  if (heldCard) {
+    drawCard(svg, heldCard, coord, {});
   }
 }
 
@@ -230,13 +253,17 @@ function drawPlayerHand(context: Context) {
 }
 
 function drawGame(context: Context) {
-  const { game } = context;
+  const { game, heldCard } = context;
 
   drawDeck(context);
 
   if (game.hasStarted) {
     drawTableCard(context);
     drawPlayerHand(context);
+
+    if (heldCard) {
+      drawHeldCard(context);
+    }
   }
 }
 
@@ -249,6 +276,7 @@ export function GameCanvas() {
   const game = useAppSelector(selectCurrentGame);
   const playerId = useAppSelector(selectUserId);
   const playerHand = useAppSelector(selectPlayerHand);
+  const heldCard = useAppSelector(selectHeldCard);
   const clickedCard = useAppSelector(selectClickedCard);
   const showDeckCard = useAppSelector(selectShowDeckCard);
 
@@ -256,7 +284,7 @@ export function GameCanvas() {
     const svg = svgRef.current;
 
     if (svg && game && playerId) {
-      const context: Context = { playerId, game, svg, size, clickedCard, showDeckCard, playerHand };
+      const context: Context = { playerId, game, svg, size, clickedCard, showDeckCard, playerHand, heldCard };
       drawGame(context);
     }
 
