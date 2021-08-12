@@ -50,7 +50,7 @@ class GameTest {
         game.start();
         log.info(game);
 
-        var action = new TakeFromDeckAction(playerId);
+        var action = new TakeFromDeckAction(gameId, playerId);
         game.handleAction(action);
         log.info(game);
 
@@ -68,7 +68,7 @@ class GameTest {
         game.start();
         log.info(game);
 
-        var action = new TakeFromTableAction(playerId);
+        var action = new TakeFromTableAction(gameId, playerId);
         game.handleAction(action);
         log.info(game);
     }
@@ -84,10 +84,10 @@ class GameTest {
         game.start();
         log.info(game);
 
-        game.handleAction(new TakeFromDeckAction(playerId));
+        game.handleAction(new TakeFromDeckAction(gameId, playerId));
         log.info(game);
 
-        game.handleAction(new DiscardAction(playerId));
+        game.handleAction(new DiscardAction(gameId, playerId));
         log.info(game);
     }
 
@@ -102,10 +102,10 @@ class GameTest {
         game.start();
         log.info(game);
 
-        game.handleAction(new TakeFromTableAction(playerId));
+        game.handleAction(new TakeFromTableAction(gameId, playerId));
         log.info(game);
 
-        game.handleAction(new SwapCardAction(playerId, 0));
+        game.handleAction(new SwapCardAction(gameId, playerId, 0));
         log.info(game);
     }
 }

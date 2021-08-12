@@ -5,6 +5,7 @@ import { cardClicked, ClickedCard, selectClickedCard, selectCurrentGame, selectD
 import { images } from './images';
 import { Game } from './logic';
 import { selectUserId } from '../user';
+import { sendTakeFromDeck, sendTakeFromTable } from '../websocket/message';
 
 interface Coord {
   x: number;
@@ -53,9 +54,18 @@ function empty(elem: Element) {
   }
 }
 
-function handleClick(playerId: number, card: ClickedCard) {
+function handleClick(context: Context, card: ClickedCard) {
+  const { game, playerId } = context;
+
   console.log('clicked: ' + card);
   store.dispatch(cardClicked(card));
+
+
+  if (card === 'deck') {
+    sendTakeFromDeck(game.id, playerId);
+  } else if (card === 'table') {
+    sendTakeFromTable(game.id, playerId);
+  }
 }
 
 function makeRect(coord: Coord, size: Size, color = '#44ff00') {
@@ -123,7 +133,7 @@ function drawDeck(context: Context) {
 
   const coord = deckCoord(size, hasStarted);
   const highlight = clickedCard === 'deck';
-  const onClick = () => handleClick(playerId, 'deck');
+  const onClick = () => handleClick(context, 'deck');
   const opts = { highlight, onClick };
   const cardToDraw = showDeckCard && deckCard ? deckCard : '2B';
 
@@ -143,7 +153,7 @@ function drawTableCard(context: Context) {
 
   const coord = tableCardCoord(size);
   const highlight = clickedCard === 'table';
-  const onClick = () => handleClick(playerId, 'table');
+  const onClick = () => handleClick(context, 'table');
   const opts = { highlight, onClick }
 
   if (tableCard) {
@@ -166,7 +176,7 @@ function makeHand(cards: string[], opts: HandOpts) {
 
     const card = makeCard(cards[i], coord, onClick);
 
-    if (clickedCard === i) {
+    if (i === clickedCard) {
       const hlRect = makeHighlight(coord);
       group.appendChild(hlRect);
     }
@@ -191,13 +201,16 @@ function drawHand(svg: SVGElement, cards: string[], pos: HandPos, opts: HandOpts
 
   const hand = makeHand(cards, opts);
 
+  let x: number;
+  let y: number;
+
   switch (pos) {
     case 'bottom':
       hand.setAttribute('transform', `translate(${midX}, ${bottomY})`);
       break;
     case 'top':
-      let x = midX + cardSize.width * 3 + handPadding * 2;
-      let y = cardSize.height * 2 + handPadding * 2;
+      x = midX + cardSize.width * 3 + handPadding * 2;
+      y = cardSize.height * 2 + handPadding * 2;
       hand.setAttribute('transform', `translate(${x}, ${y}), rotate(180)`);
       break;
   }
@@ -206,8 +219,8 @@ function drawHand(svg: SVGElement, cards: string[], pos: HandPos, opts: HandOpts
 }
 
 function drawPlayerHand(context: Context) {
-  const { svg, clickedCard, playerId, playerHand } = context;
-  const onClick = (i: ClickedCard) => handleClick(playerId, i);
+  const { svg, clickedCard, playerHand } = context;
+  const onClick = (i: ClickedCard) => handleClick(context, i);
 
   if (playerHand) {
     drawHand(svg, playerHand, 'bottom', { clickedCard, onClick });

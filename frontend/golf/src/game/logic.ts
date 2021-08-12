@@ -2,6 +2,7 @@ export interface Player {
   id: number;
   name: string;
   cards: string[];
+  heldCard: string;
 }
 
 export interface Game {
@@ -24,13 +25,35 @@ export interface TakeFromDeckAction extends Action {
   type: 'TAKE_FROM_DECK';
 }
 
+export function takeFromDeck(playerId: number): TakeFromDeckAction {
+  return {
+    type: 'TAKE_FROM_DECK',
+    playerId,
+  }
+}
+
 export interface TakeFromTableAction extends Action {
   type: 'TAKE_FROM_TABLE';
+}
+
+export function takeFromTable(playerId: number): TakeFromTableAction {
+  return {
+    type: 'TAKE_FROM_TABLE',
+    playerId,
+  }
 }
 
 export interface SwapCardAction extends Action {
   type: 'SWAP_CARD';
   index: number;
+}
+
+export function swapCard(playerId: number, index: number): SwapCardAction {
+  return {
+    type: 'SWAP_CARD',
+    playerId,
+    index,
+  }
 }
 
 // export function valueOf(rank: Rank): number {

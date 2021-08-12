@@ -1,5 +1,6 @@
 package com.kdp.golf.game;
 
+import com.kdp.golf.game.logic.actions.Action;
 import com.kdp.golf.websocket.WebSocket;
 import com.kdp.golf.websocket.response.GameResponse;
 import com.kdp.golf.websocket.response.GamesResponse;
@@ -37,6 +38,14 @@ public class GameController {
     public void startGame(Session session, Long gameId) {
         var game = gameService.startGame(gameId);
         log.info("game started: " + game);
+
+        var response = new GameResponse(game);
+        webSocket.sendToSession(session, response);
+    }
+
+    public void handleAction(Session session, Action action) {
+        var game = gameService.handleAction(action);
+        log.info("game action handled: " + game);
 
         var response = new GameResponse(game);
         webSocket.sendToSession(session, response);

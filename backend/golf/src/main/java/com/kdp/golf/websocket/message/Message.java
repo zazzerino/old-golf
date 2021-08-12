@@ -6,6 +6,10 @@ public interface Message {
     enum Type {
         LOGIN,
         CREATE_GAME,
-        START_GAME
+        START_GAME,
+        DISCARD,
+        SWAP_CARD,
+        TAKE_FROM_DECK,
+        TAKE_FROM_TABLE,
     }
 }

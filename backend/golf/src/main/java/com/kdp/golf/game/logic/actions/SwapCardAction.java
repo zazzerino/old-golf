@@ -1,6 +1,7 @@
 package com.kdp.golf.game.logic.actions;
 
-public record SwapCardAction(Long playerId,
+public record SwapCardAction(Long gameId,
+                             Long playerId,
                              int index) implements Action {
 
     public Type type() {

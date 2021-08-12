@@ -14,10 +14,10 @@ public class Game {
     private final Map<Long, Player> players = new HashMap<>();
     private final List<Long> playerOrder = new ArrayList<>();
 
-    private Long hostId;
-    private Card tableCard;
-    private State state;
     private int turn;
+    private Long hostId;
+    private State state;
+    private Card tableCard;
 
     public final static int HAND_SIZE = 6;
     public final static int DECK_COUNT = 2; // the game is played with two decks
@@ -51,26 +51,15 @@ public class Game {
 
     public Game dealStartingHands() {
         for (var player : players.values()) {
-            var cards = deck.deal(HAND_SIZE);
-
-            if (cards.isEmpty()) {
-                throw new IllegalStateException("deck is empty");
-            }
-
-            player.giveCards(cards.get());
+            var cards = deck.deal(HAND_SIZE).orElseThrow();
+            player.giveCards(cards);
         }
 
         return this;
     }
 
     public Game dealTableCard() {
-        var card = deck.deal();
-
-        if (card.isEmpty()) {
-            throw new IllegalStateException("deck is empty");
-        }
-
-        tableCard = card.get();
+        tableCard =  deck.deal().orElseThrow();
         return this;
     }
 
@@ -88,8 +77,8 @@ public class Game {
         return this;
     }
 
-    public Game takeFromTable(TakeFromTableAction action) {
-        var player = players.get(action.playerId());
+    public Game takeFromTable(Long playerId) {
+        var player = players.get(playerId);
         player.setHeldCard(tableCard);
 
         tableCard = deck.deal().orElseThrow();
@@ -98,8 +87,8 @@ public class Game {
         return this;
     }
 
-    public Game discard(DiscardAction action) {
-        var player = players.get(action.playerId());
+    public Game discard(Long playerId) {
+        var player = players.get(playerId);
         tableCard = player.getHeldCard().orElseThrow();
         player.setHeldCard(null);
 
@@ -109,13 +98,13 @@ public class Game {
         return this;
     }
 
-    public Game swapCard(SwapCardAction action) {
-        var player = players.get(action.playerId());
+    public Game swapCard(Long playerId, int index) {
+        var player = players.get(playerId);
         var hand = player.getCards();
         var heldCard = player.getHeldCard().orElseThrow();
 
-        tableCard = hand.get(action.index());
-        hand.set(action.index(), heldCard);
+        tableCard = hand.get(index);
+        hand.set(index, heldCard);
         player.setHeldCard(null);
 
         state = State.PICKUP;
@@ -128,11 +117,11 @@ public class Game {
         if (action instanceof TakeFromDeckAction a) {
             takeFromDeck(a.playerId());
         } else if (action instanceof TakeFromTableAction a) {
-            takeFromTable(a);
+            takeFromTable(a.playerId());
         } else if (action instanceof DiscardAction a) {
-            discard(a);
+            discard(a.playerId());
         } else if (action instanceof SwapCardAction a) {
-            swapCard(a);
+            swapCard(a.playerId(), a.index());
         } else {
             throw new UnsupportedOperationException();
         }

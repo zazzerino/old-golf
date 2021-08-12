@@ -10,4 +10,6 @@ public interface Action {
     }
 
     Type type();
+    Long gameId();
+    Long playerId();
 }

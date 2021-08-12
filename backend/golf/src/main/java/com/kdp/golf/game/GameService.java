@@ -3,6 +3,7 @@ package com.kdp.golf.game;
 import com.kdp.golf.IdService;
 import com.kdp.golf.game.logic.Game;
 import com.kdp.golf.game.logic.Player;
+import com.kdp.golf.game.logic.actions.Action;
 import com.kdp.golf.user.UserService;
 
 import javax.enterprise.context.ApplicationScoped;
@@ -44,7 +45,7 @@ public class GameService {
                 .orElseThrow();
 
         if (game.hasStarted()) {
-            throw new IllegalStateException("game already started");
+            throw new IllegalStateException("game has already started");
         }
 
         game.start();
@@ -55,5 +56,27 @@ public class GameService {
 
     public Collection<Game> getAll() {
         return gameDao.getAll();
+    }
+
+    public Game takeFromDeck(Long gameId, Long playerId) {
+        var game = gameDao
+                .getById(gameId)
+                .orElseThrow();
+
+        game.takeFromDeck(playerId);
+        gameDao.save(game);
+
+        return game;
+    }
+
+    public Game handleAction(Action action) {
+        var game = gameDao
+                .getById(action.gameId())
+                .orElseThrow();
+
+        game.handleAction(action);
+        gameDao.save(game);
+
+        return game;
     }
 }

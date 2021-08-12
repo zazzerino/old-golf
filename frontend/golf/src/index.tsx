@@ -6,7 +6,6 @@ import { store } from './app/store';
 import { Provider } from 'react-redux';
 import * as serviceWorker from './serviceWorker';
 import { initWebSocket } from './websocket/websocket';
-import { initPixi } from './game/pixi';
 
 ReactDOM.render(
   <React.StrictMode>
@@ -17,7 +16,6 @@ ReactDOM.render(
   document.getElementById('root')
 );
 
-initPixi();
 initWebSocket();
 
 // If you want your app to work offline and load faster, you can change
