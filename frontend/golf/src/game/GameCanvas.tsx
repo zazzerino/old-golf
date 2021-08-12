@@ -5,7 +5,7 @@ import { cardClicked, ClickedCard, selectClickedCard, selectCurrentGame, selectH
 import { images } from './images';
 import { Game } from './logic';
 import { selectUserId } from '../user';
-import { sendDiscard, sendTakeFromDeck, sendTakeFromTable } from '../websocket/message';
+import { sendDiscard, sendSwapCard, sendTakeFromDeck, sendTakeFromTable } from '../websocket/message';
 
 interface Coord {
   x: number;
@@ -57,25 +57,25 @@ function empty(elem: Element) {
 
 function handleClick(context: Context, card: ClickedCard) {
   const { game, playerId } = context;
+  const state = game.state;
 
   console.log('clicked: ' + card);
 
   if (game.hasStarted) {
     store.dispatch(cardClicked(card));
 
-    if (card === 'deck') {
-      sendTakeFromDeck(game.id, playerId);
-    } else if (card === 'table') {
-      if (game.state === 'PICKUP') {
+    if (state === 'PICKUP') {
+      if (card === 'deck') {
+        sendTakeFromDeck(game.id, playerId);
+      } else if (card === 'table') {
         sendTakeFromTable(game.id, playerId);
       }
-    } else if (card === 'held') {
-      if (game.state === 'DISCARD') {
-        console.log('discarding...');
+    } else if (state === 'DISCARD') {
+      if (card === 'held') {
         sendDiscard(game.id, playerId);
+      } else if (Number.isFinite(card)) { // user clicked hand card
+        sendSwapCard(game.id, playerId, card as number);
       }
-    } else {
-      console.log('hand clicked: ' + card);
     }
   }
 }
@@ -123,10 +123,10 @@ function drawCard(svg: SVGElement, card: string, coord: Coord, opts: DrawCardOpt
   const { onClick, highlight } = opts;
   const img = makeCard(card, coord, onClick);
 
-  if (highlight === true) {
-    const rect = makeHighlight(coord);
-    svg.appendChild(rect);
-  }
+  // if (highlight === true) {
+  //   const rect = makeHighlight(coord);
+  //   svg.appendChild(rect);
+  // }
 
   svg.appendChild(img);
 }
@@ -207,10 +207,10 @@ function makeHand(cards: string[], opts: HandOpts) {
 
     const card = makeCard(cards[i], coord, onClick);
 
-    if (i === clickedCard) {
-      const hlRect = makeHighlight(coord);
-      group.appendChild(hlRect);
-    }
+    // if (i === clickedCard) {
+    //   const hlRect = makeHighlight(coord);
+    //   group.appendChild(hlRect);
+    // }
 
     if (onClick) {
       card.onclick = () => onClick(i as ClickedCard);
