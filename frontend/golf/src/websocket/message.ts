@@ -1,7 +1,7 @@
 import { send } from './websocket';
 
 type MessageType =
-  'LOGIN' | 'CREATE_GAME' | 'START_GAME' | 'TAKE_FROM_DECK' | 'TAKE_FROM_TABLE' | 'SWAP_CARD' | 'DISCARD';
+  'LOGIN' | 'CREATE_GAME' | 'START_GAME' | 'TAKE_FROM_DECK' | 'TAKE_FROM_TABLE' | 'SWAP_CARD' | 'DISCARD' | 'UNCOVER';
 
 export interface Message {
   type: MessageType;
@@ -93,7 +93,7 @@ export interface SwapCardMessage extends Message {
   type: 'SWAP_CARD';
   gameId: number;
   playerId: number;
-  index: number;
+  handIndex: number;
 }
 
 export function swapCardMessage(gameId: number, playerId: number, index: number): SwapCardMessage {
@@ -101,10 +101,30 @@ export function swapCardMessage(gameId: number, playerId: number, index: number)
     type: 'SWAP_CARD',
     gameId,
     playerId,
-    index,
+    handIndex: index,
   }
 }
 
-export function sendSwapCard(gameId: number, playerId: number, index: number) {
-  send(swapCardMessage(gameId, playerId, index));
+export function sendSwapCard(gameId: number, playerId: number, handIndex: number) {
+  send(swapCardMessage(gameId, playerId, handIndex));
+}
+
+export interface UncoverMessage extends Message {
+  type: 'UNCOVER';
+  gameId: number;
+  playerId: number;
+  handIndex: number;
+}
+
+export function uncoverMessage(gameId: number, playerId: number, handIndex: number): UncoverMessage {
+  return {
+    type: 'UNCOVER',
+    gameId,
+    playerId,
+    handIndex,
+  }
+}
+
+export function sendUncover(gameId: number, playerId: number, handIndex: number) {
+  send(uncoverMessage(gameId, playerId, handIndex));
 }

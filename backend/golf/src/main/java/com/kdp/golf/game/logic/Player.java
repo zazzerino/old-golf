@@ -1,20 +1,17 @@
 package com.kdp.golf.game.logic;
 
-import com.kdp.golf.Util;
-import com.kdp.golf.game.Hand;
 import com.kdp.golf.user.User;
 import org.jboss.logging.Logger;
 
 import java.util.*;
 
 public class Player {
-
     Logger log = Logger.getLogger("Player");
 
     public final Long id;
     public final String name;
+    private final Hand hand;
 
-    private Hand hand;
     private Card heldCard;
 
     public static int HAND_SIZE = 6;
@@ -28,22 +25,12 @@ public class Player {
     public Player(Long id, String name) {
         this.id = id;
         this.name = name;
-//        cards = new ArrayList<>();
         this.hand = new Hand();
     }
 
     public static Player from(User user) {
         return new Player(user.id, user.getName());
     }
-
-//    public Player setCards(List<Card> cards) {
-//        this.cards = cards;
-//        return this;
-//    }
-
-//    public List<Card> getCards() {
-//        return cards;
-//    }
 
     public Hand getHand() {
         return hand;
@@ -68,8 +55,13 @@ public class Player {
         return this;
     }
 
-    public long score() {
-        return hand.score();
+    public int getScore() {
+        return hand.isEmpty() ? 0 : hand.score();
+    }
+
+    public int uncoveredCardCount() {
+        var coveredCount = hand.getCoveredCards().size();
+        return Hand.HAND_SIZE - coveredCount;
     }
 
     @Override

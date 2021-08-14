@@ -2,7 +2,6 @@ package com.kdp.golf.game.logic;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.kdp.golf.game.Hand;
 import com.kdp.golf.game.logic.actions.*;
 
 import java.util.*;
@@ -20,13 +19,14 @@ public class Game {
     private Long hostId;
     private State state;
 
-    public final static int HAND_SIZE = 6;
     public final static int DECK_COUNT = 2; // the game is played with two decks
 
     enum State {
         INIT,
+        INIT_UNCOVER,
         PICKUP,
         DISCARD,
+        UNCOVER,
         FINAL_PICKUP,
         FINAL_DISCARD,
         GAME_OVER
@@ -46,13 +46,13 @@ public class Game {
         dealStartingHands();
         dealTableCard();
 
-        state = State.PICKUP;
+        state = State.INIT_UNCOVER;
         return this;
     }
 
     public Game dealStartingHands() {
         for (var player : players.values()) {
-            var cards = deck.deal(HAND_SIZE).orElseThrow();
+            var cards = deck.deal(Hand.HAND_SIZE).orElseThrow();
             player.giveCards(cards);
         }
 
@@ -116,6 +116,25 @@ public class Game {
         return this;
     }
 
+    public Game uncover(Long playerId, int handIndex) {
+        var player = players.get(playerId);
+        var hand = player.getHand();
+
+        if (state == State.INIT_UNCOVER) {
+            var uncoveredCount = player.uncoveredCardCount();
+            if (uncoveredCount < 2) {
+                hand.uncover(handIndex);
+            }
+
+            var allReady = players.values().stream().allMatch(p -> p.uncoveredCardCount() >= 2);
+            if (allReady) {
+                state = State.PICKUP;
+            }
+        }
+
+        return this;
+    }
+
     public Game handleAction(Action action) {
         if (state == State.PICKUP) {
             if (action instanceof TakeFromDeckAction a) {
@@ -127,7 +146,11 @@ public class Game {
             if (action instanceof DiscardAction a) {
                 discard(a.playerId());
             } else if (action instanceof SwapCardAction a) {
-                swapCard(a.playerId(), a.index());
+                swapCard(a.playerId(), a.handIndex());
+            }
+        } else if (state == State.UNCOVER || state == State.INIT_UNCOVER) {
+            if (action instanceof UncoverAction u) {
+                uncover(u.playerId(), u.handIndex());
             }
         } else {
             throw new UnsupportedOperationException();
@@ -179,12 +202,12 @@ public class Game {
         }
     }
 
-    public Map<Long, Long> getScores() {
-        Map<Long, Long> scores = new HashMap<>();
+    public Map<Long, Integer> getScores() {
+        Map<Long, Integer> scores = new HashMap<>();
 
         if (hasStarted()) {
             for (var player : players.values()) {
-                scores.put(player.id, player.score());
+                scores.put(player.id, player.getScore());
             }
         }
 

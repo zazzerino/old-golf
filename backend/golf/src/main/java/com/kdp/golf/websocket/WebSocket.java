@@ -4,10 +4,7 @@ import com.kdp.golf.game.GameController;
 import com.kdp.golf.game.logic.actions.*;
 import com.kdp.golf.user.UserController;
 import com.kdp.golf.websocket.message.*;
-import com.kdp.golf.websocket.message.action.DiscardMessage;
-import com.kdp.golf.websocket.message.action.SwapCardMessage;
-import com.kdp.golf.websocket.message.action.TakeFromDeckMessage;
-import com.kdp.golf.websocket.message.action.TakeFromTableMessage;
+import com.kdp.golf.websocket.message.action.*;
 import com.kdp.golf.websocket.response.Response;
 import com.kdp.golf.websocket.response.ResponseEncoder;
 import org.jboss.logging.Logger;
@@ -68,10 +65,13 @@ public class WebSocket {
             var action = new TakeFromTableAction(t.gameId(), t.playerId());
             gameController.handleAction(session, action);
         } else if (message instanceof SwapCardMessage s) {
-            var action = new SwapCardAction(s.gameId(), s.playerId(), s.index());
+            var action = new SwapCardAction(s.gameId(), s.playerId(), s.handIndex());
             gameController.handleAction(session, action);
         } else if (message instanceof DiscardMessage d) {
             var action = new DiscardAction(d.gameId(), d.playerId());
+            gameController.handleAction(session, action);
+        } else if (message instanceof UncoverMessage u) {
+            var action = new UncoverAction(u.gameId(), u.playerId(), u.handIndex());
             gameController.handleAction(session, action);
         }
     }

@@ -5,7 +5,7 @@ import { cardClicked, ClickedCard, selectClickedCard, selectCurrentGame, selectH
 import { images } from './images';
 import { Game, Hand } from './logic';
 import { selectUserId } from '../user';
-import { sendDiscard, sendSwapCard, sendTakeFromDeck, sendTakeFromTable } from '../websocket/message';
+import { sendDiscard, sendSwapCard, sendTakeFromDeck, sendTakeFromTable, sendUncover } from '../websocket/message';
 
 interface Coord {
   x: number;
@@ -56,6 +56,10 @@ function empty(elem: Element) {
   }
 }
 
+function isHandCard(card: ClickedCard): boolean {
+  return Number.isFinite(card);
+}
+
 function handleClick(context: Context, card: ClickedCard) {
   const { game, playerId } = context;
   const state = game.state;
@@ -74,8 +78,12 @@ function handleClick(context: Context, card: ClickedCard) {
     } else if (state === 'DISCARD') {
       if (card === 'held') {
         sendDiscard(game.id, playerId);
-      } else if (Number.isFinite(card)) { // user clicked a card in their hand
+      } else if (isHandCard(card)) {
         sendSwapCard(game.id, playerId, card as number);
+      }
+    } else if (state === 'UNCOVER' || state === 'INIT_UNCOVER') {
+      if (isHandCard(card)) {
+        sendUncover(game.id, playerId, card as number);
       }
     }
   }
@@ -108,17 +116,17 @@ function makeCard(card: string, coord: Coord, onClick?: (card: ClickedCard) => v
   return img;
 }
 
-function makeHighlight(coord: Coord) {
-  const x = coord.x - hlPadding;
-  const y = coord.y - hlPadding;
-  const hlCoord = { x, y };
+// function makeHighlight(coord: Coord) {
+//   const x = coord.x - hlPadding;
+//   const y = coord.y - hlPadding;
+//   const hlCoord = { x, y };
 
-  const width = cardSize.width + hlPadding * 2;
-  const height = cardSize.height + hlPadding * 2;
-  const hlSize = { width, height };
+//   const width = cardSize.width + hlPadding * 2;
+//   const height = cardSize.height + hlPadding * 2;
+//   const hlSize = { width, height };
 
-  return makeRect(hlCoord, hlSize);
-}
+//   return makeRect(hlCoord, hlSize);
+// }
 
 function drawCard(svg: SVGElement, card: string, coord: Coord, opts: DrawCardOpts = {}) {
   const { onClick, highlight } = opts;
@@ -147,10 +155,11 @@ function drawDeck(context: Context) {
   const { deckCard, hasStarted } = game;
 
   const coord = deckCoord(size, hasStarted);
+  const cardToDraw = showDeckCard && deckCard ? deckCard : '2B';
+
   const highlight = clickedCard === 'deck';
   const onClick = () => handleClick(context, 'deck');
   const opts = { highlight, onClick };
-  const cardToDraw = showDeckCard && deckCard ? deckCard : '2B';
 
   drawCard(svg, cardToDraw, coord, opts);
 }
@@ -165,8 +174,8 @@ function tableCardCoord(size: Size): Coord {
 function drawTableCard(context: Context) {
   const { svg, size, clickedCard, game } = context;
   const tableCard = game.tableCard;
-
   const coord = tableCardCoord(size);
+
   const highlight = clickedCard === 'table';
   const onClick = () => handleClick(context, 'table');
   const opts = { highlight, onClick }
@@ -195,7 +204,7 @@ function drawHeldCard(context: Context) {
   }
 }
 
-function makeHand(cards: string[], opts: HandOpts) {
+function makeHand(cards: string[], coveredCards: number[], opts: HandOpts) {
   const { clickedCard, onClick } = opts;
   const group = document.createElementNS(svgNS, 'g');
 
@@ -205,8 +214,9 @@ function makeHand(cards: string[], opts: HandOpts) {
     const x = cardSize.width * offset + handPadding * offset;
     const y = i < 3 ? 0 : cardSize.height + handPadding;
     const coord = { x, y };
+    const card = coveredCards.includes(i) ? '2B' : cards[i];
 
-    const card = makeCard(cards[i], coord, onClick);
+    const cardElem = makeCard(card, coord, onClick);
 
     // if (i === clickedCard) {
     //   const hlRect = makeHighlight(coord);
@@ -214,10 +224,10 @@ function makeHand(cards: string[], opts: HandOpts) {
     // }
 
     if (onClick) {
-      card.onclick = () => onClick(i as ClickedCard);
+      cardElem.onclick = () => onClick(i as ClickedCard);
     }
 
-    group.appendChild(card);
+    group.appendChild(cardElem);
   }
 
   return group;
@@ -231,7 +241,7 @@ function drawHand(svg: SVGElement, hand: Hand, pos: Position, opts: HandOpts) {
   const midX = canvasWidth / 2 - cardSize.width * 1.5;
   const bottomY = canvasHeight - cardSize.height * 2 - handPadding * 2;
 
-  const handElem = makeHand(hand.cards, opts);
+  const handElem = makeHand(hand.cards, hand.coveredCards, opts);
 
   let x: number;
   let y: number;
@@ -295,15 +305,12 @@ function drawGame(context: Context) {
 
   if (game.hasStarted) {
     drawPlayerHand(context);
-
     if (tableCard) {
       drawTableCard(context);
     }
-
     if (heldCard) {
       drawHeldCard(context);
     }
-
     if (playerScore != null) {
       drawScore(svg, context.size, playerScore);
     }
@@ -317,12 +324,14 @@ export function GameCanvas() {
   const size: Size = { width: 600, height: 500 };
 
   const game = useAppSelector(selectCurrentGame);
+
   const playerId = useAppSelector(selectUserId);
   const playerHand = useAppSelector(selectPlayerHand);
+  const playerScore = useAppSelector(selectPlayerScore);
+
   const heldCard = useAppSelector(selectHeldCard);
   const clickedCard = useAppSelector(selectClickedCard);
   const showDeckCard = useAppSelector(selectShowDeckCard);
-  const playerScore = useAppSelector(selectPlayerScore);
 
   React.useEffect(() => {
     const svg = svgRef.current;

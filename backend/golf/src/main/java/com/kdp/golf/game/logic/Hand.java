@@ -1,24 +1,32 @@
-package com.kdp.golf.game;
+package com.kdp.golf.game.logic;
 
 import com.kdp.golf.Util;
-import com.kdp.golf.game.logic.Card;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public class Hand {
 
     private final List<Card> cards;
+    private final Set<Integer> coveredCards;
 
     public static final int HAND_SIZE = 6;
 
     public Hand() {
         cards = new ArrayList<>();
+        coveredCards = Stream.of(0, 1, 2, 3, 4, 5)
+                .collect(Collectors.toSet());
     }
 
-    public Hand(List<Card> cards) {
+    public Hand(List<Card> cards, Set<Integer> coveredCards) {
         this.cards = cards;
+        this.coveredCards = coveredCards;
+    }
+
+    public Hand uncover(int index) {
+        coveredCards.remove(index);
+        return this;
     }
 
     public Hand add(Card card) {
@@ -33,6 +41,10 @@ public class Hand {
 
     public List<Card> getCards() {
         return cards;
+    }
+
+    public Set<Integer> getCoveredCards() {
+        return coveredCards;
     }
 
     public Card get(int i) {
@@ -60,29 +72,33 @@ public class Hand {
         }
 
         // outer four match
-        if (Objects.equals(ranks.get(0), ranks.get(2))
-                && Objects.equals(ranks.get(0), ranks.get(3))
-                && Objects.equals(ranks.get(0), ranks.get(5))) {
-//            log.info("outer four match");
+        var outerFourRanks = Util.pickItems(ranks, List.of(0, 2, 3, 5));
+        if (Util.allEqual(outerFourRanks)) {
             var middleVals = Util.pickItems(values, List.of(1, 4));
+            if (Util.allEqual(Util.pickItems(ranks, List.of(1, 4)))) {
+                return -20;
+            }
             return Util.sumInt(middleVals) - 20;
         }
 
+        var leftFourRanks = Util.pickItems(ranks, List.of(0, 1, 3, 4));
+        var rightFourRanks = Util.pickItems(ranks, List.of(1, 2, 4, 5));
+
         // left four match
-        if (Objects.equals(ranks.get(0), ranks.get(3))
-                && Objects.equals(ranks.get(0), ranks.get(1))
-                && Objects.equals(ranks.get(1), ranks.get(4))) {
-//            log.info("left four match");
+        if (Util.allEqual(leftFourRanks)) {
             var rightVals = Util.pickItems(values, List.of(2, 5));
+            if (Util.allEqual(Util.pickItems(ranks, List.of(2, 5)))) {
+                return -10;
+            }
             return Util.sumInt(rightVals) - 10;
         }
 
         // right four match
-        if (Objects.equals(ranks.get(1), ranks.get(4))
-                && Objects.equals(ranks.get(1), ranks.get(2))
-                && Objects.equals(ranks.get(2), ranks.get(5))) {
-//            log.info("right four match");
+        if (Util.allEqual(rightFourRanks)) {
             var leftVals = Util.pickItems(values, List.of(0, 3));
+            if (Util.allEqual(Util.pickItems(ranks, List.of(0, 3)))) {
+                return -10;
+            }
             return Util.sumInt(leftVals) - 10;
         }
 
@@ -93,21 +109,18 @@ public class Hand {
         var rightRanks = Util.pickItems(ranks, List.of(2, 5));
 
         if (!Util.allEqual(leftRanks)) {
-//            log.info("left not equal");
-            var vals = leftRanks.stream().map(Card::golfValue).toList();
-            score += Util.sumInt(vals);
+            var leftVals = leftRanks.stream().map(Card::golfValue).toList();
+            score += Util.sumInt(leftVals);
         }
 
         if (!Util.allEqual(middleRanks)) {
-//            log.info("middle not equal");
-            var vals = middleRanks.stream().map(Card::golfValue).toList();
-            score += Util.sumInt(vals);
+            var middleVals = middleRanks.stream().map(Card::golfValue).toList();
+            score += Util.sumInt(middleVals);
         }
 
         if (!Util.allEqual(rightRanks)) {
-//            log.info("right not equal");
-            var vals = rightRanks.stream().map(Card::golfValue).toList();
-            score += Util.sumInt(vals);
+            var rightVals = rightRanks.stream().map(Card::golfValue).toList();
+            score += Util.sumInt(rightVals);
         }
 
         return score;

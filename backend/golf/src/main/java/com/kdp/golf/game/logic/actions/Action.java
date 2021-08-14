@@ -6,7 +6,8 @@ public interface Action {
         TAKE_FROM_DECK,
         TAKE_FROM_TABLE,
         SWAP_CARD,
-        DISCARD
+        DISCARD,
+        UNCOVER
     }
 
     Type type();

@@ -4,7 +4,7 @@ import com.kdp.golf.websocket.message.Message;
 
 public record SwapCardMessage(Long gameId,
                               Long playerId,
-                              int index) implements Message {
+                              int handIndex) implements Message {
 
     public Type type() {
         return Type.SWAP_CARD;

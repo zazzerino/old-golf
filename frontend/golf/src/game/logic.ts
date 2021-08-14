@@ -1,5 +1,6 @@
 export interface Hand {
   cards: string[];
+  coveredCards: number[];
 }
 
 export interface Player {
@@ -7,9 +8,10 @@ export interface Player {
   name: string;
   hand: Hand;
   heldCard: string;
+  score: number;
 }
 
-export type GameState = 'INIT' | 'PICKUP' | 'DISCARD' | 'FINAL_PICKUP' | 'FINAL_DISCARD' | 'GAME_OVER';
+export type GameState = 'INIT' | 'INIT_UNCOVER' | 'PICKUP' | 'DISCARD' | 'UNCOVER' | 'FINAL_PICKUP' | 'FINAL_DISCARD' | 'GAME_OVER';
 
 export interface Game {
   id: number;
@@ -54,13 +56,13 @@ export function takeFromTable(playerId: number): TakeFromTableAction {
 
 export interface SwapCardAction extends Action {
   type: 'SWAP_CARD';
-  index: number;
+  handIndex: number;
 }
 
 export function swapCard(playerId: number, index: number): SwapCardAction {
   return {
     type: 'SWAP_CARD',
     playerId,
-    index,
+    handIndex: index,
   }
 }
