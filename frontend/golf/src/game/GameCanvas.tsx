@@ -47,7 +47,7 @@ const xlinkNS = 'http://www.w3.org/1999/xlink';
 const cardScale = '10%';
 const cardSize: Size = { width: 60, height: 84 };
 
-const hlPadding = 1; // how far highlight rect extends past card
+// const hlPadding = 1; // how far highlight rect extends past card
 const handPadding = 2;
 
 function empty(elem: Element) {
@@ -204,7 +204,7 @@ function drawHeldCard(context: Context) {
   }
 }
 
-function makeHand(cards: string[], coveredCards: number[], opts: HandOpts) {
+function makeHand(cards: string[], uncoveredCards: number[], opts: HandOpts) {
   const { clickedCard, onClick } = opts;
   const group = document.createElementNS(svgNS, 'g');
 
@@ -214,7 +214,7 @@ function makeHand(cards: string[], coveredCards: number[], opts: HandOpts) {
     const x = cardSize.width * offset + handPadding * offset;
     const y = i < 3 ? 0 : cardSize.height + handPadding;
     const coord = { x, y };
-    const card = coveredCards.includes(i) ? '2B' : cards[i];
+    const card = uncoveredCards.includes(i) ? cards[i]: '2B';
 
     const cardElem = makeCard(card, coord, onClick);
 
@@ -241,7 +241,7 @@ function drawHand(svg: SVGElement, hand: Hand, pos: Position, opts: HandOpts) {
   const midX = canvasWidth / 2 - cardSize.width * 1.5;
   const bottomY = canvasHeight - cardSize.height * 2 - handPadding * 2;
 
-  const handElem = makeHand(hand.cards, hand.coveredCards, opts);
+  const handElem = makeHand(hand.cards, hand.uncoveredCards, opts);
 
   let x: number;
   let y: number;

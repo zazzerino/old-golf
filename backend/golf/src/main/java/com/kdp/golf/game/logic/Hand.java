@@ -1,37 +1,44 @@
 package com.kdp.golf.game.logic;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.kdp.golf.Util;
 
 import java.util.*;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 public class Hand {
 
     private final List<Card> cards;
-    private final Set<Integer> coveredCards;
+    private final Set<Integer> uncoveredCards;
 
     public static final int HAND_SIZE = 6;
 
     public Hand() {
         cards = new ArrayList<>();
-        coveredCards = Stream.of(0, 1, 2, 3, 4, 5)
-                .collect(Collectors.toSet());
+        uncoveredCards = new HashSet<>();
     }
 
     public Hand(List<Card> cards, Set<Integer> coveredCards) {
         this.cards = cards;
-        this.coveredCards = coveredCards;
+        this.uncoveredCards = coveredCards;
+    }
+
+    @JsonProperty
+    public List<Card> cards() {
+        return cards;
+    }
+
+    @JsonProperty
+    public Set<Integer> uncoveredCards() {
+        return uncoveredCards;
     }
 
     public Hand uncover(int index) {
-        coveredCards.remove(index);
+        uncoveredCards.add(index);
         return this;
     }
 
-    public Hand add(Card card) {
-        cards.add(card);
-        return this;
+    public boolean allUncovered() {
+        return uncoveredCards.size() == HAND_SIZE;
     }
 
     public Hand addAll(List<Card> cards) {
@@ -39,21 +46,13 @@ public class Hand {
         return this;
     }
 
-    public List<Card> getCards() {
-        return cards;
+    public Card atIndex(int index) {
+        assert(index >= 0 && index < 6);
+        return cards.get(index);
     }
 
-    public Set<Integer> getCoveredCards() {
-        return coveredCards;
-    }
-
-    public Card get(int i) {
-        assert(i >= 0 && i < 6);
-        return cards.get(i);
-    }
-
-    public Hand set(int i, Card card) {
-        cards.set(i, card);
+    public Hand setAtIndex(int index, Card card) {
+        cards.set(index, card);
         return this;
     }
 
@@ -61,7 +60,23 @@ public class Hand {
         return cards.isEmpty();
     }
 
+    @JsonProperty
+    public int visibleScore() {
+        if (cards.isEmpty()) {
+            return 0;
+        }
+
+//        var uncovered = Util.pickItems(cards, un)
+
+        return 0;
+    }
+
+    @JsonProperty
     public int score() {
+        if (cards.isEmpty()) {
+            return 0;
+        }
+
         var ranks = cards.stream().map(Card::rank).toList();
         var values = cards.stream().map(Card::golfValue).toList();
         assert(values.size() == HAND_SIZE);

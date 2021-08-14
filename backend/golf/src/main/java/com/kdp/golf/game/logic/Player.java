@@ -45,11 +45,6 @@ public class Player {
         return this;
     }
 
-    public Player giveCard(Card card) {
-//        cards.add(card);
-        return this;
-    }
-
     public Player giveCards(List<Card> cards) {
         hand.addAll(cards);
         return this;
@@ -59,10 +54,20 @@ public class Player {
         return hand.isEmpty() ? 0 : hand.score();
     }
 
-    public int uncoveredCardCount() {
-        var coveredCount = hand.getCoveredCards().size();
-        return Hand.HAND_SIZE - coveredCount;
+    public int visibleScore() {
+//        if (hand.isEmpty()) {
+//            return 0;
+//        }
+//
+//        var covered = hand.getCoveredCards();
+        return 0;
     }
+
+//    public int uncoveredCardCount() {
+//        return
+//        var coveredCount = hand.uncoveredCards().size();
+//        return Hand.HAND_SIZE - coveredCount;
+//    }
 
     @Override
     public String toString() {

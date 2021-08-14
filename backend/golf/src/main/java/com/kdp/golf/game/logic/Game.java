@@ -93,7 +93,7 @@ public class Game {
         tableCards.push(card);
         player.setHeldCard(null);
 
-        state = State.PICKUP;
+        state = State.UNCOVER;
         turn++;
 
         return this;
@@ -104,13 +104,14 @@ public class Game {
         var hand = player.getHand();
         var heldCard = player.getHeldCard().orElseThrow();
 
-        var cardAtIndex = hand.get(index);
+        var cardAtIndex = hand.atIndex(index);
         tableCards.push(cardAtIndex);
 
-        hand.set(index, heldCard);
+        hand.setAtIndex(index, heldCard);
+        hand.uncover(index);
         player.setHeldCard(null);
 
-        state = State.PICKUP;
+        state = State.UNCOVER;
         turn++;
 
         return this;
@@ -121,15 +122,22 @@ public class Game {
         var hand = player.getHand();
 
         if (state == State.INIT_UNCOVER) {
-            var uncoveredCount = player.uncoveredCardCount();
+            var uncoveredCount = player.getHand().uncoveredCards().size();
             if (uncoveredCount < 2) {
                 hand.uncover(handIndex);
             }
 
-            var allReady = players.values().stream().allMatch(p -> p.uncoveredCardCount() >= 2);
+            var allReady = players.values().stream().allMatch(p -> p.getHand().uncoveredCards().size() == 2);
             if (allReady) {
                 state = State.PICKUP;
             }
+        } else if (state == State.UNCOVER) {
+            var allUncovered = players.values()
+                    .stream()
+                    .allMatch(p -> p.getHand().allUncovered());
+
+            hand.uncover(handIndex);
+            state = allUncovered ? State.FINAL_PICKUP : State.PICKUP;
         }
 
         return this;

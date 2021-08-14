@@ -1,6 +1,6 @@
 export interface Hand {
   cards: string[];
-  coveredCards: number[];
+  uncoveredCards: number[];
 }
 
 export interface Player {
