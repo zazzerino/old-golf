@@ -2,6 +2,7 @@ package com.kdp.golf.game.logic;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.kdp.golf.game.Hand;
 import com.kdp.golf.game.logic.actions.*;
 
 import java.util.*;
@@ -64,8 +65,8 @@ public class Game {
         return this;
     }
 
-    public List<Card> getPlayerHand(Long playerId) {
-        return players.get(playerId).getCards();
+    public Hand getPlayerHand(Long playerId) {
+        return players.get(playerId).getHand();
     }
 
     public Game takeFromDeck(Long playerId) {
@@ -100,7 +101,7 @@ public class Game {
 
     public Game swapCard(Long playerId, int index) {
         var player = players.get(playerId);
-        var hand = player.getCards();
+        var hand = player.getHand();
         var heldCard = player.getHeldCard().orElseThrow();
 
         var cardAtIndex = hand.get(index);
@@ -135,8 +136,7 @@ public class Game {
         return this;
     }
 
-    @JsonProperty
-    public Long playerTurn() {
+    public Long getPlayerTurn() {
         var index = turn % players.size();
         return playerOrder.get(index);
     }
@@ -179,43 +179,12 @@ public class Game {
         }
     }
 
-    private int sum(List<Integer> ns) {
-        return ns.stream().mapToInt(Integer::intValue).sum();
-    }
-
-    private <T> List<T> pickItems(List<Integer> itemsToPick, List<T> list) {
-        List<T> result = new ArrayList<>();
-
-        for (var i : itemsToPick) {
-            result.add(list.get(i));
-        }
-
-        return result;
-    }
-
-    public int score(Long playerId) {
-        var cards = players.get(playerId).getCards();
-        var values = cards.stream().map(Card::golfValue).toList();
-
-        assert(values.size() == HAND_SIZE);
-
-        if (Objects.equals(values.get(0), values.get(3))) {
-            return sum(pickItems(List.of(1, 2, 4, 5), values));
-        } else if (Objects.equals(values.get(1), values.get(4))) {
-            return sum(pickItems(List.of(0, 2, 3, 5), values));
-        } else if (Objects.equals(values.get(2), values.get(5))) {
-            return sum(pickItems(List.of(0, 1, 3, 4), values));
-        }
-
-        return sum(values);
-    }
-
-    public Map<Long, Integer> getScores() {
-        Map<Long, Integer> scores = new HashMap<>();
+    public Map<Long, Long> getScores() {
+        Map<Long, Long> scores = new HashMap<>();
 
         if (hasStarted()) {
             for (var player : players.values()) {
-                scores.put(player.id, score(player.id));
+                scores.put(player.id, player.score());
             }
         }
 

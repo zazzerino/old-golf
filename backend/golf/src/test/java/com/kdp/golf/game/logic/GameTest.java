@@ -36,7 +36,7 @@ class GameTest {
 
         var hand = game.getPlayerHand(0L);
         assertFalse(hand.isEmpty());
-        assertEquals(6, hand.size());
+        assertEquals(6, hand.getCards().size());
     }
 
     @Test

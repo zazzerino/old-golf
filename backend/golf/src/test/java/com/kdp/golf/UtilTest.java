@@ -12,7 +12,7 @@ class UtilTest {
 
     @Test
     void sum() {
-        var n = Util.sum(List.of(1, 2, 3, 4));
+        var n = Util.sumInt(List.of(1, 2, 3, 4));
         assertEquals(10, n);
     }
 

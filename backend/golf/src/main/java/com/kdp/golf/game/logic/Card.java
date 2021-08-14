@@ -50,7 +50,7 @@ public record Card(Rank rank,
         return name();
     }
 
-    enum Rank {
+    public enum Rank {
         ACE("A"),
         TWO("2"),
         THREE("3"),
@@ -78,7 +78,7 @@ public record Card(Rank rank,
         }
     }
 
-    enum Suit {
+    public enum Suit {
         CLUBS("C"),
         DIAMONDS("D"),
         HEARTS("H"),

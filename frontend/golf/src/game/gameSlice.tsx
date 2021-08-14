@@ -55,7 +55,7 @@ export const selectPlayer = (state: RootState) => {
 
 export const selectPlayerHand = createSelector(
   selectPlayer,
-  player => player?.cards
+  player => player?.hand
 );
 
 export const selectHeldCard = createSelector(

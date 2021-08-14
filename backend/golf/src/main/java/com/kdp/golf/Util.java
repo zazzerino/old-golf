@@ -5,9 +5,9 @@ import java.util.List;
 
 public class Util {
 
-    public static <N extends Number> long sum(List<N> ns) {
+    public static <N extends Number> int sumInt(List<N> ns) {
         return ns.stream()
-                .mapToLong(Number::longValue)
+                .mapToInt(Number::intValue)
                 .sum();
     }
 

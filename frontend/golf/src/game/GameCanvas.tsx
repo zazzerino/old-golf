@@ -3,7 +3,7 @@ import { useAppSelector } from '../app/hooks';
 import { store } from '../app/store';
 import { cardClicked, ClickedCard, selectClickedCard, selectCurrentGame, selectHeldCard, selectPlayerHand, selectPlayerScore, selectShowDeckCard } from './gameSlice';
 import { images } from './images';
-import { Game } from './logic';
+import { Game, Hand } from './logic';
 import { selectUserId } from '../user';
 import { sendDiscard, sendSwapCard, sendTakeFromDeck, sendTakeFromTable } from '../websocket/message';
 
@@ -36,7 +36,7 @@ interface Context {
   game: Game;
   showDeckCard: boolean;
   clickedCard: ClickedCard | null;
-  playerHand: string[] | undefined;
+  playerHand: Hand | undefined;
   heldCard: string | undefined;
   playerScore: number | undefined;
 }
@@ -223,7 +223,7 @@ function makeHand(cards: string[], opts: HandOpts) {
   return group;
 }
 
-function drawHand(svg: SVGElement, cards: string[], pos: Position, opts: HandOpts) {
+function drawHand(svg: SVGElement, hand: Hand, pos: Position, opts: HandOpts) {
   const boundingRect = svg.getBoundingClientRect();
   const canvasWidth = boundingRect.width;
   const canvasHeight = boundingRect.height;
@@ -231,23 +231,23 @@ function drawHand(svg: SVGElement, cards: string[], pos: Position, opts: HandOpt
   const midX = canvasWidth / 2 - cardSize.width * 1.5;
   const bottomY = canvasHeight - cardSize.height * 2 - handPadding * 2;
 
-  const hand = makeHand(cards, opts);
+  const handElem = makeHand(hand.cards, opts);
 
   let x: number;
   let y: number;
 
   switch (pos) {
     case 'bottom':
-      hand.setAttribute('transform', `translate(${midX}, ${bottomY})`);
+      handElem.setAttribute('transform', `translate(${midX}, ${bottomY})`);
       break;
     case 'top':
       x = midX + cardSize.width * 3 + handPadding * 2;
       y = cardSize.height * 2 + handPadding * 2;
-      hand.setAttribute('transform', `translate(${x}, ${y}), rotate(180)`);
+      handElem.setAttribute('transform', `translate(${x}, ${y}), rotate(180)`);
       break;
   }
 
-  svg.appendChild(hand);
+  svg.appendChild(handElem);
 }
 
 function drawPlayerHand(context: Context) {
@@ -304,7 +304,7 @@ function drawGame(context: Context) {
       drawHeldCard(context);
     }
 
-    if (playerScore) {
+    if (playerScore != null) {
       drawScore(svg, context.size, playerScore);
     }
   }
