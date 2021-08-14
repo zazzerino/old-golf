@@ -2,11 +2,18 @@ package com.kdp.golf.game.logic;
 
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 
+import java.util.Arrays;
+import java.util.Optional;
+
 @JsonSerialize(using = CardSerializer.class)
 public record Card(Rank rank,
                    Suit suit) {
 
     public int golfValue() {
+        return Card.golfValue(rank);
+    }
+
+    public static int golfValue(Rank rank) {
         return switch (rank) {
             case KING -> 0;
             case ACE -> 1;
@@ -24,6 +31,18 @@ public record Card(Rank rank,
 
     public String name() {
         return rank.value + suit.value;
+    }
+
+    public static Card from(String s) {
+        assert(s.length() == 2);
+
+        var chars = s.split("(?!^)");
+        assert(chars.length == 2);
+
+        var rank = Rank.from(chars[0]).orElseThrow();
+        var suit = Suit.from(chars[1]).orElseThrow();
+
+        return new Card(rank, suit);
     }
 
     @Override
@@ -46,10 +65,16 @@ public record Card(Rank rank,
         QUEEN("Q"),
         KING("K");
 
-        private String value;
+        public final String value;
 
         Rank(String value) {
             this.value = value;
+        }
+
+        public static Optional<Rank> from(String s) {
+            return Arrays.stream(values())
+                    .filter(rank -> rank.value.equals(s))
+                    .findAny();
         }
     }
 
@@ -59,10 +84,16 @@ public record Card(Rank rank,
         HEARTS("H"),
         SPADES("S");
 
-        private String value;
+        public final String value;
 
         Suit(String value) {
             this.value = value;
+        }
+
+        public static Optional<Suit> from(String s) {
+            return Arrays.stream(values())
+                    .filter(suit -> suit.value.equals(s))
+                    .findAny();
         }
     }
 }

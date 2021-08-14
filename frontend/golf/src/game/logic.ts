@@ -16,6 +16,7 @@ export interface Game {
   tableCard: string | null;
   tableCards: string[];
   deckCard: string | null;
+  scores: Record<number, number>;
 }
 
 export type ActionType = 'TAKE_FROM_DECK' | 'TAKE_FROM_TABLE' | 'SWAP_CARD' | 'DISCARD';

@@ -116,20 +116,16 @@ public class Game {
     }
 
     public Game handleAction(Action action) {
-        if (action instanceof TakeFromDeckAction a) {
-            if (state == State.PICKUP) {
+        if (state == State.PICKUP) {
+            if (action instanceof TakeFromDeckAction a) {
                 takeFromDeck(a.playerId());
-            }
-        } else if (action instanceof TakeFromTableAction a) {
-            if (state == State.PICKUP) {
+            } else if (action instanceof TakeFromTableAction a) {
                 takeFromTable(a.playerId());
             }
-        } else if (action instanceof DiscardAction a) {
-            if (state == State.DISCARD) {
+        } else if (state == State.DISCARD) {
+            if (action instanceof DiscardAction a) {
                 discard(a.playerId());
-            }
-        } else if (action instanceof SwapCardAction a) {
-            if (state == State.DISCARD) {
+            } else if (action instanceof SwapCardAction a) {
                 swapCard(a.playerId(), a.index());
             }
         } else {
@@ -150,6 +146,7 @@ public class Game {
         playerOrder.add(player.id);
         return this;
     }
+
 
     public Game removePlayer(Player player) {
         players.remove(player.id);
@@ -180,6 +177,49 @@ public class Game {
         } catch (EmptyStackException e) {
             return Optional.empty();
         }
+    }
+
+    private int sum(List<Integer> ns) {
+        return ns.stream().mapToInt(Integer::intValue).sum();
+    }
+
+    private <T> List<T> pickItems(List<Integer> itemsToPick, List<T> list) {
+        List<T> result = new ArrayList<>();
+
+        for (var i : itemsToPick) {
+            result.add(list.get(i));
+        }
+
+        return result;
+    }
+
+    public int score(Long playerId) {
+        var cards = players.get(playerId).getCards();
+        var values = cards.stream().map(Card::golfValue).toList();
+
+        assert(values.size() == HAND_SIZE);
+
+        if (Objects.equals(values.get(0), values.get(3))) {
+            return sum(pickItems(List.of(1, 2, 4, 5), values));
+        } else if (Objects.equals(values.get(1), values.get(4))) {
+            return sum(pickItems(List.of(0, 2, 3, 5), values));
+        } else if (Objects.equals(values.get(2), values.get(5))) {
+            return sum(pickItems(List.of(0, 1, 3, 4), values));
+        }
+
+        return sum(values);
+    }
+
+    public Map<Long, Integer> getScores() {
+        Map<Long, Integer> scores = new HashMap<>();
+
+        if (hasStarted()) {
+            for (var player : players.values()) {
+                scores.put(player.id, score(player.id));
+            }
+        }
+
+        return scores;
     }
 
     public Optional<Card> getDeckCard() {

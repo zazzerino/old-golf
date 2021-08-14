@@ -1,6 +1,5 @@
 package com.kdp.golf.websocket.message;
 
-import com.kdp.golf.game.logic.actions.Action;
 import com.kdp.golf.websocket.message.action.DiscardMessage;
 import com.kdp.golf.websocket.message.action.SwapCardMessage;
 import com.kdp.golf.websocket.message.action.TakeFromDeckMessage;

@@ -53,14 +53,26 @@ export const selectPlayer = (state: RootState) => {
   return players?.find(p => p.id === playerId);
 }
 
-export const selectPlayerHand =  createSelector(
+export const selectPlayerHand = createSelector(
   selectPlayer,
-  player => player?.cards === undefined ? null : player.cards
+  player => player?.cards
 );
 
 export const selectHeldCard = createSelector(
   selectPlayer,
   player => player?.heldCard
+);
+
+export const selectScores = (state: RootState) => state.game.game?.scores;
+
+export const selectPlayerScore = createSelector(
+  selectPlayer,
+  selectScores,
+  (player, scores) => {
+    if (player && scores) {
+      return scores[player.id];
+    }
+  }
 );
 
 export const { setGames, setGame, cardClicked } = gameSlice.actions;

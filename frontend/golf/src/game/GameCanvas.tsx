@@ -1,7 +1,7 @@
 import React from 'react';
 import { useAppSelector } from '../app/hooks';
 import { store } from '../app/store';
-import { cardClicked, ClickedCard, selectClickedCard, selectCurrentGame, selectHeldCard, selectPlayerHand, selectShowDeckCard } from './gameSlice';
+import { cardClicked, ClickedCard, selectClickedCard, selectCurrentGame, selectHeldCard, selectPlayerHand, selectPlayerScore, selectShowDeckCard } from './gameSlice';
 import { images } from './images';
 import { Game } from './logic';
 import { selectUserId } from '../user';
@@ -27,7 +27,7 @@ interface DrawCardOpts {
   onClick?: (card: ClickedCard) => void;
 }
 
-type HandPos = 'bottom' | 'left' | 'top' | 'right';
+type Position = 'bottom' | 'left' | 'top' | 'right';
 
 interface Context {
   playerId: number;
@@ -36,8 +36,9 @@ interface Context {
   game: Game;
   showDeckCard: boolean;
   clickedCard: ClickedCard | null;
-  playerHand: string[] | null;
+  playerHand: string[] | undefined;
   heldCard: string | undefined;
+  playerScore: number | undefined;
 }
 
 const svgNS = 'http://www.w3.org/2000/svg';
@@ -62,7 +63,7 @@ function handleClick(context: Context, card: ClickedCard) {
   console.log('clicked: ' + card);
 
   if (game.hasStarted) {
-    store.dispatch(cardClicked(card));
+    store.dispatch(cardClicked(card)); // TODO: change this to a thunk
 
     if (state === 'PICKUP') {
       if (card === 'deck') {
@@ -73,7 +74,7 @@ function handleClick(context: Context, card: ClickedCard) {
     } else if (state === 'DISCARD') {
       if (card === 'held') {
         sendDiscard(game.id, playerId);
-      } else if (Number.isFinite(card)) { // user clicked hand card
+      } else if (Number.isFinite(card)) { // user clicked a card in their hand
         sendSwapCard(game.id, playerId, card as number);
       }
     }
@@ -222,7 +223,7 @@ function makeHand(cards: string[], opts: HandOpts) {
   return group;
 }
 
-function drawHand(svg: SVGElement, cards: string[], pos: HandPos, opts: HandOpts) {
+function drawHand(svg: SVGElement, cards: string[], pos: Position, opts: HandOpts) {
   const boundingRect = svg.getBoundingClientRect();
   const canvasWidth = boundingRect.width;
   const canvasHeight = boundingRect.height;
@@ -260,8 +261,34 @@ function drawPlayerHand(context: Context) {
   }
 }
 
+function makeText(coord: Coord, text: string, color = 'gray') {
+  const elem = document.createElementNS(svgNS, 'text');
+  
+  elem.textContent = text;
+  elem.setAttribute('x', coord.x.toString());
+  elem.setAttribute('y', coord.y.toString());
+  elem.setAttribute('fill', color);
+
+  return elem;
+}
+
+function scoreCoord(size: Size): Coord {
+  const x = size.width / 7;
+  const y = size.height - cardSize.height * 1;
+
+  return { x, y }
+}
+
+function drawScore(svg: SVGElement, size: Size, score: number) {
+  const coord = scoreCoord(size);
+  const text = 'score: ' + score;
+  const elem = makeText(coord, text);
+
+  svg.appendChild(elem);
+}
+
 function drawGame(context: Context) {
-  const { game, heldCard } = context;
+  const { game, heldCard, svg, playerScore } = context;
   const tableCard = game.tableCard;
 
   drawDeck(context);
@@ -275,6 +302,10 @@ function drawGame(context: Context) {
 
     if (heldCard) {
       drawHeldCard(context);
+    }
+
+    if (playerScore) {
+      drawScore(svg, context.size, playerScore);
     }
   }
 }
@@ -291,12 +322,13 @@ export function GameCanvas() {
   const heldCard = useAppSelector(selectHeldCard);
   const clickedCard = useAppSelector(selectClickedCard);
   const showDeckCard = useAppSelector(selectShowDeckCard);
+  const playerScore = useAppSelector(selectPlayerScore);
 
   React.useEffect(() => {
     const svg = svgRef.current;
 
     if (svg && game && playerId) {
-      const context: Context = { playerId, game, svg, size, clickedCard, showDeckCard, playerHand, heldCard };
+      const context: Context = { playerId, game, svg, size, clickedCard, showDeckCard, playerHand, heldCard, playerScore };
       drawGame(context);
     }
 
