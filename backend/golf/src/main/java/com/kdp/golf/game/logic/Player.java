@@ -55,16 +55,11 @@ public class Player {
 
     @JsonProperty
     public int visibleScore() {
-//        if (hand.isEmpty()) {
-//            return 0;
-//        }
-//
-//        var covered = hand.getCoveredCards();
-        return 0;
+        return hand.visibleScore();
     }
 
     public int uncoveredCardCount() {
-        return hand.uncoveredCards().size();
+        return hand.uncoveredIndices().size();
     }
 
     @Override

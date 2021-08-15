@@ -103,6 +103,7 @@ public class Game {
         return state.handleEvent(this, event);
     }
 
+    @JsonProperty
     public Long playerTurn() {
         var index = turn % players.size();
         return playerOrder.get(index);

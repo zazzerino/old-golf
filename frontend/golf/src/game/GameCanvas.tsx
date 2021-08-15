@@ -266,7 +266,7 @@ function drawHand(svg: SVGElement, hand: Hand, pos: Position, opts: HandOpts) {
   const midX = canvasWidth / 2 - cardSize.width * 1.5;
   const bottomY = canvasHeight - cardSize.height * 2 - handPadding * 2;
 
-  const handElem = makeHand(hand.cards, hand.uncoveredCards, opts);
+  const handElem = makeHand(hand.cards, hand.uncoveredIndices, opts);
 
   let x: number;
   let y: number;

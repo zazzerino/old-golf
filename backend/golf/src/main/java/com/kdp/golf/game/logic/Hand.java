@@ -8,18 +8,18 @@ import java.util.*;
 public class Hand {
 
     private final List<Card> cards;
-    private final Set<Integer> uncoveredCards;
+    private final Set<Integer> uncoveredIndices;
 
     public static final int HAND_SIZE = 6;
 
     public Hand() {
         cards = new ArrayList<>();
-        uncoveredCards = new HashSet<>();
+        uncoveredIndices = new HashSet<>();
     }
 
     public Hand(List<Card> cards, Set<Integer> coveredCards) {
         this.cards = cards;
-        this.uncoveredCards = coveredCards;
+        this.uncoveredIndices = coveredCards;
     }
 
     @JsonProperty
@@ -28,17 +28,17 @@ public class Hand {
     }
 
     @JsonProperty
-    public Set<Integer> uncoveredCards() {
-        return uncoveredCards;
+    public Set<Integer> uncoveredIndices() {
+        return uncoveredIndices;
     }
 
     public Hand uncover(int index) {
-        uncoveredCards.add(index);
+        uncoveredIndices.add(index);
         return this;
     }
 
     public boolean allUncovered() {
-        return uncoveredCards.size() == HAND_SIZE;
+        return uncoveredIndices.size() == HAND_SIZE;
     }
 
     public Hand addAll(List<Card> cards) {
@@ -62,13 +62,65 @@ public class Hand {
 
     @JsonProperty
     public int visibleScore() {
-//        if (cards.isEmpty()) {
-//            return 0;
-//        }
+        var score = 0;
 
-//        var uncovered = Util.pickItems(cards, un)
+        if (cards.isEmpty()) {
+            return score;
+        }
 
-        return 0;
+        var ranks = cards.stream().map(Card::rank).toList();
+        Map<Integer, Card> uncoveredCards = new HashMap<>();
+
+        for (var i : uncoveredIndices) {
+            var card = cards.get(i);
+            uncoveredCards.put(i, card);
+        }
+
+        // check all six
+
+        // check outer four
+        var outerIndices = List.of(0, 2, 3, 5);
+
+        if (uncoveredCards.keySet().containsAll(outerIndices)
+                && Util.indicesEqual(ranks, outerIndices)) {
+            score -= 50;
+            Util.removeKeys(uncoveredCards, outerIndices);
+        }
+
+        // check left four
+
+        // check right four
+
+        // check left column
+        var leftCol = List.of(0, 3);
+
+        if (uncoveredCards.keySet().containsAll(leftCol)
+            && Util.indicesEqual(ranks, leftCol)) {
+            Util.removeKeys(uncoveredCards, leftCol);
+        }
+
+        // check middle column
+        var middleCol = List.of(1, 4);
+
+        if (uncoveredCards.keySet().containsAll(middleCol)
+                && Util.indicesEqual(ranks, middleCol)) {
+            Util.removeKeys(uncoveredCards, middleCol);
+        }
+
+        // check right column
+        var rightCol = List.of(2, 5);
+
+        if (uncoveredCards.keySet().containsAll(rightCol)
+                && Util.indicesEqual(ranks, rightCol)) {
+            Util.removeKeys(uncoveredCards, rightCol);
+        }
+
+        // sum remaining cards
+        for (var card : uncoveredCards.values()) {
+            score += card.golfValue();
+        }
+
+        return score;
     }
 
     @JsonProperty
@@ -145,7 +197,7 @@ public class Hand {
     public String toString() {
         return "Hand{" +
                 "cards=" + cards +
-                ", uncoveredCards=" + uncoveredCards +
+                ", uncoveredCards=" + uncoveredIndices +
                 '}';
     }
 }

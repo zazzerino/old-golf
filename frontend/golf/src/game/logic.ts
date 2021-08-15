@@ -1,6 +1,6 @@
 export interface Hand {
   cards: string[];
-  uncoveredCards: number[];
+  uncoveredIndices: number[];
 }
 
 export interface Player {
@@ -9,6 +9,7 @@ export interface Player {
   hand: Hand;
   heldCard: string;
   score: number;
+  visibleScore: number;
 }
 
 export type GameState =

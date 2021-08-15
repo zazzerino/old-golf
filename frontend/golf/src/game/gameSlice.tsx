@@ -63,17 +63,22 @@ export const selectHeldCard = createSelector(
   player => player?.heldCard
 );
 
-export const selectScores = (state: RootState) => state.game.game?.scores;
-
 export const selectPlayerScore = createSelector(
   selectPlayer,
-  selectScores,
-  (player, scores) => {
-    if (player && scores) {
-      return scores[player.id];
-    }
-  }
+  player => player?.visibleScore
 );
+
+// export const selectScores = (state: RootState) => state.game.game?.scores;
+
+// export const selectPlayerScore = createSelector(
+//   selectPlayer,
+//   selectScores,
+//   (player, scores) => {
+//     if (player && scores) {
+//       return scores[player.id];
+//     }
+//   }
+// );
 
 export const { setGames, setGame, cardClicked } = gameSlice.actions;
 export const gameReducer = gameSlice.reducer;
