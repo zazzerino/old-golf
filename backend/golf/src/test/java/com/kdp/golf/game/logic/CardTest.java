@@ -8,17 +8,17 @@ import static org.junit.jupiter.api.Assertions.*;
 
 @QuarkusTest
 class CardTest {
-
     Logger log = Logger.getLogger("CardTest");
 
     @Test
     void from() {
         var rank = Card.Rank.from("2");
-        var suit = Card.Suit.from("D");
-        var card = Card.from("JH");
+        assertEquals(Card.Rank.TWO, rank.orElseThrow());
 
-        log.info(rank);
-        log.info(suit);
-        log.info(card);
+        var suit = Card.Suit.from("D");
+        assertEquals(Card.Suit.DIAMONDS, suit.orElseThrow());
+
+        var card = Card.from("JH");
+        assertEquals(new Card(Card.Rank.JACK, Card.Suit.HEARTS), card);
     }
 }

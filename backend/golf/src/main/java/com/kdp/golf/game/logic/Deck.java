@@ -8,7 +8,7 @@ import java.util.Optional;
 
 public class Deck {
 
-    private List<Card> cards;
+    private final List<Card> cards;
 
     public Deck() {
         cards = cardList();
@@ -28,7 +28,7 @@ public class Deck {
         this.cards = cards;
     }
 
-    private List<Card> cardList() {
+    public static List<Card> cardList() {
         List<Card> cards = new ArrayList<>();
 
         for (var suit : Card.Suit.values()) {
@@ -73,16 +73,6 @@ public class Deck {
         }
 
         return Optional.of(dealtCards);
-    }
-
-    public Deck addCards(List<Card> cards) {
-        this.cards.addAll(cards);
-        return this;
-    }
-
-    public Deck reset() {
-        cards = cardList();
-        return this;
     }
 
     @Override

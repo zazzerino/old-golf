@@ -12,5 +12,6 @@ public interface Message {
         TAKE_FROM_DECK,
         TAKE_FROM_TABLE,
         UNCOVER,
+        EVENT,
     }
 }

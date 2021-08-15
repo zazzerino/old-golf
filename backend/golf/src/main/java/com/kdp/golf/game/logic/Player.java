@@ -1,20 +1,16 @@
 package com.kdp.golf.game.logic;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.kdp.golf.user.User;
-import org.jboss.logging.Logger;
 
 import java.util.*;
 
 public class Player {
-    Logger log = Logger.getLogger("Player");
 
     public final Long id;
     public final String name;
     private final Hand hand;
-
     private Card heldCard;
-
-    public static int HAND_SIZE = 6;
 
     public Player(Long id, String name, Hand hand) {
         this.id = id;
@@ -32,11 +28,13 @@ public class Player {
         return new Player(user.id, user.getName());
     }
 
-    public Hand getHand() {
+    @JsonProperty
+    public Hand hand() {
         return hand;
     }
 
-    public Optional<Card> getHeldCard() {
+    @JsonProperty
+    public Optional<Card> heldCard() {
         return Optional.ofNullable(heldCard);
     }
 
@@ -50,10 +48,12 @@ public class Player {
         return this;
     }
 
-    public int getScore() {
+    @JsonProperty
+    public int score() {
         return hand.isEmpty() ? 0 : hand.score();
     }
 
+    @JsonProperty
     public int visibleScore() {
 //        if (hand.isEmpty()) {
 //            return 0;

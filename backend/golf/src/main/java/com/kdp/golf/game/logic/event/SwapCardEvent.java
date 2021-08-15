@@ -4,7 +4,7 @@ public record SwapCardEvent(Long gameId,
                             Long playerId,
                             int handIndex) implements Event {
 
-    public Type type() {
-        return Type.SWAP_CARD;
+    public EventType type() {
+        return EventType.SWAP_CARD;
     }
 }

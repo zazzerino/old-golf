@@ -12,8 +12,11 @@ class DeckTest {
 
     @Test
     void create() {
-        var deck = new Deck();
-        assertEquals(52, deck.getCards().size());
+        var singleDeck = new Deck();
+        assertEquals(52, singleDeck.getCards().size());
+
+        var doubleDeck = new Deck(2);
+        assertEquals(104, doubleDeck.getCards().size());
     }
 
     @Test
@@ -32,7 +35,6 @@ class DeckTest {
 
     @Test
     void createMultiple() {
-        var deck = new Deck(2);
-        assertEquals(104, deck.getCards().size());
+
     }
 }

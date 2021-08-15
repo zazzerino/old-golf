@@ -69,7 +69,7 @@ public class GameService {
         return game;
     }
 
-    public Game handleAction(Event event) {
+    public Game handleEvent(Event event) {
         var game = gameDao
                 .getById(event.gameId())
                 .orElseThrow();

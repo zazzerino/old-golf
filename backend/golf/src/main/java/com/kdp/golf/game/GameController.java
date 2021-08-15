@@ -43,9 +43,10 @@ public class GameController {
         webSocket.sendToSession(session, response);
     }
 
-    public void handleAction(Session session, Event event) {
-        var game = gameService.handleAction(event);
-        log.info("game action handled: " + game);
+    public void handleEvent(Session session, Event event) {
+        log.info("handling event: " + event);
+        var game = gameService.handleEvent(event);
+        log.info("event handled: " + game);
 
         var response = new GameResponse(game);
         webSocket.sendToSession(session, response);

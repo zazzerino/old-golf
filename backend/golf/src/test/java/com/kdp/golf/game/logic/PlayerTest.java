@@ -10,7 +10,6 @@ import static org.junit.jupiter.api.Assertions.*;
 
 @QuarkusTest
 class PlayerTest {
-
     Logger log = Logger.getLogger("PlayerTest");
 
     @Test

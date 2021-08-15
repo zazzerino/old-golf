@@ -4,7 +4,7 @@ public record UncoverEvent(Long gameId,
                            Long playerId,
                            int handIndex) implements Event {
 
-    public Type type() {
-        return Type.UNCOVER;
+    public EventType type() {
+        return EventType.UNCOVER;
     }
 }
