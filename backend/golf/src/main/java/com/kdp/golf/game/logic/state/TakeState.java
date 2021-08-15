@@ -25,13 +25,14 @@ public class TakeState implements GameState {
     @Override
     public Game handleEvent(Game game, Event event) {
         var playerId = event.playerId();
-        var isPlayersTurn = game.playerTurn().equals(playerId);
 
-        if (isPlayersTurn) {
+        if (game.isPlayersTurn(playerId)) {
             if (event instanceof TakeFromDeckEvent) {
                 game.takeFromDeck(playerId);
+                game.setState(DiscardState.instance());
             } else if (event instanceof TakeFromTableEvent) {
                 game.takeFromTable(playerId);
+                game.setState(DiscardState.instance());
             }
         }
 

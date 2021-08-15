@@ -65,25 +65,21 @@ public class Game {
     }
 
     public Game takeFromTable(Long playerId) {
-        var player = players.get(playerId);
+        var player = getPlayer(playerId).orElseThrow();
         player.setHeldCard(tableCards.pop());
         return this;
     }
 
     public Game discard(Long playerId) {
-        var player = players.get(playerId);
+        var player = getPlayer(playerId).orElseThrow();
         var card = player.heldCard().orElseThrow();
         tableCards.push(card);
         player.setHeldCard(null);
-
-//        state = State.UNCOVER;
-        turn++;
-
         return this;
     }
 
     public Game swapCard(Long playerId, int index) {
-        var player = players.get(playerId);
+        var player = getPlayer(playerId).orElseThrow();
         var hand = player.hand();
         var heldCard = player.heldCard().orElseThrow();
 
@@ -93,9 +89,6 @@ public class Game {
         hand.setCardAtIndex(index, heldCard);
         hand.uncover(index);
         player.setHeldCard(null);
-
-//        state = State.UNCOVER;
-        turn++;
 
         return this;
     }
@@ -125,6 +118,10 @@ public class Game {
         players.remove(player.id);
         playerOrder.remove(player.id);
         return this;
+    }
+
+    public boolean isPlayersTurn(Long playerId) {
+        return playerTurn().equals(playerId);
     }
 
     public Optional<Player> getPlayer(Long playerId) {
@@ -198,6 +195,11 @@ public class Game {
     @JsonProperty
     public int turn() {
         return turn;
+    }
+
+    public Game nextTurn() {
+        turn++;
+        return this;
     }
 
     @Override

@@ -1,8 +1,11 @@
 package com.kdp.golf.game.logic.state;
 
 import com.kdp.golf.game.logic.Game;
+import com.kdp.golf.game.logic.Player;
 import com.kdp.golf.game.logic.event.Event;
 import com.kdp.golf.game.logic.event.UncoverEvent;
+
+import java.util.function.Predicate;
 
 public class UncoverTwoState implements GameState {
     private static UncoverTwoState instance;
@@ -32,9 +35,11 @@ public class UncoverTwoState implements GameState {
             game.uncover(playerId, u.handIndex());
         }
 
+        Predicate<Player> ready = p -> p.uncoveredCardCount() == 2;
+
         var allReady = game.players()
                 .stream()
-                .allMatch(p -> p.uncoveredCardCount() == 2);
+                .allMatch(ready);
 
         if (allReady) {
             game.setState(TakeState.instance());

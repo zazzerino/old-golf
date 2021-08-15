@@ -69,16 +69,29 @@ function handleClick(context: Context, card: ClickedCard) {
   if (game.hasStarted) {
     store.dispatch(cardClicked(card)); // TODO: change this to a thunk
 
-    if (stateType === 'UNCOVER_TWO') {
-      if (isHandCard(card)) {
-        sendUncover(game.id, playerId, card as number);
-      }
-    } else if (stateType === 'TAKE') {
-      if (card === 'deck') {
-        sendTakeFromDeck(game.id, playerId);
-      } else if (card === 'table') {
-        sendTakeFromTable(game.id, playerId);
-      }
+    switch (stateType) {
+      case 'UNCOVER':
+      case 'UNCOVER_TWO':
+        if (isHandCard(card)) {
+          sendUncover(game.id, playerId, card as number);
+        }
+        break;
+
+      case 'TAKE':
+        if (card === 'deck') {
+          sendTakeFromDeck(game.id, playerId);
+        } else if (card === 'table') {
+          sendTakeFromTable(game.id, playerId);
+        }
+        break;
+
+      case 'DISCARD':
+        if (card === 'held') {
+          sendDiscard(game.id, playerId);
+        } else if (isHandCard(card)) {
+          sendSwapCard(game.id, playerId, card as number);
+        }
+        break;
     }
 
     // if (state === 'PICKUP') {
