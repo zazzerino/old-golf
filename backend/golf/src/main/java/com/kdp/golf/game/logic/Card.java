@@ -10,23 +10,7 @@ public record Card(Rank rank,
                    Suit suit) {
 
     public int golfValue() {
-        return Card.golfValue(rank);
-    }
-
-    public static int golfValue(Rank rank) {
-        return switch (rank) {
-            case KING -> 0;
-            case ACE -> 1;
-            case TWO -> 2;
-            case THREE -> 3;
-            case FOUR -> 4;
-            case FIVE -> 5;
-            case SIX -> 6;
-            case SEVEN -> 7;
-            case EIGHT -> 8;
-            case NINE -> 9;
-            case TEN, JACK, QUEEN -> 10;
-        };
+        return rank.golfValue();
     }
 
     public String name() {
@@ -69,6 +53,21 @@ public record Card(Rank rank,
 
         Rank(String value) {
             this.value = value;
+        }
+        public int golfValue() {
+            return switch (this) {
+                case KING -> 0;
+                case ACE -> 1;
+                case TWO -> 2;
+                case THREE -> 3;
+                case FOUR -> 4;
+                case FIVE -> 5;
+                case SIX -> 6;
+                case SEVEN -> 7;
+                case EIGHT -> 8;
+                case NINE -> 9;
+                case TEN, JACK, QUEEN -> 10;
+            };
         }
 
         public static Optional<Rank> from(String s) {

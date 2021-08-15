@@ -1,7 +1,7 @@
 package com.kdp.golf.websocket;
 
 import com.kdp.golf.game.GameController;
-import com.kdp.golf.game.logic.actions.*;
+import com.kdp.golf.game.logic.event.*;
 import com.kdp.golf.user.UserController;
 import com.kdp.golf.websocket.message.*;
 import com.kdp.golf.websocket.message.action.*;
@@ -59,19 +59,19 @@ public class WebSocket {
         } else if (message instanceof StartGameMessage s) {
             gameController.startGame(session, s.gameId());
         } else if (message instanceof TakeFromDeckMessage t) {
-            var action = new TakeFromDeckAction(t.gameId(), t.playerId());
+            var action = new TakeFromDeckEvent(t.gameId(), t.playerId());
             gameController.handleAction(session, action);
         } else if (message instanceof TakeFromTableMessage t) {
-            var action = new TakeFromTableAction(t.gameId(), t.playerId());
+            var action = new TakeFromTableEvent(t.gameId(), t.playerId());
             gameController.handleAction(session, action);
         } else if (message instanceof SwapCardMessage s) {
-            var action = new SwapCardAction(s.gameId(), s.playerId(), s.handIndex());
+            var action = new SwapCardEvent(s.gameId(), s.playerId(), s.handIndex());
             gameController.handleAction(session, action);
         } else if (message instanceof DiscardMessage d) {
-            var action = new DiscardAction(d.gameId(), d.playerId());
+            var action = new DiscardEvent(d.gameId(), d.playerId());
             gameController.handleAction(session, action);
         } else if (message instanceof UncoverMessage u) {
-            var action = new UncoverAction(u.gameId(), u.playerId(), u.handIndex());
+            var action = new UncoverEvent(u.gameId(), u.playerId(), u.handIndex());
             gameController.handleAction(session, action);
         }
     }

@@ -46,12 +46,12 @@ public class Hand {
         return this;
     }
 
-    public Card atIndex(int index) {
+    public Card cardAtIndex(int index) {
         assert(index >= 0 && index < 6);
         return cards.get(index);
     }
 
-    public Hand setAtIndex(int index, Card card) {
+    public Hand setCardAtIndex(int index, Card card) {
         cards.set(index, card);
         return this;
     }
@@ -62,9 +62,9 @@ public class Hand {
 
     @JsonProperty
     public int visibleScore() {
-        if (cards.isEmpty()) {
-            return 0;
-        }
+//        if (cards.isEmpty()) {
+//            return 0;
+//        }
 
 //        var uncovered = Util.pickItems(cards, un)
 
@@ -124,17 +124,17 @@ public class Hand {
         var rightRanks = Util.pickItems(ranks, List.of(2, 5));
 
         if (!Util.allEqual(leftRanks)) {
-            var leftVals = leftRanks.stream().map(Card::golfValue).toList();
+            var leftVals = leftRanks.stream().map(Card.Rank::golfValue).toList();
             score += Util.sumInt(leftVals);
         }
 
         if (!Util.allEqual(middleRanks)) {
-            var middleVals = middleRanks.stream().map(Card::golfValue).toList();
+            var middleVals = middleRanks.stream().map(Card.Rank::golfValue).toList();
             score += Util.sumInt(middleVals);
         }
 
         if (!Util.allEqual(rightRanks)) {
-            var rightVals = rightRanks.stream().map(Card::golfValue).toList();
+            var rightVals = rightRanks.stream().map(Card.Rank::golfValue).toList();
             score += Util.sumInt(rightVals);
         }
 

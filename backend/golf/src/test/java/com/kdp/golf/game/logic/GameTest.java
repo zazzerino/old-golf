@@ -1,9 +1,9 @@
 package com.kdp.golf.game.logic;
 
-import com.kdp.golf.game.logic.actions.DiscardAction;
-import com.kdp.golf.game.logic.actions.SwapCardAction;
-import com.kdp.golf.game.logic.actions.TakeFromDeckAction;
-import com.kdp.golf.game.logic.actions.TakeFromTableAction;
+import com.kdp.golf.game.logic.event.DiscardEvent;
+import com.kdp.golf.game.logic.event.SwapCardEvent;
+import com.kdp.golf.game.logic.event.TakeFromDeckEvent;
+import com.kdp.golf.game.logic.event.TakeFromTableEvent;
 import io.quarkus.test.junit.QuarkusTest;
 import org.jboss.logging.Logger;
 import org.junit.jupiter.api.Test;
@@ -50,8 +50,8 @@ class GameTest {
         game.start();
         log.info(game);
 
-        var action = new TakeFromDeckAction(gameId, playerId);
-        game.handleAction(action);
+        var action = new TakeFromDeckEvent(gameId, playerId);
+        game.handleEvent(action);
         log.info(game);
 
         assertEquals(0, game.getTurn());
@@ -68,8 +68,8 @@ class GameTest {
         game.start();
         log.info(game);
 
-        var action = new TakeFromTableAction(gameId, playerId);
-        game.handleAction(action);
+        var action = new TakeFromTableEvent(gameId, playerId);
+        game.handleEvent(action);
         log.info(game);
     }
 
@@ -84,10 +84,10 @@ class GameTest {
         game.start();
         log.info(game);
 
-        game.handleAction(new TakeFromDeckAction(gameId, playerId));
+        game.handleEvent(new TakeFromDeckEvent(gameId, playerId));
         log.info(game);
 
-        game.handleAction(new DiscardAction(gameId, playerId));
+        game.handleEvent(new DiscardEvent(gameId, playerId));
         log.info(game);
     }
 
@@ -102,10 +102,10 @@ class GameTest {
         game.start();
         log.info(game);
 
-        game.handleAction(new TakeFromTableAction(gameId, playerId));
+        game.handleEvent(new TakeFromTableEvent(gameId, playerId));
         log.info(game);
 
-        game.handleAction(new SwapCardAction(gameId, playerId, 0));
+        game.handleEvent(new SwapCardEvent(gameId, playerId, 0));
         log.info(game);
     }
 }

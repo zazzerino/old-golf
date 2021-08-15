@@ -1,6 +1,6 @@
-package com.kdp.golf.game.logic.actions;
+package com.kdp.golf.game.logic.event;
 
-public interface Action {
+public interface Event {
 
     enum Type {
         TAKE_FROM_DECK,

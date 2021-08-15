@@ -3,7 +3,7 @@ package com.kdp.golf.game;
 import com.kdp.golf.IdService;
 import com.kdp.golf.game.logic.Game;
 import com.kdp.golf.game.logic.Player;
-import com.kdp.golf.game.logic.actions.Action;
+import com.kdp.golf.game.logic.event.Event;
 import com.kdp.golf.user.UserService;
 
 import javax.enterprise.context.ApplicationScoped;
@@ -69,12 +69,12 @@ public class GameService {
         return game;
     }
 
-    public Game handleAction(Action action) {
+    public Game handleAction(Event event) {
         var game = gameDao
-                .getById(action.gameId())
+                .getById(event.gameId())
                 .orElseThrow();
 
-        game.handleAction(action);
+        game.handleEvent(event);
         gameDao.save(game);
 
         return game;

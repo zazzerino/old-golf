@@ -2,7 +2,7 @@ package com.kdp.golf.game.logic;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.kdp.golf.game.logic.actions.*;
+import com.kdp.golf.game.logic.event.*;
 
 import java.util.*;
 
@@ -104,10 +104,10 @@ public class Game {
         var hand = player.getHand();
         var heldCard = player.getHeldCard().orElseThrow();
 
-        var cardAtIndex = hand.atIndex(index);
+        var cardAtIndex = hand.cardAtIndex(index);
         tableCards.push(cardAtIndex);
 
-        hand.setAtIndex(index, heldCard);
+        hand.setCardAtIndex(index, heldCard);
         hand.uncover(index);
         player.setHeldCard(null);
 
@@ -127,14 +127,17 @@ public class Game {
                 hand.uncover(handIndex);
             }
 
-            var allReady = players.values().stream().allMatch(p -> p.getHand().uncoveredCards().size() == 2);
+            var allReady = players.values().stream()
+                    .map(Player::getHand)
+                    .allMatch(h -> h.uncoveredCards().size() == 2);
+
             if (allReady) {
                 state = State.PICKUP;
             }
         } else if (state == State.UNCOVER) {
-            var allUncovered = players.values()
-                    .stream()
-                    .allMatch(p -> p.getHand().allUncovered());
+            var allUncovered = players.values().stream()
+                    .map(Player::getHand)
+                    .allMatch(Hand::allUncovered);
 
             hand.uncover(handIndex);
             state = allUncovered ? State.FINAL_PICKUP : State.PICKUP;
@@ -143,21 +146,21 @@ public class Game {
         return this;
     }
 
-    public Game handleAction(Action action) {
+    public Game handleEvent(Event event) {
         if (state == State.PICKUP) {
-            if (action instanceof TakeFromDeckAction a) {
+            if (event instanceof TakeFromDeckEvent a) {
                 takeFromDeck(a.playerId());
-            } else if (action instanceof TakeFromTableAction a) {
+            } else if (event instanceof TakeFromTableEvent a) {
                 takeFromTable(a.playerId());
             }
         } else if (state == State.DISCARD) {
-            if (action instanceof DiscardAction a) {
+            if (event instanceof DiscardEvent a) {
                 discard(a.playerId());
-            } else if (action instanceof SwapCardAction a) {
+            } else if (event instanceof SwapCardEvent a) {
                 swapCard(a.playerId(), a.handIndex());
             }
         } else if (state == State.UNCOVER || state == State.INIT_UNCOVER) {
-            if (action instanceof UncoverAction u) {
+            if (event instanceof UncoverEvent u) {
                 uncover(u.playerId(), u.handIndex());
             }
         } else {
