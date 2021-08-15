@@ -17,10 +17,27 @@ public class UncoverTwoState implements GameState {
     }
 
     @Override
+    public StateType type() {
+        return StateType.UNCOVER_TWO;
+    }
+
+    @Override
     public Game handleEvent(Game game, Event event) {
-//        if (event instanceof UncoverEvent u) {
-//
-//        }
+        var playerId = event.playerId();
+        var player = game.getPlayer(playerId).orElseThrow();
+
+        if (event instanceof UncoverEvent u
+                && player.uncoveredCardCount() < 2) {
+            game.uncover(playerId, u.handIndex());
+        }
+
+        var allReady = game.players()
+                .stream()
+                .allMatch(p -> p.uncoveredCardCount() == 2);
+
+        if (allReady) {
+            game.setState(PickupState.instance());
+        }
 
         return game;
     }

@@ -17,6 +17,11 @@ public class GameOverState implements GameState {
     }
 
     @Override
+    public StateType type() {
+        return StateType.GAME_OVER;
+    }
+
+    @Override
     public Game handleEvent(Game game, Event event) {
         return null;
     }

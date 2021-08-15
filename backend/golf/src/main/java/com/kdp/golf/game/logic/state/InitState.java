@@ -2,7 +2,6 @@ package com.kdp.golf.game.logic.state;
 
 import com.kdp.golf.game.logic.Game;
 import com.kdp.golf.game.logic.event.Event;
-import com.kdp.golf.game.logic.event.UncoverEvent;
 
 public class InitState implements GameState {
     private static InitState instance;
@@ -17,11 +16,12 @@ public class InitState implements GameState {
     }
 
     @Override
-    public Game handleEvent(Game game, Event event) {
-//        if (event instanceof UncoverEvent u) {
-//
-//        }
+    public StateType type() {
+        return StateType.INIT;
+    }
 
+    @Override
+    public Game handleEvent(Game game, Event event) {
         return game;
     }
 }

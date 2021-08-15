@@ -62,30 +62,36 @@ function isHandCard(card: ClickedCard): boolean {
 
 function handleClick(context: Context, card: ClickedCard) {
   const { game, playerId } = context;
-  const state = game.state;
+  const stateType = game.stateType;
 
   console.log('clicked: ' + card);
 
   if (game.hasStarted) {
     store.dispatch(cardClicked(card)); // TODO: change this to a thunk
 
-    if (state === 'PICKUP') {
-      if (card === 'deck') {
-        sendTakeFromDeck(game.id, playerId);
-      } else if (card === 'table') {
-        sendTakeFromTable(game.id, playerId);
-      }
-    } else if (state === 'DISCARD') {
-      if (card === 'held') {
-        sendDiscard(game.id, playerId);
-      } else if (isHandCard(card)) {
-        sendSwapCard(game.id, playerId, card as number);
-      }
-    } else if (state === 'UNCOVER' || state === 'INIT_UNCOVER') {
+    if (stateType === 'UNCOVER_TWO') {
       if (isHandCard(card)) {
         sendUncover(game.id, playerId, card as number);
       }
     }
+
+    // if (state === 'PICKUP') {
+    //   if (card === 'deck') {
+    //     sendTakeFromDeck(game.id, playerId);
+    //   } else if (card === 'table') {
+    //     sendTakeFromTable(game.id, playerId);
+    //   }
+    // } else if (state === 'DISCARD') {
+    //   if (card === 'held') {
+    //     sendDiscard(game.id, playerId);
+    //   } else if (isHandCard(card)) {
+    //     sendSwapCard(game.id, playerId, card as number);
+    //   }
+    // } else if (state === 'UNCOVER' || state === 'UNCOVER_TWO') {
+    //   if (isHandCard(card)) {
+    //     sendUncover(game.id, playerId, card as number);
+    //   }
+    // }
   }
 }
 

@@ -11,11 +11,11 @@ export interface Player {
   score: number;
 }
 
-export type GameState = 'INIT' | 'INIT_UNCOVER' | 'PICKUP' | 'DISCARD' | 'UNCOVER' | 'FINAL_PICKUP' | 'FINAL_DISCARD' | 'GAME_OVER';
+export type GameState = 'INIT' | 'UNCOVER_TWO' | 'PICKUP' | 'DISCARD' | 'UNCOVER' | 'FINAL_PICKUP' | 'FINAL_DISCARD' | 'GAME_OVER';
 
 export interface Game {
   id: number;
-  state: GameState;
+  stateType: GameState;
   players: Player[];
   hostId: number;
   hasStarted: boolean;
@@ -25,41 +25,41 @@ export interface Game {
   scores: Record<number, number>;
 }
 
-export type ActionType = 'TAKE_FROM_DECK' | 'TAKE_FROM_TABLE' | 'SWAP_CARD' | 'DISCARD';
+export type EventType = 'TAKE_FROM_DECK' | 'TAKE_FROM_TABLE' | 'SWAP_CARD' | 'DISCARD';
 
-export interface Action {
-  type: ActionType;
+export interface Event {
+  type: EventType;
   playerId: number;
 }
 
-export interface TakeFromDeckAction extends Action {
+export interface TakeFromDeckEvent extends Event {
   type: 'TAKE_FROM_DECK';
 }
 
-export function takeFromDeck(playerId: number): TakeFromDeckAction {
+export function takeFromDeck(playerId: number): TakeFromDeckEvent {
   return {
     type: 'TAKE_FROM_DECK',
     playerId,
   }
 }
 
-export interface TakeFromTableAction extends Action {
+export interface TakeFromTableEvent extends Event {
   type: 'TAKE_FROM_TABLE';
 }
 
-export function takeFromTable(playerId: number): TakeFromTableAction {
+export function takeFromTable(playerId: number): TakeFromTableEvent {
   return {
     type: 'TAKE_FROM_TABLE',
     playerId,
   }
 }
 
-export interface SwapCardAction extends Action {
+export interface SwapCardEvent extends Event {
   type: 'SWAP_CARD';
   handIndex: number;
 }
 
-export function swapCard(playerId: number, index: number): SwapCardAction {
+export function swapCard(playerId: number, index: number): SwapCardEvent {
   return {
     type: 'SWAP_CARD',
     playerId,

@@ -140,4 +140,12 @@ public class Hand {
 
         return score;
     }
+
+    @Override
+    public String toString() {
+        return "Hand{" +
+                "cards=" + cards +
+                ", uncoveredCards=" + uncoveredCards +
+                '}';
+    }
 }

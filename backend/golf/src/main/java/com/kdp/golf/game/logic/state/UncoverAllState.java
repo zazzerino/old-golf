@@ -17,6 +17,11 @@ public class UncoverAllState implements GameState {
     }
 
     @Override
+    public StateType type() {
+        return StateType.UNCOVER_ALL;
+    }
+
+    @Override
     public Game handleEvent(Game game, Event event) {
         return game;
     }

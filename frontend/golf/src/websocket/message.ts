@@ -96,7 +96,7 @@ export function sendSwapCard(gameId: number, playerId: number, handIndex: number
 export function sendUncover(gameId: number, playerId: number, handIndex: number) {
   const message: EventMessage = {
     type: 'EVENT',
-    eventType: 'SWAP_CARD',
+    eventType: 'UNCOVER',
     gameId,
     playerId,
     handIndex,

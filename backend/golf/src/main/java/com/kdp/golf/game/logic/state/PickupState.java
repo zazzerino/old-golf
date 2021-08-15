@@ -17,6 +17,11 @@ public class PickupState implements GameState {
     }
 
     @Override
+    public StateType type() {
+        return StateType.PICKUP;
+    }
+
+    @Override
     public Game handleEvent(Game game, Event event) {
         return game;
     }

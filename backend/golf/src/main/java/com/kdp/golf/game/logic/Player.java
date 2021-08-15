@@ -63,11 +63,9 @@ public class Player {
         return 0;
     }
 
-//    public int uncoveredCardCount() {
-//        return
-//        var coveredCount = hand.uncoveredCards().size();
-//        return Hand.HAND_SIZE - coveredCount;
-//    }
+    public int uncoveredCardCount() {
+        return hand.uncoveredCards().size();
+    }
 
     @Override
     public String toString() {
@@ -77,18 +75,5 @@ public class Player {
                 ", hand=" + hand +
                 ", heldCard=" + heldCard +
                 '}';
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Player player = (Player) o;
-        return id.equals(player.id) && name.equals(player.name) && hand.equals(player.hand) && Objects.equals(heldCard, player.heldCard);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(id, name, hand, heldCard);
     }
 }

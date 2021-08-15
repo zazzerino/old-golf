@@ -106,8 +106,8 @@ public class Game {
     }
 
     public Game uncover(Long playerId, int handIndex) {
-        var player = players.get(playerId);
-        var hand = player.hand();
+        var player = getPlayer(playerId).orElseThrow();
+        player.hand().uncover(handIndex);
 
 //        if (state == State.INIT_UNCOVER) {
 //            var uncoveredCount = player.getHand().uncoveredCards().size();
@@ -135,6 +135,7 @@ public class Game {
     }
 
     public Game handleEvent(Event event) {
+        return state.handleEvent(this, event);
 //        if (state == State.PICKUP) {
 //            if (event instanceof TakeFromDeckEvent a) {
 //                takeFromDeck(a.playerId());
@@ -155,10 +156,10 @@ public class Game {
 //            throw new UnsupportedOperationException();
 //        }
 
-        return this;
+//        return this;
     }
 
-    public Long nextPlayerTurn() {
+    public Long playerTurn() {
         var index = turn % players.size();
         return playerOrder.get(index);
     }
@@ -175,13 +176,17 @@ public class Game {
         return this;
     }
 
+    public Optional<Player> getPlayer(Long playerId) {
+        return Optional.ofNullable(players.get(playerId));
+    }
+
     @JsonProperty
     public Collection<Player> players() {
         return players.values();
     }
 
     @JsonProperty
-    public Long HostId() {
+    public Long hostId() {
         return hostId;
     }
 
@@ -189,7 +194,6 @@ public class Game {
         this.hostId = hostId;
     }
 
-    @JsonProperty
     public Deck deck() {
         return deck;
     }
@@ -223,13 +227,21 @@ public class Game {
 
     @JsonProperty
     public boolean hasStarted() {
-//        return state != State.INIT;
         return !(state instanceof InitState);
     }
 
-    @JsonProperty
     public GameState state() {
         return state;
+    }
+
+    @JsonProperty
+    public GameState.StateType stateType() {
+        return state.type();
+    }
+
+    public Game setState(GameState state) {
+        this.state = state;
+        return this;
     }
 
     @JsonProperty
@@ -243,7 +255,7 @@ public class Game {
                 "id=" + id +
                 ", hostId=" + hostId +
                 ", players=" + players +
-                ", state=" + state +
+                ", stateType=" + stateType() +
                 ", deck=" + deck +
                 ", tableCards=" + tableCards +
                 ", turn=" + turn +

@@ -16,6 +16,11 @@ public class DiscardState implements GameState {
     }
 
     @Override
+    public StateType type() {
+        return StateType.DISCARD;
+    }
+
+    @Override
     public Game handleEvent(Game game, Event event) {
         return game;
     }
