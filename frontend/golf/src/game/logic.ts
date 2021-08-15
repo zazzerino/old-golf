@@ -11,7 +11,9 @@ export interface Player {
   score: number;
 }
 
-export type GameState = 'INIT' | 'UNCOVER_TWO' | 'PICKUP' | 'DISCARD' | 'UNCOVER' | 'FINAL_PICKUP' | 'FINAL_DISCARD' | 'GAME_OVER';
+export type GameState =
+  'INIT' | 'UNCOVER_TWO' | 'TAKE' | 'DISCARD' | 'UNCOVER'
+  | 'FINAL_PICKUP' | 'FINAL_DISCARD' | 'UNCOVER_ALL' | 'GAME_OVER';
 
 export interface Game {
   id: number;

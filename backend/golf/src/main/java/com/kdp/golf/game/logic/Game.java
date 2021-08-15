@@ -58,20 +58,15 @@ public class Game {
     }
 
     public Game takeFromDeck(Long playerId) {
-        var player = players.get(playerId);
+        var player = getPlayer(playerId).orElseThrow();
         var deckCard = deck.deal().orElseThrow();
-
         player.setHeldCard(deckCard);
-//        state = State.DISCARD;
-
         return this;
     }
 
     public Game takeFromTable(Long playerId) {
         var player = players.get(playerId);
         player.setHeldCard(tableCards.pop());
-//        state = State.DISCARD;
-
         return this;
     }
 
@@ -108,55 +103,11 @@ public class Game {
     public Game uncover(Long playerId, int handIndex) {
         var player = getPlayer(playerId).orElseThrow();
         player.hand().uncover(handIndex);
-
-//        if (state == State.INIT_UNCOVER) {
-//            var uncoveredCount = player.getHand().uncoveredCards().size();
-//            if (uncoveredCount < 2) {
-//                hand.uncover(handIndex);
-//            }
-//
-//            var allReady = players.values().stream()
-//                    .map(Player::getHand)
-//                    .allMatch(h -> h.uncoveredCards().size() == 2);
-//
-//            if (allReady) {
-//                state = State.PICKUP;
-//            }
-//        } else if (state == State.UNCOVER) {
-//            var allUncovered = players.values().stream()
-//                    .map(Player::getHand)
-//                    .allMatch(Hand::allUncovered);
-//
-//            hand.uncover(handIndex);
-//            state = allUncovered ? State.FINAL_PICKUP : State.PICKUP;
-//        }
-
         return this;
     }
 
     public Game handleEvent(Event event) {
         return state.handleEvent(this, event);
-//        if (state == State.PICKUP) {
-//            if (event instanceof TakeFromDeckEvent a) {
-//                takeFromDeck(a.playerId());
-//            } else if (event instanceof TakeFromTableEvent a) {
-//                takeFromTable(a.playerId());
-//            }
-//        } else if (state == State.DISCARD) {
-//            if (event instanceof DiscardEvent a) {
-//                discard(a.playerId());
-//            } else if (event instanceof SwapCardEvent a) {
-//                swapCard(a.playerId(), a.handIndex());
-//            }
-//        } else if (state == State.UNCOVER || state == State.INIT_UNCOVER) {
-//            if (event instanceof UncoverEvent u) {
-//                uncover(u.playerId(), u.handIndex());
-//            }
-//        } else {
-//            throw new UnsupportedOperationException();
-//        }
-
-//        return this;
     }
 
     public Long playerTurn() {

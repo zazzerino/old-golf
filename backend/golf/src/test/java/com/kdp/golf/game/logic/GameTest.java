@@ -1,8 +1,5 @@
 package com.kdp.golf.game.logic;
 
-import com.kdp.golf.game.logic.event.DiscardEvent;
-import com.kdp.golf.game.logic.event.TakeFromDeckEvent;
-import com.kdp.golf.game.logic.event.TakeFromTableEvent;
 import com.kdp.golf.game.logic.event.UncoverEvent;
 import com.kdp.golf.game.logic.state.GameState;
 import com.kdp.golf.game.logic.state.InitState;
@@ -35,7 +32,7 @@ class GameTest {
 
         var event1 = new UncoverEvent(gameId, playerId, 5);
         game.handleEvent(event1);
-        assertEquals(GameState.StateType.PICKUP, game.stateType());
+        assertEquals(GameState.StateType.TAKE, game.stateType());
     }
 
 //    @Test

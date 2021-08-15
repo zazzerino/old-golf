@@ -25,9 +25,10 @@ public class UncoverTwoState implements GameState {
     public Game handleEvent(Game game, Event event) {
         var playerId = event.playerId();
         var player = game.getPlayer(playerId).orElseThrow();
+        var stillUncovering = player.uncoveredCardCount() < 2;
 
         if (event instanceof UncoverEvent u
-                && player.uncoveredCardCount() < 2) {
+                && stillUncovering) {
             game.uncover(playerId, u.handIndex());
         }
 
@@ -36,7 +37,7 @@ public class UncoverTwoState implements GameState {
                 .allMatch(p -> p.uncoveredCardCount() == 2);
 
         if (allReady) {
-            game.setState(PickupState.instance());
+            game.setState(TakeState.instance());
         }
 
         return game;

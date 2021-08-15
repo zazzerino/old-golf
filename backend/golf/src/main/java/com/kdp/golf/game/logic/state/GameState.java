@@ -10,7 +10,7 @@ public interface GameState {
     enum StateType {
         INIT,
         UNCOVER_TWO,
-        PICKUP,
+        TAKE,
         DISCARD,
         UNCOVER,
         UNCOVER_ALL,

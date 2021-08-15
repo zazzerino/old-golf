@@ -73,6 +73,12 @@ function handleClick(context: Context, card: ClickedCard) {
       if (isHandCard(card)) {
         sendUncover(game.id, playerId, card as number);
       }
+    } else if (stateType === 'TAKE') {
+      if (card === 'deck') {
+        sendTakeFromDeck(game.id, playerId);
+      } else if (card === 'table') {
+        sendTakeFromTable(game.id, playerId);
+      }
     }
 
     // if (state === 'PICKUP') {
