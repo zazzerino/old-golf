@@ -1,8 +1,9 @@
 import { store } from "../app/store";
-import { sendDiscard, sendSwapCard, sendTakeFromDeck, sendTakeFromTable, sendUncover } from "../websocket/message";
 import { cardClicked, ClickedCard } from "./gameSlice";
-import { images } from "./images";
 import { Game, Hand } from "./logic";
+import { 
+  sendDiscard, sendSwapCard, sendTakeFromDeck, sendTakeFromTable, sendUncover 
+} from "../websocket/message";
 
 export interface Coord {
   x: number;
@@ -16,6 +17,10 @@ export interface Size {
 
 export const svgNS = 'http://www.w3.org/2000/svg';
 export const cardSize: Size = { width: 60, height: 84 };
+
+function cardPath(cardName: string) {
+  return `img/cards/${cardName}.svg`;
+}
 
 export function makeRect(coord: Coord, size: Size, color = '#44ff00') {
   const rect = document.createElementNS(svgNS, 'rect');
@@ -35,7 +40,7 @@ function makeCard(card: string, coord: Coord, onClick?: (card: ClickedCard) => v
   img.setAttribute('width', cardScale);
   img.setAttribute('x', coord.x.toString());
   img.setAttribute('y', coord.y.toString());
-  img.setAttributeNS(xlinkNS, 'xlink:href', images[card]);
+  img.setAttributeNS(xlinkNS, 'xlink:href', cardPath(card));
 
   if (onClick) {
     img.onclick = () => onClick(card as ClickedCard);

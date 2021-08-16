@@ -1,6 +1,8 @@
 import React from 'react';
 import { useAppSelector } from '../app/hooks';
-import { ClickedCard, selectClickedCard, selectCurrentGame, selectHeldCard, selectPlayerHand, selectPlayerScore, selectShowDeckCard } from './gameSlice';
+import { 
+  ClickedCard, selectClickedCard, selectCurrentGame, selectHeldCard, selectPlayerHand, selectPlayerScore, selectShowDeckCard 
+} from './gameSlice';
 import { Game, Hand } from './logic';
 import { selectUserId } from '../user';
 import { Size, drawGame } from './draw';
@@ -43,7 +45,10 @@ export function GameCanvas() {
     const svg = svgRef.current;
 
     if (svg && game && (playerId != null)) {
-      const context: Context = { playerId, game, svg, size, clickedCard, showDeckCard, playerHand, heldCard, playerScore };
+      const context: Context = {
+        playerId, game, svg, size, clickedCard, showDeckCard, playerHand, heldCard, playerScore
+      };
+
       drawGame(context);
     }
 
