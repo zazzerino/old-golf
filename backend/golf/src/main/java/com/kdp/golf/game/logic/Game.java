@@ -157,19 +157,6 @@ public class Game {
     }
 
     @JsonProperty
-    public Map<Long, Integer> scores() {
-        Map<Long, Integer> scores = new HashMap<>();
-
-        if (hasStarted()) {
-            for (var player : players.values()) {
-                scores.put(player.id, player.score());
-            }
-        }
-
-        return scores;
-    }
-
-    @JsonProperty
     public Optional<Card> deckCard() {
         return Optional.ofNullable(deck.getCards().get(0));
     }

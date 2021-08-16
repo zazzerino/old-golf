@@ -3,7 +3,7 @@ import { useAppSelector } from '../app/hooks';
 import { store } from '../app/store';
 import { cardClicked, ClickedCard, selectClickedCard, selectCurrentGame, selectHeldCard, selectPlayerHand, selectPlayerScore, selectShowDeckCard } from './gameSlice';
 import { images } from './images';
-import { Game, Hand } from './logic';
+import { Game, Hand, StateType } from './logic';
 import { selectUserId } from '../user';
 import { sendDiscard, sendSwapCard, sendTakeFromDeck, sendTakeFromTable, sendUncover } from '../websocket/message';
 
@@ -47,8 +47,8 @@ const xlinkNS = 'http://www.w3.org/1999/xlink';
 const cardScale = '10%';
 const cardSize: Size = { width: 60, height: 84 };
 
-// const hlPadding = 1; // how far highlight rect extends past card
 const handPadding = 2;
+const hlPadding = 1; // how far highlight rect extends past card
 
 function empty(elem: Element) {
   while (elem.firstChild) {
@@ -93,24 +93,6 @@ function handleClick(context: Context, card: ClickedCard) {
         }
         break;
     }
-
-    // if (state === 'PICKUP') {
-    //   if (card === 'deck') {
-    //     sendTakeFromDeck(game.id, playerId);
-    //   } else if (card === 'table') {
-    //     sendTakeFromTable(game.id, playerId);
-    //   }
-    // } else if (state === 'DISCARD') {
-    //   if (card === 'held') {
-    //     sendDiscard(game.id, playerId);
-    //   } else if (isHandCard(card)) {
-    //     sendSwapCard(game.id, playerId, card as number);
-    //   }
-    // } else if (state === 'UNCOVER' || state === 'UNCOVER_TWO') {
-    //   if (isHandCard(card)) {
-    //     sendUncover(game.id, playerId, card as number);
-    //   }
-    // }
   }
 }
 
@@ -141,17 +123,17 @@ function makeCard(card: string, coord: Coord, onClick?: (card: ClickedCard) => v
   return img;
 }
 
-// function makeHighlight(coord: Coord) {
-//   const x = coord.x - hlPadding;
-//   const y = coord.y - hlPadding;
-//   const hlCoord = { x, y };
+function makeHighlight(coord: Coord) {
+  const x = coord.x - hlPadding;
+  const y = coord.y - hlPadding;
+  const hlCoord = { x, y };
 
-//   const width = cardSize.width + hlPadding * 2;
-//   const height = cardSize.height + hlPadding * 2;
-//   const hlSize = { width, height };
+  const width = cardSize.width + hlPadding * 2;
+  const height = cardSize.height + hlPadding * 2;
+  const hlSize = { width, height };
 
-//   return makeRect(hlCoord, hlSize);
-// }
+  return makeRect(hlCoord, hlSize);
+}
 
 function drawCard(svg: SVGElement, card: string, coord: Coord, opts: DrawCardOpts = {}) {
   const { onClick, highlight } = opts;
@@ -167,8 +149,8 @@ function drawCard(svg: SVGElement, card: string, coord: Coord, opts: DrawCardOpt
 
 function deckCoord(size: Size, hasStarted: boolean): Coord {
   const x = hasStarted
-    ? size.width / 2 - cardSize.width
-    : size.width / 2 - cardSize.width / 2;
+    ? size.width / 2 - cardSize.width - handPadding
+    : size.width / 2 - cardSize.width / 2 - handPadding;
 
   const y = size.height / 2 - cardSize.height / 2;
 
@@ -190,7 +172,7 @@ function drawDeck(context: Context) {
 }
 
 function tableCardCoord(size: Size): Coord {
-  const x = size.width / 2;
+  const x = size.width / 2 + handPadding;
   const y = size.height / 2 - cardSize.height / 2;
 
   return { x, y };
@@ -327,6 +309,15 @@ function drawGame(context: Context) {
   const tableCard = game.tableCard;
 
   drawDeck(context);
+
+  const turnCoord = { x: 20, y: 30 };
+  const turnText = makeText(turnCoord, 'PLAYER ' + game.playerTurn.toString());
+  svg.appendChild(turnText);
+
+  const stateCoord = { x: 20, y: 50 };
+  const stateText = game.stateType === 'DISCARD' ? 'DISCARD/SWAP' : game.stateType;
+  const stateTextElem = makeText(stateCoord, stateText);
+  svg.appendChild(stateTextElem);
 
   if (game.hasStarted) {
     drawPlayerHand(context);

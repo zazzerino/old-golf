@@ -35,11 +35,8 @@ public class UncoverTwoState implements GameState {
             game.uncover(playerId, u.handIndex());
         }
 
-        Predicate<Player> ready = p -> p.uncoveredCardCount() == 2;
-
-        var allReady = game.players()
-                .stream()
-                .allMatch(ready);
+        Predicate<Player> playerReady = p -> p.uncoveredCardCount() == 2;
+        var allReady = game.players().stream().allMatch(playerReady);
 
         if (allReady) {
             game.setState(TakeState.instance());

@@ -12,13 +12,12 @@ export interface Player {
   visibleScore: number;
 }
 
-export type GameState =
-  'INIT' | 'UNCOVER_TWO' | 'TAKE' | 'DISCARD' | 'UNCOVER'
-  | 'FINAL_PICKUP' | 'FINAL_DISCARD' | 'UNCOVER_ALL' | 'GAME_OVER';
+export type StateType = 'INIT' | 'UNCOVER_TWO' | 'TAKE' | 'DISCARD'
+  | 'UNCOVER' | 'FINAL_PICKUP' | 'FINAL_DISCARD' | 'UNCOVER_ALL' | 'GAME_OVER';
 
 export interface Game {
   id: number;
-  stateType: GameState;
+  stateType: StateType;
   players: Player[];
   hostId: number;
   hasStarted: boolean;
@@ -26,6 +25,7 @@ export interface Game {
   tableCards: string[];
   deckCard: string | null;
   scores: Record<number, number>;
+  playerTurn: number;
 }
 
 export type EventType = 'TAKE_FROM_DECK' | 'TAKE_FROM_TABLE' | 'SWAP_CARD' | 'DISCARD';

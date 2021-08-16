@@ -5,14 +5,14 @@ import { Game } from "./logic";
 // can click the deck, table card, or one of the 6 cards in hand
 export type ClickedCard = 'deck' | 'table' | 'held' | 0 | 1 | 2 | 3 | 4 | 5;
 
-interface GameState {
+interface GameSliceState {
   games: Game[] | null;
   game: Game | null;
   showDeckCard: boolean;
   clickedCard: ClickedCard | null;
 }
 
-const initialState: GameState = {
+const initialState: GameSliceState = {
   games: null,
   game: null,
   showDeckCard: false,
@@ -27,13 +27,13 @@ export const gameSlice = createSlice({
   name: 'game',
   initialState,
   reducers: {
-    setGames: (state: GameState, action: PayloadAction<Game[]>) => {
+    setGames: (state: GameSliceState, action: PayloadAction<Game[]>) => {
       state.games = action.payload;
     },
-    setGame: (state: GameState, action: PayloadAction<Game>) => {
+    setGame: (state: GameSliceState, action: PayloadAction<Game>) => {
       state.game = action.payload;
     },
-    cardClicked: (state: GameState, action: PayloadAction<ClickedCard>) => {
+    cardClicked: (state: GameSliceState, action: PayloadAction<ClickedCard>) => {
       const previous = state.clickedCard;
       state.clickedCard = updateClickedCard(previous, action.payload);
     },
@@ -46,6 +46,8 @@ export const selectCurrentGameId = (state: RootState) => state.game.game?.id;
 export const selectClickedCard = (state: RootState) => state.game.clickedCard;
 export const selectDeckCard = (state: RootState) => state.game.game?.deckCard;
 export const selectShowDeckCard = (state: RootState) => state.game.showDeckCard;
+export const selectStateType = (state: RootState) => state.game.game?.stateType;
+export const selectPlayerTurn = (state: RootState) => state.game.game?.playerTurn;
 
 export const selectPlayer = (state: RootState) => {
   const playerId = state.user?.id;
@@ -68,17 +70,6 @@ export const selectPlayerScore = createSelector(
   player => player?.visibleScore
 );
 
-// export const selectScores = (state: RootState) => state.game.game?.scores;
-
-// export const selectPlayerScore = createSelector(
-//   selectPlayer,
-//   selectScores,
-//   (player, scores) => {
-//     if (player && scores) {
-//       return scores[player.id];
-//     }
-//   }
-// );
 
 export const { setGames, setGame, cardClicked } = gameSlice.actions;
 export const gameReducer = gameSlice.reducer;

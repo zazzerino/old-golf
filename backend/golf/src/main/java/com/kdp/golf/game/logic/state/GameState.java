@@ -13,7 +13,8 @@ public interface GameState {
         TAKE,
         DISCARD,
         UNCOVER,
-        UNCOVER_ALL,
+        FINAL_TAKE,
+        FINAL_DISCARD,
         GAME_OVER
     }
 }

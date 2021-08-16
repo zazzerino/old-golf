@@ -1,8 +1,6 @@
 import { send } from './websocket';
 
-type MessageType =
-  'LOGIN' | 'CREATE_GAME' | 'START_GAME' | 'EVENT';
-  // 'LOGIN' | 'CREATE_GAME' | 'START_GAME' | 'TAKE_FROM_DECK' | 'TAKE_FROM_TABLE' | 'SWAP_CARD' | 'DISCARD' | 'UNCOVER' | 'EVENT';
+type MessageType = 'LOGIN' | 'CREATE_GAME' | 'START_GAME' | 'EVENT';
 
 export interface Message {
   type: MessageType;

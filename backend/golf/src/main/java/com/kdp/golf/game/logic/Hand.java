@@ -8,7 +8,7 @@ import java.util.*;
 public class Hand {
 
     private final List<Card> cards;
-    private final Set<Integer> uncoveredIndices;
+    private Set<Integer> uncoveredIndices;
 
     public static final int HAND_SIZE = 6;
 
@@ -34,6 +34,11 @@ public class Hand {
 
     public Hand uncover(int index) {
         uncoveredIndices.add(index);
+        return this;
+    }
+
+    public Hand uncoverAll() {
+        uncoveredIndices = Set.of(0, 1, 2, 3, 4, 5);
         return this;
     }
 
