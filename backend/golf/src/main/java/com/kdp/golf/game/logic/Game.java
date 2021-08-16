@@ -139,8 +139,9 @@ public class Game {
         return hostId;
     }
 
-    public void setHostId(Long hostId) {
+    public Game setHostId(Long hostId) {
         this.hostId = hostId;
+        return this;
     }
 
     public Deck deck() {
@@ -188,6 +189,11 @@ public class Game {
     public Game nextTurn() {
         turn++;
         return this;
+    }
+
+    @JsonProperty
+    public List<CardLocation> playableCards() {
+        return state.playableCards(this);
     }
 
     @Override

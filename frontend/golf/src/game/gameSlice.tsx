@@ -7,14 +7,14 @@ export type ClickedCard = 'deck' | 'table' | 'held' | 0 | 1 | 2 | 3 | 4 | 5;
 
 interface GameSliceState {
   games: Game[] | null;
-  game: Game | null;
+  current: Game | null;
   showDeckCard: boolean;
   clickedCard: ClickedCard | null;
 }
 
 const initialState: GameSliceState = {
   games: null,
-  game: null,
+  current: null,
   showDeckCard: false,
   clickedCard: null,
 }
@@ -30,8 +30,8 @@ export const gameSlice = createSlice({
     setGames: (state: GameSliceState, action: PayloadAction<Game[]>) => {
       state.games = action.payload;
     },
-    setGame: (state: GameSliceState, action: PayloadAction<Game>) => {
-      state.game = action.payload;
+    setCurrent: (state: GameSliceState, action: PayloadAction<Game>) => {
+      state.current = action.payload;
     },
     cardClicked: (state: GameSliceState, action: PayloadAction<ClickedCard>) => {
       const previous = state.clickedCard;
@@ -41,17 +41,17 @@ export const gameSlice = createSlice({
 });
 
 export const selectGames = (state: RootState) => state.game.games;
-export const selectCurrentGame = (state: RootState) => state.game.game;
-export const selectCurrentGameId = (state: RootState) => state.game.game?.id;
+export const selectCurrentGame = (state: RootState) => state.game.current;
+export const selectCurrentGameId = (state: RootState) => state.game.current?.id;
 export const selectClickedCard = (state: RootState) => state.game.clickedCard;
-export const selectDeckCard = (state: RootState) => state.game.game?.deckCard;
+export const selectDeckCard = (state: RootState) => state.game.current?.deckCard;
 export const selectShowDeckCard = (state: RootState) => state.game.showDeckCard;
-export const selectStateType = (state: RootState) => state.game.game?.stateType;
-export const selectPlayerTurn = (state: RootState) => state.game.game?.playerTurn;
+export const selectStateType = (state: RootState) => state.game.current?.stateType;
+export const selectPlayerTurn = (state: RootState) => state.game.current?.playerTurn;
 
 export const selectPlayer = (state: RootState) => {
   const playerId = state.user?.id;
-  const players = state.game.game?.players;
+  const players = state.game.current?.players;
   return players?.find(p => p.id === playerId);
 }
 
@@ -71,5 +71,5 @@ export const selectPlayerScore = createSelector(
 );
 
 
-export const { setGames, setGame, cardClicked } = gameSlice.actions;
+export const { setGames, setCurrent, cardClicked } = gameSlice.actions;
 export const gameReducer = gameSlice.reducer;

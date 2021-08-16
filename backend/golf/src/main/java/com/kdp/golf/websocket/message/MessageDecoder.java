@@ -1,7 +1,6 @@
 package com.kdp.golf.websocket.message;
 
 import com.kdp.golf.game.logic.event.Event;
-import com.kdp.golf.websocket.message.event.*;
 import io.vertx.core.json.JsonObject;
 import org.jboss.logging.Logger;
 
