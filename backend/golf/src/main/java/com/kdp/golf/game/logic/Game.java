@@ -192,7 +192,7 @@ public class Game {
     }
 
     @JsonProperty
-    public List<CardLocation> playableCards() {
+    public Map<Long, List<CardLocation>> playableCards() {
         return state.playableCards(this);
     }
 

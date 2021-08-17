@@ -15,6 +15,8 @@ export interface Player {
 export type StateType = 'INIT' | 'UNCOVER_TWO' | 'TAKE' | 'DISCARD'
   | 'UNCOVER' | 'FINAL_PICKUP' | 'FINAL_DISCARD' | 'UNCOVER_ALL' | 'GAME_OVER';
 
+export type CardLocation = 'DECK' | 'TABLE' | 'HELD' | 'HAND0' | 'HAND1' | 'HAND2' | 'HAND3' | 'HAND4' | 'HAND5';
+
 export interface Game {
   id: number;
   stateType: StateType;
@@ -26,6 +28,7 @@ export interface Game {
   deckCard: string | null;
   scores: Record<number, number>;
   playerTurn: number;
+  playableCards: Record<number, CardLocation[]>;
 }
 
 export type EventType = 'TAKE_FROM_DECK' | 'TAKE_FROM_TABLE' | 'SWAP_CARD' | 'DISCARD';

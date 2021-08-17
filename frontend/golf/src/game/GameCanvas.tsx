@@ -1,23 +1,10 @@
 import React from 'react';
 import { useAppSelector } from '../app/hooks';
 import { 
-  ClickedCard, selectClickedCard, selectCurrentGame, selectHeldCard, selectPlayerHand, selectPlayerScore, selectShowDeckCard 
+  selectClickedCard, selectCurrentGame, selectHeldCard, selectPlayerHand, selectPlayerScore, selectShowDeckCard 
 } from './gameSlice';
-import { Game, Hand } from './logic';
 import { selectUserId } from '../user';
-import { Size, drawGame } from './draw';
-
-interface Context {
-  playerId: number;
-  svg: SVGElement;
-  size: Size;
-  game: Game;
-  showDeckCard: boolean;
-  clickedCard: ClickedCard | null;
-  playerHand: Hand | undefined;
-  heldCard: string | undefined;
-  playerScore: number | undefined;
-}
+import { Size, drawGame, Context } from './draw';
 
 function empty(elem: Element) {
   while (elem.firstChild) {
@@ -40,13 +27,14 @@ export function GameCanvas() {
   const heldCard = useAppSelector(selectHeldCard);
   const clickedCard = useAppSelector(selectClickedCard);
   const showDeckCard = useAppSelector(selectShowDeckCard);
+  // const playableCards = useAppSelector(selectPlayableCards);
 
   React.useEffect(() => {
     const svg = svgRef.current;
 
     if (svg && game && (playerId != null)) {
       const context: Context = {
-        playerId, game, svg, size, clickedCard, showDeckCard, playerHand, heldCard, playerScore
+        playerId, game, svg, size, clickedCard, showDeckCard, playerHand, heldCard, playerScore 
       };
 
       drawGame(context);

@@ -1,6 +1,7 @@
 import { createSelector, createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { RootState } from "../app/store";
-import { Game } from "./logic";
+import { selectUserId } from "../user";
+import { CardLocation, Game } from "./logic";
 
 // can click the deck, table card, or one of the 6 cards in hand
 export type ClickedCard = 'deck' | 'table' | 'held' | 0 | 1 | 2 | 3 | 4 | 5;
@@ -48,6 +49,15 @@ export const selectDeckCard = (state: RootState) => state.game.current?.deckCard
 export const selectShowDeckCard = (state: RootState) => state.game.showDeckCard;
 export const selectStateType = (state: RootState) => state.game.current?.stateType;
 export const selectPlayerTurn = (state: RootState) => state.game.current?.playerTurn;
+
+// export const selectPlayableCards = createSelector(
+//   selectCurrentGame,
+//   selectUserId,
+//   (game, playerId) => {
+//     return game.playableCards
+//   }
+//   // (game, playerId) => game?.playableCards[playerId]
+// );
 
 export const selectPlayer = (state: RootState) => {
   const playerId = state.user?.id;

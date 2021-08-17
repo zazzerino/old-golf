@@ -1,10 +1,14 @@
 package com.kdp.golf.game.logic.state;
 
+import com.kdp.golf.game.logic.CardLocation;
 import com.kdp.golf.game.logic.Game;
 import com.kdp.golf.game.logic.Hand;
 import com.kdp.golf.game.logic.event.DiscardEvent;
 import com.kdp.golf.game.logic.event.Event;
 import com.kdp.golf.game.logic.event.SwapCardEvent;
+
+import java.util.List;
+import java.util.Map;
 
 public class DiscardState implements GameState {
     private static DiscardState instance;
@@ -63,5 +67,18 @@ public class DiscardState implements GameState {
         }
 
         return game;
+    }
+
+    @Override
+    public Map<Long, List<CardLocation>> playableCards(Game game) {
+        return Map.of();
+//        return List.of(
+//                CardLocation.HELD,
+//                CardLocation.HAND0,
+//                CardLocation.HAND1,
+//                CardLocation.HAND2,
+//                CardLocation.HAND3,
+//                CardLocation.HAND4,
+//                CardLocation.HAND5);
     }
 }

@@ -1,9 +1,18 @@
 import { store } from "../app/store";
 import { cardClicked, ClickedCard } from "./gameSlice";
-import { Game, Hand } from "./logic";
+import { CardLocation, Game, Hand } from "./logic";
 import { 
   sendDiscard, sendSwapCard, sendTakeFromDeck, sendTakeFromTable, sendUncover 
 } from "../websocket/message";
+
+const svgNS = 'http://www.w3.org/2000/svg';
+const xlinkNS = 'http://www.w3.org/1999/xlink';
+
+const cardSize: Size = { width: 60, height: 84 };
+const cardScale = '10%';
+
+const handPadding = 2;
+const hlPadding = 2; // how far highlight rect extends past card
 
 export interface Coord {
   x: number;
@@ -15,26 +24,40 @@ export interface Size {
   height: number;
 }
 
-export const svgNS = 'http://www.w3.org/2000/svg';
-export const cardSize: Size = { width: 60, height: 84 };
+type HandPosition = 'bottom' | 'left' | 'top' | 'right';
+
+export interface Context {
+  playerId: number;
+  svg: SVGElement;
+  size: Size;
+  game: Game;
+  showDeckCard: boolean;
+  clickedCard: ClickedCard | null;
+  playerHand: Hand | undefined;
+  heldCard: string | undefined;
+  playerScore: number | undefined;
+  // playableCards: CardLocation[] | undefined;
+}
 
 function cardPath(cardName: string) {
+  console.assert(cardName.length === 2);
   return `img/cards/${cardName}.svg`;
 }
 
-export function makeRect(coord: Coord, size: Size, color = '#44ff00') {
+export function makeRect(coord: Coord, size: Size, color = '#44ff00'): SVGRectElement {
   const rect = document.createElementNS(svgNS, 'rect');
 
   rect.setAttribute('x', coord.x.toString());
   rect.setAttribute('y', coord.y.toString());
   rect.setAttribute('width', size.width.toString());
   rect.setAttribute('height', size.height.toString());
-  rect.setAttribute('fill', color);
+  rect.setAttribute('stroke', color);
+  rect.setAttribute('stroke-width', hlPadding.toString());
 
   return rect;
 }
 
-function makeCard(card: string, coord: Coord, onClick?: (card: ClickedCard) => void) {
+function makeCard(card: string, coord: Coord, onClick?: (card: ClickedCard) => void): SVGImageElement {
   const img = document.createElementNS(svgNS, 'image');
 
   img.setAttribute('width', cardScale);
@@ -49,57 +72,19 @@ function makeCard(card: string, coord: Coord, onClick?: (card: ClickedCard) => v
   return img;
 }
 
-interface DrawCardOpts {
-  highlight?: boolean;
-  onClick?: (card: ClickedCard) => void;
-}
-
-interface HandOpts {
-  clickedCard: ClickedCard | null;
-  onClick: (index: ClickedCard) => void;
-}
-
-type HandPosition = 'bottom' | 'left' | 'top' | 'right';
-
-interface Context {
-  playerId: number;
-  svg: SVGElement;
-  size: Size;
-  game: Game;
-  showDeckCard: boolean;
-  clickedCard: ClickedCard | null;
-  playerHand: Hand | undefined;
-  heldCard: string | undefined;
-  playerScore: number | undefined;
-}
-
-const xlinkNS = 'http://www.w3.org/1999/xlink';
-
-const cardScale = '10%';
-
-const handPadding = 2;
-const hlPadding = 1; // how far highlight rect extends past card
-
-function empty(elem: Element) {
-  while (elem.firstChild) {
-    elem.firstChild.remove();
-  }
-}
-
 function isHandCard(card: ClickedCard): boolean {
   return Number.isFinite(card);
 }
 
 function handleClick(context: Context, card: ClickedCard) {
   const { game, playerId } = context;
-  const stateType = game.stateType;
 
   console.log('clicked: ' + card);
 
   if (game.hasStarted) {
     store.dispatch(cardClicked(card)); // TODO: change this to a thunk
 
-    switch (stateType) {
+    switch (game.stateType) {
       case 'UNCOVER':
       case 'UNCOVER_TWO':
         if (isHandCard(card)) {
@@ -127,15 +112,19 @@ function handleClick(context: Context, card: ClickedCard) {
 }
 
 function makeHighlight(coord: Coord) {
-  const x = coord.x - hlPadding;
-  const y = coord.y - hlPadding;
+  const x = coord.x;
+  const y = coord.y;
   const hlCoord = { x, y };
-
-  const width = cardSize.width + hlPadding * 2;
-  const height = cardSize.height + hlPadding * 2;
+  const width = cardSize.width;
+  const height = cardSize.height;
   const hlSize = { width, height };
 
   return makeRect(hlCoord, hlSize);
+}
+
+interface DrawCardOpts {
+  highlight?: boolean;
+  onClick?: (card: ClickedCard) => void;
 }
 
 function drawCard(svg: SVGElement, card: string, coord: Coord, opts: DrawCardOpts = {}) {
@@ -161,15 +150,15 @@ function deckCoord(size: Size, hasStarted: boolean): Coord {
 }
 
 function drawDeck(context: Context) {
-  const { svg, size, game, clickedCard, showDeckCard} = context;
+  const { svg, size, game, showDeckCard } = context;
   const { deckCard, hasStarted } = game;
 
   const coord = deckCoord(size, hasStarted);
   const cardToDraw = showDeckCard && deckCard ? deckCard : '2B';
 
-  const highlight = clickedCard === 'deck';
+  // const highlight = playableCards && playableCards.includes('DECK');
   const onClick = () => handleClick(context, 'deck');
-  const opts = { highlight, onClick };
+  const opts = { onClick };
 
   drawCard(svg, cardToDraw, coord, opts);
 }
@@ -182,13 +171,13 @@ function tableCardCoord(size: Size): Coord {
 }
 
 function drawTableCard(context: Context) {
-  const { svg, size, clickedCard, game } = context;
+  const { svg, size, game } = context;
   const tableCard = game.tableCard;
   const coord = tableCardCoord(size);
 
-  const highlight = clickedCard === 'table';
+  // const highlight = playableCards && playableCards.includes('TABLE');
   const onClick = () => handleClick(context, 'table');
-  const opts = { highlight, onClick }
+  const opts = { onClick }
 
   if (tableCard) {
     drawCard(svg, tableCard, coord, opts);
@@ -207,15 +196,32 @@ function heldCardCoord(size: Size): Coord {
 function drawHeldCard(context: Context) {
   const { svg, size, heldCard } = context;
   const coord = heldCardCoord(size);
+  const highlight = true;
   const onClick = () => handleClick(context, 'held');
 
   if (heldCard) {
-    drawCard(svg, heldCard, coord, { onClick });
+    drawCard(svg, heldCard, coord, { onClick, highlight });
   }
 }
 
-function makeHand(cards: string[], uncoveredCards: number[], opts: HandOpts) {
-  const { clickedCard, onClick } = opts;
+interface DrawHandOpts {
+  onClick: (index: ClickedCard) => void;
+  // playableCards: CardLocation[];
+}
+
+function getCardLocation(n: number): CardLocation | undefined {
+  switch (n) {
+    case 0: return 'HAND0';
+    case 1: return 'HAND1';
+    case 2: return 'HAND2';
+    case 3: return 'HAND3';
+    case 4: return 'HAND4';
+    case 5: return 'HAND5';
+  }
+}
+
+function makeHand(cards: string[], uncoveredCards: number[], opts: DrawHandOpts) {
+  const { onClick } = opts;
   const group = document.createElementNS(svgNS, 'g');
 
   for (let i = 0; i < 6; i++) {
@@ -227,6 +233,14 @@ function makeHand(cards: string[], uncoveredCards: number[], opts: HandOpts) {
     const card = uncoveredCards.includes(i) ? cards[i]: '2B';
 
     const cardElem = makeCard(card, coord, onClick);
+
+    // if (Number.isFinite(i)) {
+    //   const location = getCardLocation(i);
+    //   if (location && opts.playableCards.includes(location)) {
+    //     const highlightRect = makeHighlight(coord);
+    //     group.appendChild(highlightRect);
+    //   }
+    // }
 
     // if (i === clickedCard) {
     //   const hlRect = makeHighlight(coord);
@@ -243,7 +257,7 @@ function makeHand(cards: string[], uncoveredCards: number[], opts: HandOpts) {
   return group;
 }
 
-function drawHand(svg: SVGElement, hand: Hand, pos: HandPosition, opts: HandOpts) {
+function drawHand(svg: SVGElement, hand: Hand, pos: HandPosition, opts: DrawHandOpts) {
   const boundingRect = svg.getBoundingClientRect();
   const canvasWidth = boundingRect.width;
   const canvasHeight = boundingRect.height;
@@ -271,11 +285,14 @@ function drawHand(svg: SVGElement, hand: Hand, pos: HandPosition, opts: HandOpts
 }
 
 function drawPlayerHand(context: Context) {
-  const { svg, clickedCard, playerHand } = context;
+  const { svg, playerHand } = context;
   const onClick = (i: ClickedCard) => handleClick(context, i);
 
+  // const cards = playableCards || [];
+  const opts: DrawHandOpts = { onClick };
+
   if (playerHand) {
-    drawHand(svg, playerHand, 'bottom', { clickedCard, onClick });
+    drawHand(svg, playerHand, 'bottom', opts);
   } else {
     throw new Error('player hand is null');
   }
