@@ -48,16 +48,6 @@ public class Player {
         return this;
     }
 
-    @JsonProperty
-    public int score() {
-        return hand.isEmpty() ? 0 : hand.score();
-    }
-
-    @JsonProperty
-    public int visibleScore() {
-        return hand.visibleScore();
-    }
-
     public int uncoveredCardCount() {
         return hand.uncoveredIndices().size();
     }

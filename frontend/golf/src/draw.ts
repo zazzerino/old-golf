@@ -1,3 +1,5 @@
+import { Game } from "./game";
+
 const SVG_NS = 'http://www.w3.org/2000/svg';
 const XLINK_NS = 'http://www.w3.org/1999/xlink';
 
@@ -62,7 +64,10 @@ function drawDeck(svg: SVGSVGElement): SVGImageElement {
   return drawCard(svg, '2B', { x, y });
 }
 
-export function drawGame(svgElem: SVGSVGElement) {
+export function drawGame(svgElem: SVGSVGElement, game: Game) {
   empty(svgElem);
-  drawDeck(svgElem);
+
+  if (game) {
+    drawDeck(svgElem);
+  }
 }

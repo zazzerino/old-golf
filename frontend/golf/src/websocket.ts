@@ -1,6 +1,6 @@
 import { User } from './user';
 import { Game } from './game';
-import { setUser } from './state';
+import { setGame, setGames, setUser } from './state';
 
 const WS_URL = 'ws://localhost:8080/ws';
 
@@ -34,13 +34,13 @@ function onError(event: Event) {
 
 function onMessage(event: MessageEvent) {
   const response = JSON.parse(event.data) as Response;
-  console.log("message received:")
+  console.log('message received ↓')
   console.log(response);
 
   switch (response.type) {
     case 'LOGIN': return handleLogin(response as LoginResponse);
-  //   case 'GAME': return handleGame(response as GameResponse);
-  //   case 'GAMES': return handleGames(response as GamesResponse);
+    case 'GAME': return handleGame(response as GameResponse);
+    case 'GAMES': return handleGames(response as GamesResponse);
   }
 }
 
@@ -164,28 +164,28 @@ export interface LoginResponse extends Response {
   user: User;
 }
 
-export interface GameResponse extends Response {
-  type: 'GAME';
-  game: Game;
-}
-
 export function handleLogin(response: LoginResponse) {
   const user = response.user;
   console.log('logging in ' + JSON.stringify(user));
   setUser(user)
 }
 
-// export function handleGame(response: GameResponse) {
-//   const game = response.game;
-//   // store.dispatch(setCurrent(game));
-// }
+export interface GameResponse extends Response {
+  type: 'GAME';
+  game: Game;
+}
 
-// export interface GamesResponse extends Response {
-//   type: 'GAMES';
-//   games: Game[];
-// }
+export function handleGame(response: GameResponse) {
+  const game = response.game;
+  setGame(game);
+}
 
-// export function handleGames(response: GamesResponse) {
-//   const games = response.games;
-//   // store.dispatch(setGames(games));
-// }
+export interface GamesResponse extends Response {
+  type: 'GAMES';
+  games: Game[];
+}
+
+export function handleGames(response: GamesResponse) {
+  const games = response.games;
+  setGames(games);
+}

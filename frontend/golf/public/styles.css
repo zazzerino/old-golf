@@ -1,4 +1,13 @@
 #root {
   display: flex;
   justify-content: center;
+  flex-direction: column;
+}
+
+#root svg {
+  margin: auto;
+}
+
+#create-game-button {
+  margin: auto;
 }
