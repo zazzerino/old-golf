@@ -27,8 +27,8 @@ public class GameController {
         webSocket.sendToSession(session, response);
     }
 
-    public void createGame(Session session) {
-        var game = gameService.createGame(session.getId());
+    public void createGame(Session session, Long userId) {
+        var game = gameService.createGame(userId);
         log.info("game created: " + game);
 
         var response = new GameResponse(game);

@@ -1,6 +1,6 @@
 import { createSvgElement, drawGame, Size } from './draw';
 import { getGame } from './state';
-import { createCreateGameButton } from './ui';
+import { createGameButton, startGameButton } from './ui';
 import { initWebSocket } from './websocket';
 
 const svgSize: Size = { width: 600, height: 400 };
@@ -13,4 +13,6 @@ const game = getGame();
 
 initWebSocket();
 drawGame(svgElem, game);
-createCreateGameButton(rootElem);
+
+createGameButton(rootElem);
+startGameButton(rootElem);

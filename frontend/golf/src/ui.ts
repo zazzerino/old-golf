@@ -1,6 +1,7 @@
-import { sendCreateGame } from "./websocket";
+import { getGame } from "./state";
+import { sendCreateGame, sendStartGame } from "./websocket";
 
-export function createButton(parent: HTMLElement, text: string, onClick?: () => any): HTMLButtonElement {
+function createButton(parent: HTMLElement, text: string, onClick?: () => any): HTMLButtonElement {
   const button = document.createElement('button');
   button.innerHTML = text;
 
@@ -12,14 +13,27 @@ export function createButton(parent: HTMLElement, text: string, onClick?: () => 
   return button;
 }
 
-export function createCreateGameButton(parent: HTMLElement, id = 'create-game-button'): HTMLButtonElement {
-  const createGameButton = createButton(parent, 'Create Game');
-  createGameButton.id = id;
+export function createGameButton(parent: HTMLElement, id = 'create-game-button'): HTMLButtonElement {
+  const button = createButton(parent, 'Create Game');
+  button.id = id;
 
-  createGameButton.onclick = (_ev) => {
+  button.onclick = (_ev) => {
     console.log('creating game...');
-    sendCreateGame();
+    // sendCreateGame();
   }
 
-  return createGameButton;
+  return button;
+}
+
+export function startGameButton(parent: HTMLElement, id = 'start-game-button'): HTMLButtonElement {
+  const button = createButton(parent, 'Start Game');
+  button.id = id;
+
+  button.onclick = (_ev) => {
+    console.log('starting game...');
+    const game = getGame();
+    // sendStartGame();
+  }
+
+  return button;
 }

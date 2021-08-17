@@ -52,6 +52,7 @@ export interface Message {
 
 export interface CreateGameMessage extends Message {
   type: 'CREATE_GAME';
+  userId: number;
 }
 
 export interface StartGameMessage extends Message {
@@ -75,12 +76,15 @@ export interface EventMessage extends Message {
 
 // send messages
 
-export function createGameMessage(): CreateGameMessage {
-  return { type: 'CREATE_GAME' };
+export function createGameMessage(userId: number): CreateGameMessage {
+  return { 
+    type: 'CREATE_GAME',
+    userId,
+  };
 }
 
-export function sendCreateGame() {
-  send(createGameMessage());
+export function sendCreateGame(userId: number) {
+  send(createGameMessage(userId));
 }
 
 export function startGameMessage(gameId: number): StartGameMessage {

@@ -22,11 +22,8 @@ public class GameService {
         this.userService = userService;
     }
 
-    public Game createGame(String sessionId) {
-        var user = userService
-                .getBySessionId(sessionId)
-                .orElseThrow();
-
+    public Game createGame(Long userId) {
+        var user = userService.getById(userId).orElseThrow();
         var gameId = idService.nextGameId();
         var player = Player.from(user);
         var game = new Game(gameId, player);
@@ -38,6 +35,23 @@ public class GameService {
 
         return game;
     }
+
+//    public Game createGame(String sessionId) {
+//        var user = userService
+//                .getBySessionId(sessionId)
+//                .orElseThrow();
+//
+//        var gameId = idService.nextGameId();
+//        var player = Player.from(user);
+//        var game = new Game(gameId, player);
+//
+//        gameDao.save(game);
+//
+//        user.setGameId(gameId);
+//        userService.update(user);
+//
+//        return game;
+//    }
 
     public Game startGame(Long gameId) {
         var game = gameDao

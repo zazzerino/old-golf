@@ -2,14 +2,18 @@ import { Game } from "./game";
 import { User } from "./user";
 
 export interface AppState {
-  user?: User;
-  game?: Game;
-  games?: Game[];
+  user: User | null;
+  game: Game | null;
+  games: Game[] | [];
 }
 
-const appState: AppState = {};
+const appState: AppState = {
+  user: null,
+  game: null,
+  games: [],
+};
 
-const handler = {
+const handler: ProxyHandler<any> = {
   set: (obj, prop, value) => {
     const valStr = JSON.stringify(value);
 
@@ -29,6 +33,7 @@ const handler = {
     return true;
   }
 }
+
 const proxy: AppState = new Proxy(appState, handler);
 
 export function getUser(): User | undefined {
@@ -40,7 +45,7 @@ export function setUser(user: User): AppState {
   return proxy;
 }
 
-export function getGame(): Game | undefined {
+export function getGame(): Game {
   return proxy.game;
 }
 

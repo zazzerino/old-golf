@@ -24,7 +24,8 @@ public class MessageDecoder implements Decoder.Text<Message> {
             }
 
             case CREATE_GAME -> {
-                return new CreateGameMessage();
+                var userId = jsonObject.getLong("userId");
+                return new CreateGameMessage(userId);
             }
 
             case START_GAME -> {
