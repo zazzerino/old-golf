@@ -8,27 +8,24 @@ export interface Player {
   name: string;
   hand: Hand;
   heldCard: string;
-  score: number;
   visibleScore: number;
 }
 
-export type StateType = 'INIT' | 'UNCOVER_TWO' | 'TAKE' | 'DISCARD'
-  | 'UNCOVER' | 'FINAL_PICKUP' | 'FINAL_DISCARD' | 'UNCOVER_ALL' | 'GAME_OVER';
+export type StateType =
+  'INIT' | 'UNCOVER_TWO' | 'TAKE' | 'DISCARD' | 'UNCOVER' | 'FINAL_PICKUP' | 'FINAL_DISCARD' | 'GAME_OVER';
 
 export type CardLocation = 'DECK' | 'TABLE' | 'HELD' | 'HAND0' | 'HAND1' | 'HAND2' | 'HAND3' | 'HAND4' | 'HAND5';
 
 export interface Game {
   id: number;
   stateType: StateType;
-  players: Player[];
   hostId: number;
-  hasStarted: boolean;
-  tableCard: string | null;
-  tableCards: string[];
-  deckCard: string | null;
-  scores: Record<number, number>;
+  players: Player[];
+  deckCard: string;
+  tableCard: string;
+  turn: number;
   playerTurn: number;
-  playableCards: Record<number, CardLocation[]>;
+  hasStarted: boolean;
 }
 
 export type EventType = 'TAKE_FROM_DECK' | 'TAKE_FROM_TABLE' | 'SWAP_CARD' | 'DISCARD';
