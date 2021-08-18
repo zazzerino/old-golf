@@ -1,8 +1,5 @@
 import { Game } from "./game";
 
-const SVG_NS = 'http://www.w3.org/2000/svg';
-const XLINK_NS = 'http://www.w3.org/1999/xlink';
-
 export interface Point {
   x: number;
   y: number;
@@ -13,8 +10,11 @@ export interface Size {
   height: number;
 }
 
-const cardScale = '10%';
-const cardSize: Size = { width: 60, height: 85 };
+const SVG_NS = 'http://www.w3.org/2000/svg';
+const XLINK_NS = 'http://www.w3.org/1999/xlink';
+
+const CARD_SCALE = '10%';
+const CARD_SIZE: Size = { width: 60, height: 85 };
 
 // const handPadding = 2;
 
@@ -41,7 +41,7 @@ export function createSvgElement(size: Size, backgroundColor = 'aliceblue'): SVG
 function createCardImage(card: string, point: Point): SVGImageElement {
   const image = document.createElementNS(SVG_NS, 'image');
 
-  image.setAttribute('width', cardScale);
+  image.setAttribute('width', CARD_SCALE);
   image.setAttribute('x', point.x.toString());
   image.setAttribute('y', point.y.toString());
   image.setAttributeNS(XLINK_NS, 'xlink:href', cardPath(card));
@@ -56,18 +56,35 @@ function drawCard(svg: SVGSVGElement, card: string, point: Point): SVGImageEleme
   return image;
 }
 
-function drawDeck(svg: SVGSVGElement): SVGImageElement {
+function drawDeck(svg: SVGSVGElement, hasStarted: boolean): SVGImageElement {
   const rect = svg.getBoundingClientRect();
-  const x = rect.width / 2 - cardSize.width / 2;
-  const y = rect.height / 2 - cardSize.height / 2;
+  const y = rect.height / 2 - CARD_SIZE.height / 2;
+  
+  let x = rect.width / 2 - CARD_SIZE.width / 2;
+
+  if (hasStarted) {
+    x -= CARD_SIZE.width / 2;
+  }
 
   return drawCard(svg, '2B', { x, y });
+}
+
+function drawTableCard(svg: SVGSVGElement, card: string) {
+  const rect = svg.getBoundingClientRect();
+  const x = rect.width / 2;
+  const y = rect.height / 2 - CARD_SIZE.height / 2;
+
+  return drawCard(svg, card, { x, y });
 }
 
 export function drawGame(svgElem: SVGSVGElement, game: Game) {
   empty(svgElem);
 
   if (game) {
-    drawDeck(svgElem);
+    const hasStarted = game.hasStarted;
+    drawDeck(svgElem, hasStarted);
+    if (hasStarted) {
+      drawTableCard(svgElem, game.tableCard);
+    }
   }
 }

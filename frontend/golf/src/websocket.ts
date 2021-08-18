@@ -44,20 +44,12 @@ function onMessage(event: MessageEvent) {
   }
 }
 
+// send messages
+
 export type MessageType = 'LOGIN' | 'CREATE_GAME' | 'START_GAME' | 'EVENT';
 
 export interface Message {
   type: MessageType;
-}
-
-export interface CreateGameMessage extends Message {
-  type: 'CREATE_GAME';
-  userId: number;
-}
-
-export interface StartGameMessage extends Message {
-  type: 'START_GAME';
-  gameId: number;
 }
 
 export type EventType =
@@ -74,7 +66,10 @@ export interface EventMessage extends Message {
   handIndex?: number;
 }
 
-// send messages
+export interface CreateGameMessage extends Message {
+  type: 'CREATE_GAME';
+  userId: number;
+}
 
 export function createGameMessage(userId: number): CreateGameMessage {
   return { 
@@ -87,15 +82,22 @@ export function sendCreateGame(userId: number) {
   send(createGameMessage(userId));
 }
 
-export function startGameMessage(gameId: number): StartGameMessage {
+export interface StartGameMessage extends Message {
+  type: 'START_GAME';
+  gameId: number;
+  playerId: number;
+}
+
+export function startGameMessage(gameId: number, playerId: number): StartGameMessage {
   return { 
     type: 'START_GAME',
     gameId,
+    playerId,
  };
 }
 
-export function sendStartGame(gameId: number) {
-  send(startGameMessage(gameId));
+export function sendStartGame(gameId: number, playerId: number) {
+  send(startGameMessage(gameId, playerId));
 }
 
 export function sendTakeFromDeck(gameId: number, playerId: number) {

@@ -41,38 +41,6 @@ public class MessageDecoder implements Decoder.Text<Message> {
                 return new EventMessage(gameId, playerId, eventType, handIndex);
             }
 
-//            case TAKE_FROM_DECK -> {
-//                var gameId = jsonObject.getLong("gameId");
-//                var playerId = jsonObject.getLong("playerId");
-//                return new TakeFromDeckMessage(gameId, playerId);
-//            }
-//
-//            case TAKE_FROM_TABLE -> {
-//                var gameId = jsonObject.getLong("gameId");
-//                var playerId = jsonObject.getLong("playerId");
-//                return new TakeFromTableMessage(gameId, playerId);
-//            }
-//
-//            case SWAP_CARD -> {
-//                var gameId = jsonObject.getLong("gameId");
-//                var playerId = jsonObject.getLong("playerId");
-//                var handIndex = jsonObject.getInteger("handIndex");
-//                return new SwapCardMessage(gameId, playerId, handIndex);
-//            }
-//
-//            case DISCARD -> {
-//                var gameId = jsonObject.getLong("gameId");
-//                var playerId = jsonObject.getLong("playerId");
-//                return new DiscardMessage(gameId, playerId);
-//            }
-//
-//            case UNCOVER -> {
-//                var gameId = jsonObject.getLong("gameId");
-//                var playerId = jsonObject.getLong("playerId");
-//                var handIndex = jsonObject.getInteger("handIndex");
-//                return new UncoverMessage(gameId, playerId, handIndex);
-//            }
-
             default -> throw new DecodeException(s, "unrecognized message type: " + messageType);
         }
     }

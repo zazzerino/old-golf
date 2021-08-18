@@ -1,3 +1,5 @@
+import { svgElem } from "./index";
+import { drawGame } from "./draw";
 import { Game } from "./game";
 import { User } from "./user";
 
@@ -23,6 +25,7 @@ const handler: ProxyHandler<any> = {
         break;
       case 'game':
         console.log('updating game: ' + valStr);
+        drawGame(svgElem, value);
         break;
       case 'games':
         console.log('updating games');
@@ -36,7 +39,7 @@ const handler: ProxyHandler<any> = {
 
 const proxy: AppState = new Proxy(appState, handler);
 
-export function getUser(): User | undefined {
+export function getUser(): User {
   return proxy.user;
 }
 
@@ -54,7 +57,7 @@ export function setGame(game: Game): AppState {
   return proxy;
 }
 
-export function getGames(): Game[] | undefined {
+export function getGames(): Game[] {
   return proxy.games;
 }
 

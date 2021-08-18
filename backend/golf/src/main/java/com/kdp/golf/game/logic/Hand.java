@@ -128,7 +128,6 @@ public class Hand {
         return score;
     }
 
-    @JsonProperty
     public int score() {
         if (cards.isEmpty()) {
             return 0;
