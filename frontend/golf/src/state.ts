@@ -65,3 +65,14 @@ export function setGames(games: Game[]): AppState {
   proxy.games = games;
   return proxy;
 }
+
+export function getUserHand(): string[] {
+  const user = getUser();
+  const game = getGame();
+
+  if (user && game) {
+    //  return game.players.find(p => user.id === p.id).hand;
+    return game.players.find(p => user.id === p.id).hand.cards;
+    // return JSON.stringify(game.players);
+  }
+}

@@ -3,7 +3,7 @@ import { getGame } from './state';
 import { createGameButton, startGameButton } from './ui';
 import { initWebSocket } from './websocket';
 
-const svgSize: Size = { width: 600, height: 400 };
+const svgSize: Size = { width: 600, height: 500 };
 export const svgElem = createSvgElement(svgSize);
 
 export const rootElem = document.getElementById('root');

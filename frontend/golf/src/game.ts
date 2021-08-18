@@ -1,3 +1,5 @@
+export const HAND_SIZE = 6;
+
 export interface Hand {
   cards: string[];
   uncoveredIndices: number[];

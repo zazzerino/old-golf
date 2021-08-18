@@ -1,6 +1,7 @@
-import { Game } from "./game";
+import { Game, HAND_SIZE } from "./game";
+import { getUserHand } from "./state";
 
-export interface Point {
+export interface Coord {
   x: number;
   y: number;
 }
@@ -16,7 +17,7 @@ const XLINK_NS = 'http://www.w3.org/1999/xlink';
 const CARD_SCALE = '10%';
 const CARD_SIZE: Size = { width: 60, height: 85 };
 
-// const handPadding = 2;
+const handPadding = 2;
 
 function empty(elem: Element) {
   while (elem.firstChild) {
@@ -38,19 +39,19 @@ export function createSvgElement(size: Size, backgroundColor = 'aliceblue'): SVG
   return elem;
 }
 
-function createCardImage(card: string, point: Point): SVGImageElement {
+function createCardImage(card: string, coord: Coord): SVGImageElement {
   const image = document.createElementNS(SVG_NS, 'image');
 
   image.setAttribute('width', CARD_SCALE);
-  image.setAttribute('x', point.x.toString());
-  image.setAttribute('y', point.y.toString());
+  image.setAttribute('x', coord.x.toString());
+  image.setAttribute('y', coord.y.toString());
   image.setAttributeNS(XLINK_NS, 'xlink:href', cardPath(card));
 
   return image;
 }
 
-function drawCard(svg: SVGSVGElement, card: string, point: Point): SVGImageElement {
-  const image = createCardImage(card, point);
+function drawCard(svg: SVGSVGElement, card: string, coord: Coord): SVGImageElement {
+  const image = createCardImage(card, coord);
   svg.appendChild(image);
 
   return image;
@@ -77,6 +78,51 @@ function drawTableCard(svg: SVGSVGElement, card: string) {
   return drawCard(svg, card, { x, y });
 }
 
+function svgSize(elem: SVGElement): Size {
+  const rect = elem.getBoundingClientRect();
+  const width = rect.width;
+  const height = rect.height;
+
+  return { width, height };
+}
+
+export type HandPosition = 'bottom' | 'left' | 'top' | 'right';
+
+export function drawHand(svg: SVGSVGElement, cards: string[], pos: HandPosition): SVGGElement {
+  const group = document.createElementNS(SVG_NS, 'g');
+
+  for (let i = 0; i < HAND_SIZE; i++) {
+    const offset = i % 3;
+    const x = CARD_SIZE.width * offset + handPadding * offset;
+    const y = i < 3 ? 0 : CARD_SIZE.height + handPadding;
+
+    console.log('creating card: ' + i + ', ' + cards[i]);
+    const card = createCardImage(cards[i], { x, y });
+    group.appendChild(card);
+  }
+
+  const size = svgSize(svg);
+
+  const midX = size.width / 2 - CARD_SIZE.width * 1.5;
+  const bottomY = size.height - CARD_SIZE.height * 2 - handPadding * 2;
+  let x: number;
+  let y: number;
+
+  switch (pos) {
+    case 'bottom':
+      group.setAttribute('transform', `translate(${midX}, ${bottomY})`);
+      break;
+    case 'top':
+      x = midX + CARD_SIZE.width * 3 + handPadding * 2;
+      y = CARD_SIZE.height * 2 + handPadding * 2;
+      group.setAttribute('transform', `translate(${x}, ${y}), rotate(180)`);
+      break;
+  }
+
+  svg.appendChild(group);
+  return group;
+}
+
 export function drawGame(svgElem: SVGSVGElement, game: Game) {
   empty(svgElem);
 
@@ -85,6 +131,9 @@ export function drawGame(svgElem: SVGSVGElement, game: Game) {
     drawDeck(svgElem, hasStarted);
     if (hasStarted) {
       drawTableCard(svgElem, game.tableCard);
+      const userHand = getUserHand();
+      drawHand(svgElem, userHand, 'bottom');
     }
   }
 }
+

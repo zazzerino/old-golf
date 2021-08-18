@@ -1,6 +1,8 @@
 import { User } from './user';
 import { Game } from './game';
 import { setGame, setGames, setUser } from './state';
+import { drawGame } from './draw';
+import { svgElem } from '.';
 
 const WS_URL = 'ws://localhost:8080/ws';
 
@@ -184,6 +186,7 @@ export interface GameResponse extends Response {
 export function handleGame(response: GameResponse) {
   const game = response.game;
   setGame(game);
+  drawGame(svgElem, game);
 }
 
 export interface GamesResponse extends Response {
