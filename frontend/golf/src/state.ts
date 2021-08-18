@@ -94,3 +94,7 @@ export function getHeldCard() {
 export function getUncoveredCards() {
   return getPlayer().hand.uncoveredCards;
 }
+
+export function getScore() {
+  return getPlayer().hand.visibleScore;
+}

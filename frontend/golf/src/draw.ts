@@ -1,6 +1,6 @@
 import { deckCardClicked, handCardClicked, heldCardClicked, tableCardClicked } from "./event";
 import { Game, HAND_SIZE } from "./game";
-import { getHandCards, getHeldCard, getUncoveredCards } from "./state";
+import { getHandCards, getHeldCard, getScore, getUncoveredCards } from "./state";
 
 export interface Coord {
   x: number;
@@ -147,6 +147,28 @@ function drawHeldCard(svg: SVGSVGElement, cardName: string): SVGImageElement {
   return card;
 }
 
+function createText(coord: Coord, text: string, color = 'gray') {
+  const elem = document.createElementNS(SVG_NS, 'text');
+  
+  elem.textContent = text;
+  elem.setAttribute('x', coord.x.toString());
+  elem.setAttribute('y', coord.y.toString());
+  elem.setAttribute('fill', color);
+
+  return elem;
+}
+
+function drawScore(svg: SVGElement, score: number) {
+  const size = svgSize(svg);
+  const x = size.width / 7;
+  const y = size.height - CARD_SIZE.height * 1;
+  const text = 'Score: ' + score;
+
+  const elem = createText({ x, y }, text);
+  svg.appendChild(elem);
+  return elem;
+}
+
 export function drawGame(svgElem: SVGSVGElement, game: Game) {
   empty(svgElem);
 
@@ -158,6 +180,11 @@ export function drawGame(svgElem: SVGSVGElement, game: Game) {
       drawTableCard(svgElem, game.tableCard);
       drawHeldCard(svgElem, getHeldCard());
       drawHand(svgElem, getHandCards(), 'bottom', getUncoveredCards());
+
+      const score = getScore();
+      if (score != null) {
+        drawScore(svgElem, score);
+      }
     }
   }
 }

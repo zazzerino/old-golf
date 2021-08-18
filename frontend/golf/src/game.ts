@@ -3,6 +3,7 @@ export const HAND_SIZE = 6;
 export interface Hand {
   cards: string[];
   uncoveredCards: number[];
+  visibleScore: number;
 }
 
 export interface Player {
@@ -10,7 +11,6 @@ export interface Player {
   name: string;
   hand: Hand;
   heldCard: string;
-  visibleScore: number;
 }
 
 export type StateType =
