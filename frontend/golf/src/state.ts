@@ -70,7 +70,7 @@ export function setGames(games: Game[]): AppState {
   return proxy;
 }
 
-export function getUserPlayer() {
+export function getPlayer() {
   const user = getUser();
   const game = getGame();
 
@@ -79,10 +79,18 @@ export function getUserPlayer() {
   }
 }
 
-export function getUserHand() {
-  return getUserPlayer().hand.cards;
+export function getPlayerId() {
+  return getPlayer().id;
 }
 
-export function getUserHeldCard() {
-  return getUserPlayer().heldCard;
+export function getHandCards() {
+  return getPlayer().hand.cards;
+}
+
+export function getHeldCard() {
+  return getPlayer().heldCard;
+}
+
+export function getUncoveredCards() {
+  return getPlayer().hand.uncoveredCards;
 }

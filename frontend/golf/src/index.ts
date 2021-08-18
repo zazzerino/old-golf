@@ -13,6 +13,5 @@ const game = getGame();
 
 initWebSocket();
 drawGame(svgElem, game);
-
 createGameButton(rootElem);
 startGameButton(rootElem);

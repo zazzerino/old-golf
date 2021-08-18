@@ -8,18 +8,18 @@ import java.util.*;
 public class Hand {
 
     private final List<Card> cards;
-    private Set<Integer> uncoveredIndices;
+    private Set<Integer> uncoveredCards;
 
     public static final int HAND_SIZE = 6;
 
     public Hand() {
         cards = new ArrayList<>();
-        uncoveredIndices = new HashSet<>();
+        uncoveredCards = new HashSet<>();
     }
 
     public Hand(List<Card> cards, Set<Integer> coveredCards) {
         this.cards = cards;
-        this.uncoveredIndices = coveredCards;
+        this.uncoveredCards = coveredCards;
     }
 
     @JsonProperty
@@ -28,22 +28,22 @@ public class Hand {
     }
 
     @JsonProperty
-    public Set<Integer> uncoveredIndices() {
-        return uncoveredIndices;
+    public Set<Integer> uncoveredCards() {
+        return uncoveredCards;
     }
 
     public Hand uncover(int index) {
-        uncoveredIndices.add(index);
+        uncoveredCards.add(index);
         return this;
     }
 
     public Hand uncoverAll() {
-        uncoveredIndices = Set.of(0, 1, 2, 3, 4, 5);
+        uncoveredCards = Set.of(0, 1, 2, 3, 4, 5);
         return this;
     }
 
     public boolean allUncovered() {
-        return uncoveredIndices.size() == HAND_SIZE;
+        return uncoveredCards.size() == HAND_SIZE;
     }
 
     public Hand addAll(List<Card> cards) {
@@ -76,7 +76,7 @@ public class Hand {
         var ranks = cards.stream().map(Card::rank).toList();
         Map<Integer, Card> uncoveredCards = new HashMap<>();
 
-        for (var i : uncoveredIndices) {
+        for (var i : this.uncoveredCards) {
             var card = cards.get(i);
             uncoveredCards.put(i, card);
         }
@@ -201,7 +201,7 @@ public class Hand {
     public String toString() {
         return "Hand{" +
                 "cards=" + cards +
-                ", uncoveredCards=" + uncoveredIndices +
+                ", uncoveredCards=" + uncoveredCards +
                 '}';
     }
 }

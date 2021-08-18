@@ -53,20 +53,6 @@ export interface Message {
   type: MessageType;
 }
 
-export type EventType =
-  'TAKE_FROM_DECK'
-  | 'TAKE_FROM_TABLE'
-  | 'SWAP_CARD'
-  | 'DISCARD'
-  | 'UNCOVER';
-
-export interface EventMessage extends Message {
-  eventType: EventType;
-  gameId: number;
-  playerId: number;
-  handIndex?: number;
-}
-
 export interface CreateGameMessage extends Message {
   type: 'CREATE_GAME';
   userId: number;
@@ -99,6 +85,20 @@ export function startGameMessage(gameId: number, playerId: number): StartGameMes
 
 export function sendStartGame(gameId: number, playerId: number) {
   send(startGameMessage(gameId, playerId));
+}
+
+export type EventType =
+  'TAKE_FROM_DECK'
+  | 'TAKE_FROM_TABLE'
+  | 'SWAP_CARD'
+  | 'DISCARD'
+  | 'UNCOVER';
+
+export interface EventMessage extends Message {
+  eventType: EventType;
+  gameId: number;
+  playerId: number;
+  handIndex?: number;
 }
 
 export function sendTakeFromDeck(gameId: number, playerId: number) {
