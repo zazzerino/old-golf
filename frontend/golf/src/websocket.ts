@@ -1,6 +1,5 @@
-import { User } from './user';
 import { Game } from './game';
-import { setGame, setGames, setUser } from './state';
+import { User, setGame, setGames, setUser } from './state';
 import { drawGame } from './draw';
 import { svgElem } from '.';
 

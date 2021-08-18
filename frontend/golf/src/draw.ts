@@ -1,5 +1,5 @@
 import { Game, HAND_SIZE } from "./game";
-import { getUserHand } from "./state";
+import { getUserHand, getUserHeldCard } from "./state";
 
 export interface Coord {
   x: number;
@@ -25,7 +25,7 @@ function empty(elem: Element) {
   }
 }
 
-function cardPath(card: string) {
+function cardPath(card: string): string {
   return `img/cards/${card}.svg`;
 }
 
@@ -45,7 +45,7 @@ function createCardImage(card: string, coord: Coord): SVGImageElement {
   image.setAttribute('width', CARD_SCALE);
   image.setAttribute('x', coord.x.toString());
   image.setAttribute('y', coord.y.toString());
-  image.setAttributeNS(XLINK_NS, 'xlink:href', cardPath(card));
+  image.setAttributeNS(XLINK_NS, 'href', cardPath(card));
 
   return image;
 }
@@ -70,7 +70,7 @@ function drawDeck(svg: SVGSVGElement, hasStarted: boolean): SVGImageElement {
   return drawCard(svg, '2B', { x, y });
 }
 
-function drawTableCard(svg: SVGSVGElement, card: string) {
+function drawTableCard(svg: SVGSVGElement, card: string): SVGImageElement {
   const rect = svg.getBoundingClientRect();
   const x = rect.width / 2;
   const y = rect.height / 2 - CARD_SIZE.height / 2;
@@ -123,6 +123,14 @@ export function drawHand(svg: SVGSVGElement, cards: string[], pos: HandPosition)
   return group;
 }
 
+function drawHeldCard(svg: SVGSVGElement, card: string): SVGImageElement {
+  const size = svgSize(svg);
+  const x = size.width * 0.75;
+  const y = size.height - CARD_SIZE.height * 1.5;
+
+  return drawCard(svg, card, { x, y });
+}
+
 export function drawGame(svgElem: SVGSVGElement, game: Game) {
   empty(svgElem);
 
@@ -131,9 +139,8 @@ export function drawGame(svgElem: SVGSVGElement, game: Game) {
     drawDeck(svgElem, hasStarted);
     if (hasStarted) {
       drawTableCard(svgElem, game.tableCard);
-      const userHand = getUserHand();
-      drawHand(svgElem, userHand, 'bottom');
+      drawHeldCard(svgElem, getUserHeldCard());
+      drawHand(svgElem, getUserHand(), 'bottom');
     }
   }
 }
-

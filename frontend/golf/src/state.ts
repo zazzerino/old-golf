@@ -1,7 +1,11 @@
 import { svgElem } from "./index";
 import { drawGame } from "./draw";
 import { Game } from "./game";
-import { User } from "./user";
+
+export interface User {
+  id: number;
+  name: string;
+}
 
 export interface AppState {
   user: User | null;
@@ -66,13 +70,19 @@ export function setGames(games: Game[]): AppState {
   return proxy;
 }
 
-export function getUserHand(): string[] {
+export function getUserPlayer() {
   const user = getUser();
   const game = getGame();
 
   if (user && game) {
-    //  return game.players.find(p => user.id === p.id).hand;
-    return game.players.find(p => user.id === p.id).hand.cards;
-    // return JSON.stringify(game.players);
+    return game.players.find(p => user.id === p.id);
   }
+}
+
+export function getUserHand() {
+  return getUserPlayer().hand.cards;
+}
+
+export function getUserHeldCard() {
+  return getUserPlayer().heldCard;
 }
