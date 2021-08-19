@@ -27,7 +27,7 @@ public class FinalDiscardState implements GameState {
                 game.discard(playerId);
                 player.hand().uncoverAll();
 
-                var gameOver = game.players().stream()
+                var gameOver = game.getPlayers().stream()
                         .allMatch(p -> p.hand().allUncovered());
 
                 if (gameOver) {
@@ -40,7 +40,7 @@ public class FinalDiscardState implements GameState {
                 game.swapCard(playerId, s.handIndex());
                 player.hand().uncoverAll();
 
-                var gameOver = game.players().stream()
+                var gameOver = game.getPlayers().stream()
                         .allMatch(p -> p.hand().allUncovered());
 
                 if (gameOver) {

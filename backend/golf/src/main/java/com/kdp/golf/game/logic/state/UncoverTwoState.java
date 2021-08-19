@@ -1,6 +1,6 @@
 package com.kdp.golf.game.logic.state;
 
-import com.kdp.golf.game.logic.CardLocation;
+import com.kdp.golf.game.logic.card.CardLocation;
 import com.kdp.golf.game.logic.Game;
 import com.kdp.golf.game.logic.Player;
 import com.kdp.golf.game.logic.event.Event;
@@ -39,7 +39,7 @@ public class UncoverTwoState implements GameState {
         }
 
         Predicate<Player> ready = p -> p.uncoveredCardCount() == 2;
-        var allReady = game.players().stream().allMatch(ready);
+        var allReady = game.getPlayers().stream().allMatch(ready);
 
         if (allReady) {
             game.setState(TakeState.instance());
@@ -49,14 +49,13 @@ public class UncoverTwoState implements GameState {
     }
 
     @Override
-    public Map<Long, List<CardLocation>> playableCards(Game game) {
-        return Map.of();
-//        return List.of(
-//                CardLocation.HAND0,
-//                CardLocation.HAND1,
-//                CardLocation.HAND2,
-//                CardLocation.HAND3,
-//                CardLocation.HAND4,
-//                CardLocation.HAND5);
+    public List<CardLocation> playableCards(Game game) {
+        return List.of(
+                CardLocation.HAND0,
+                CardLocation.HAND1,
+                CardLocation.HAND2,
+                CardLocation.HAND3,
+                CardLocation.HAND4,
+                CardLocation.HAND5);
     }
 }

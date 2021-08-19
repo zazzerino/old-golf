@@ -28,11 +28,11 @@ class GameTest {
 
         var event0 = new UncoverEvent(gameId, playerId, 0);
         game.handleEvent(event0);
-        assertEquals(GameState.StateType.UNCOVER_TWO, game.stateType());
+        assertEquals(GameState.StateType.UNCOVER_TWO, game.getStateType());
 
         var event1 = new UncoverEvent(gameId, playerId, 5);
         game.handleEvent(event1);
-        assertEquals(GameState.StateType.TAKE, game.stateType());
+        assertEquals(GameState.StateType.TAKE, game.getStateType());
     }
 
 //    @Test

@@ -1,6 +1,6 @@
 package com.kdp.golf.game.logic.state;
 
-import com.kdp.golf.game.logic.CardLocation;
+import com.kdp.golf.game.logic.card.CardLocation;
 import com.kdp.golf.game.logic.Game;
 import com.kdp.golf.game.logic.event.Event;
 import com.kdp.golf.game.logic.event.TakeFromDeckEvent;
@@ -44,8 +44,7 @@ public class TakeState implements GameState {
     }
 
     @Override
-    public Map<Long, List<CardLocation>> playableCards(Game game) {
-        return Map.of();
-//        return List.of(CardLocation.DECK, CardLocation.TABLE);
+    public List<CardLocation> playableCards(Game game) {
+        return List.of(CardLocation.DECK, CardLocation.TABLE);
     }
 }

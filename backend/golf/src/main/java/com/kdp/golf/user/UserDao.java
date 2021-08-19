@@ -8,6 +8,7 @@ import java.util.concurrent.ConcurrentHashMap;
 
 @ApplicationScoped
 public class UserDao {
+
     private final Map<Long, User> users = new ConcurrentHashMap<>();
 
     public Collection<User> getAll() {

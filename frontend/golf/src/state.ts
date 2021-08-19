@@ -1,6 +1,6 @@
 import { svgElem } from "./index";
 import { drawGame } from "./draw";
-import { Game } from "./game";
+import { CardLocation, Game, Player } from "./game";
 
 export interface User {
   id: number;
@@ -70,7 +70,7 @@ export function setGames(games: Game[]): AppState {
   return proxy;
 }
 
-export function getPlayer() {
+export function getPlayer(): Player {
   const user = getUser();
   const game = getGame();
 
@@ -79,22 +79,37 @@ export function getPlayer() {
   }
 }
 
-export function getPlayerId() {
+export function getPlayerId(): number {
   return getPlayer().id;
 }
 
-export function getHandCards() {
+export function getHandCards(): string[] {
   return getPlayer().hand.cards;
 }
 
-export function getHeldCard() {
+export function getHeldCard(): string {
   return getPlayer().heldCard;
 }
 
-export function getUncoveredCards() {
+export function getUncoveredCards(): number[] {
   return getPlayer().hand.uncoveredCards;
 }
 
-export function getScore() {
+export function getScore(): number {
   return getPlayer().hand.visibleScore;
+}
+
+export function getPlayerTurn(): number {
+  return getGame().playerTurn;
+}
+
+function isPlayersTurn(): boolean {
+  return getPlayerId() == getPlayerTurn();
+}
+
+export function getPlayableCards(): CardLocation[] {
+  const game = getGame();
+  console.log('g: ' + JSON.stringify(game));
+  // return isPlayersTurn() ? game.playableCards : [];
+  return [];
 }

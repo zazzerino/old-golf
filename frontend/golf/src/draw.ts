@@ -1,6 +1,6 @@
 import { deckCardClicked, handCardClicked, heldCardClicked, tableCardClicked } from "./event";
-import { Game, HAND_SIZE } from "./game";
-import { getHandCards, getHeldCard, getScore, getUncoveredCards } from "./state";
+import { CardLocation, Game, HAND_SIZE } from "./game";
+import { getHandCards, getHeldCard, getPlayableCards, getScore, getUncoveredCards } from "./state";
 
 export interface Coord {
   x: number;
@@ -19,6 +19,7 @@ const CARD_SCALE = '10%';
 const CARD_SIZE: Size = { width: 60, height: 85 };
 
 const handPadding = 2;
+const highlightPadding = 2;
 
 function empty(elem: Element) {
   while (elem.firstChild) {
@@ -51,18 +52,39 @@ function createCardImage(card: string, coord: Coord): SVGImageElement {
   return image;
 }
 
-function drawCard(svg: SVGSVGElement, card: string, coord: Coord): SVGImageElement {
-  const image = createCardImage(card, coord);
-  svg.appendChild(image);
+export function makeRect(coord: Coord, size: Size, color = '#44ff00'): SVGRectElement {
+  const rect = document.createElementNS(SVG_NS, 'rect');
 
+  rect.setAttribute('x', coord.x.toString());
+  rect.setAttribute('y', coord.y.toString());
+  rect.setAttribute('width', size.width.toString());
+  rect.setAttribute('height', size.height.toString());
+  rect.setAttribute('stroke', color);
+  rect.setAttribute('stroke-width', highlightPadding.toString());
+
+  return rect;
+}
+
+function createCardHighlight(coord: Coord) {
+  return makeRect(coord, CARD_SIZE);
+}
+
+function drawCard(svg: SVGSVGElement, card: string, coord: Coord, highlight = false): SVGImageElement {
+  const image = createCardImage(card, coord);
+
+  if (highlight) {
+    const cardHighlight = createCardHighlight(coord);
+    svg.appendChild(cardHighlight);
+  }
+
+  svg.appendChild(image);
   return image;
 }
 
 function drawDeck(svg: SVGSVGElement, hasStarted: boolean): SVGImageElement {
   const rect = svg.getBoundingClientRect();
+  let x = rect.width / 2 - CARD_SIZE.width / 2 - handPadding;
   const y = rect.height / 2 - CARD_SIZE.height / 2;
-
-  let x = rect.width / 2 - CARD_SIZE.width / 2;
 
   if (hasStarted) {
     x -= CARD_SIZE.width / 2;
@@ -74,12 +96,14 @@ function drawDeck(svg: SVGSVGElement, hasStarted: boolean): SVGImageElement {
   return card;
 }
 
-function drawTableCard(svg: SVGSVGElement, cardName: string): SVGImageElement {
+function drawTableCard(svg: SVGSVGElement, cardName: string, playableCards: CardLocation[] = []): SVGImageElement {
   const rect = svg.getBoundingClientRect();
-  const x = rect.width / 2;
+  const x = rect.width / 2 + handPadding;
   const y = rect.height / 2 - CARD_SIZE.height / 2;
 
-  const card = drawCard(svg, cardName, { x, y });
+  const highlight = playableCards.includes('TABLE');
+  console.log('should highlight? ' + highlight);
+  const card = drawCard(svg, cardName, { x, y }, highlight);
   card.onclick = (_ev) => tableCardClicked();
 
   return card;
@@ -118,6 +142,7 @@ function drawHand(svg: SVGSVGElement, cards: string[], pos: HandPosition, uncove
   const size = svgSize(svg);
   const midX = size.width / 2 - CARD_SIZE.width * 1.5;
   const bottomY = size.height - CARD_SIZE.height * 2 - handPadding * 2;
+
   let x: number;
   let y: number;
 
@@ -174,12 +199,17 @@ export function drawGame(svgElem: SVGSVGElement, game: Game) {
 
   if (game) {
     const hasStarted = game.hasStarted;
+    const playableCards = getPlayableCards();
     drawDeck(svgElem, hasStarted);
 
     if (hasStarted) {
-      drawTableCard(svgElem, game.tableCard);
-      drawHeldCard(svgElem, getHeldCard());
+      drawTableCard(svgElem, game.tableCard, playableCards);
       drawHand(svgElem, getHandCards(), 'bottom', getUncoveredCards());
+
+      const heldCard = getHeldCard();
+      if (heldCard != null) {
+        drawHeldCard(svgElem, heldCard);
+      }
 
       const score = getScore();
       if (score != null) {

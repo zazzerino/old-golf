@@ -1,4 +1,4 @@
-package com.kdp.golf.game.logic;
+package com.kdp.golf.game.logic.card;
 
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 

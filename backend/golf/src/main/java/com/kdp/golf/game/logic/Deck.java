@@ -1,5 +1,7 @@
 package com.kdp.golf.game.logic;
 
+import com.kdp.golf.game.logic.card.Card;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;

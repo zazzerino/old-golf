@@ -7,13 +7,9 @@ import java.util.Objects;
 public class User {
 
     public final Long id;
+    public final @JsonIgnore String sessionId;
     private String name;
-
-    @JsonIgnore
     private Long gameId;
-
-    @JsonIgnore
-    public final String sessionId;
 
     public final static String DEFAULT_NAME = "anon";
 
@@ -39,6 +35,7 @@ public class User {
         this.name = name;
     }
 
+    @JsonIgnore
     public Long getGameId() {
         return gameId;
     }

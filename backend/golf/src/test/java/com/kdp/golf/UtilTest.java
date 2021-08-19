@@ -8,22 +8,25 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.*;
 
 @QuarkusTest
-class UtilTest {
-
+class UtilTest
+{
     @Test
-    void sum() {
+    void sum()
+    {
         var n = Util.sumInt(List.of(1, 2, 3, 4));
         assertEquals(10, n);
     }
 
     @Test
-    void pickItems() {
+    void pickItems()
+    {
         var items = List.of(1, 2, 3, 4);
         assertEquals(List.of(1, 3), Util.pickItems(items, List.of(0, 2)));
     }
 
     @Test
-    void allEqual() {
+    void allEqual()
+    {
         var l0 = List.of(1, 2, 3, 4);
         assertFalse(Util.allEqual(l0));
 

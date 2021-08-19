@@ -1,6 +1,8 @@
 package com.kdp.golf.game.logic;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.kdp.golf.game.logic.card.Card;
+import com.kdp.golf.game.logic.card.CardLocation;
 import com.kdp.golf.game.logic.event.*;
 import com.kdp.golf.game.logic.state.GameState;
 import com.kdp.golf.game.logic.state.InitState;
@@ -129,13 +131,11 @@ public class Game {
         return Optional.ofNullable(players.get(playerId));
     }
 
-    @JsonProperty
-    public Collection<Player> players() {
+    public Collection<Player> getPlayers() {
         return players.values();
     }
 
-    @JsonProperty
-    public Long hostId() {
+    public Long getHostId() {
         return hostId;
     }
 
@@ -148,8 +148,7 @@ public class Game {
         return deck;
     }
 
-    @JsonProperty
-    public Optional<Card> tableCard() {
+    public Optional<Card> getTableCard() {
         try {
             return Optional.of(tableCards.peek());
         } catch (EmptyStackException e) {
@@ -157,8 +156,7 @@ public class Game {
         }
     }
 
-    @JsonProperty
-    public Optional<Card> deckCard() {
+    public Optional<Card> getDeckCard() {
         return Optional.ofNullable(deck.getCards().get(0));
     }
 
@@ -171,8 +169,7 @@ public class Game {
         return state;
     }
 
-    @JsonProperty
-    public GameState.StateType stateType() {
+    public GameState.StateType getStateType() {
         return state.type();
     }
 
@@ -181,8 +178,7 @@ public class Game {
         return this;
     }
 
-    @JsonProperty
-    public int turn() {
+    public int getTurn() {
         return turn;
     }
 
@@ -192,7 +188,7 @@ public class Game {
     }
 
     @JsonProperty
-    public Map<Long, List<CardLocation>> playableCards() {
+    public List<CardLocation> playableCards() {
         return state.playableCards(this);
     }
 
@@ -202,7 +198,7 @@ public class Game {
                 "id=" + id +
                 ", hostId=" + hostId +
                 ", players=" + players +
-                ", stateType=" + stateType() +
+                ", stateType=" + getStateType() +
                 ", deck=" + deck +
                 ", tableCards=" + tableCards +
                 ", turn=" + turn +

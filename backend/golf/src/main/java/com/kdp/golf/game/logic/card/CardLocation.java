@@ -1,4 +1,4 @@
-package com.kdp.golf.game.logic;
+package com.kdp.golf.game.logic.card;
 
 public enum CardLocation {
     DECK,

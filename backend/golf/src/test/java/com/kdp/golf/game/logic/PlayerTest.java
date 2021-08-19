@@ -1,12 +1,11 @@
 package com.kdp.golf.game.logic;
 
+import com.kdp.golf.game.logic.card.Card;
 import io.quarkus.test.junit.QuarkusTest;
 import org.jboss.logging.Logger;
 import org.junit.jupiter.api.Test;
 
 import java.util.stream.Stream;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 @QuarkusTest
 class PlayerTest {

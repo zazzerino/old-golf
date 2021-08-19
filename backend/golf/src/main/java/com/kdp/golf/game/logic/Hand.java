@@ -1,7 +1,9 @@
 package com.kdp.golf.game.logic;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.kdp.golf.Util;
+import com.kdp.golf.game.logic.card.Card;
 
 import java.util.*;
 
@@ -61,6 +63,7 @@ public class Hand {
         return this;
     }
 
+    @JsonIgnore
     public boolean isEmpty() {
         return cards.isEmpty();
     }
