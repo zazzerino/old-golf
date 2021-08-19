@@ -1,7 +1,6 @@
 import { Game } from './game';
-import { User, setGame, setGames, setUser } from './state';
-import { drawGame } from './draw';
-import { svgElem } from '.';
+import { User } from './user';
+import { store } from './store';
 
 const WS_URL = 'ws://localhost:8080/ws';
 
@@ -172,9 +171,8 @@ export interface LoginResponse extends Response {
 }
 
 export function handleLogin(response: LoginResponse) {
-  const user = response.user;
-  console.log('logging in ' + JSON.stringify(user));
-  setUser(user)
+  console.log('logging in ' + JSON.stringify(response.user));
+  store.dispatch('LOGIN', response.user);
 }
 
 export interface GameResponse extends Response {
@@ -183,9 +181,7 @@ export interface GameResponse extends Response {
 }
 
 export function handleGame(response: GameResponse) {
-  const game = response.game;
-  setGame(game);
-  drawGame(svgElem, game);
+  store.dispatch('SET_GAME', response.game);
 }
 
 export interface GamesResponse extends Response {
@@ -194,6 +190,5 @@ export interface GamesResponse extends Response {
 }
 
 export function handleGames(response: GamesResponse) {
-  const games = response.games;
-  setGames(games);
+  store.dispatch('SET_GAMES', response.games);
 }

@@ -1,4 +1,4 @@
-import { getGame, getUser } from "./state";
+import { getGame, getUser, store } from "./store";
 import { sendCreateGame, sendStartGame } from "./websocket";
 
 function createButton(parent: HTMLElement, text: string): HTMLButtonElement {
@@ -15,7 +15,7 @@ export function createGameButton(parent: HTMLElement, id = 'create-game-button')
 
   button.onclick = (_ev) => {
     console.log('creating game...');
-    const user = getUser();
+    const user = getUser(store.state);
     if (user) {
       sendCreateGame(user.id);
     }
@@ -30,8 +30,8 @@ export function startGameButton(parent: HTMLElement, id = 'start-game-button'): 
 
   button.onclick = (_ev) => {
     console.log('starting game...');
-    const user = getUser();
-    const game = getGame();
+    const user = getUser(store.state);
+    const game = getGame(store.state);
 
     if (user && game) {
       sendStartGame(game.id, user.id);
