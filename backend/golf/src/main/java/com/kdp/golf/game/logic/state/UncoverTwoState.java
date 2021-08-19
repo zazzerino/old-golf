@@ -7,7 +7,6 @@ import com.kdp.golf.game.logic.event.Event;
 import com.kdp.golf.game.logic.event.UncoverEvent;
 
 import java.util.List;
-import java.util.Map;
 import java.util.function.Predicate;
 
 public class UncoverTwoState implements GameState {
@@ -51,11 +50,11 @@ public class UncoverTwoState implements GameState {
     @Override
     public List<CardLocation> playableCards(Game game) {
         return List.of(
-                CardLocation.HAND0,
-                CardLocation.HAND1,
-                CardLocation.HAND2,
-                CardLocation.HAND3,
-                CardLocation.HAND4,
-                CardLocation.HAND5);
+                CardLocation.H0,
+                CardLocation.H1,
+                CardLocation.H2,
+                CardLocation.H3,
+                CardLocation.H4,
+                CardLocation.H5);
     }
 }

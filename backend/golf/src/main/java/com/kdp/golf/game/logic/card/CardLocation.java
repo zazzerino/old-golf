@@ -4,10 +4,10 @@ public enum CardLocation {
     DECK,
     TABLE,
     HELD,
-    HAND0,
-    HAND1,
-    HAND2,
-    HAND3,
-    HAND4,
-    HAND5,
+    H0,
+    H1,
+    H2,
+    H3,
+    H4,
+    H5;
 }

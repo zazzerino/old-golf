@@ -8,7 +8,6 @@ import com.kdp.golf.game.logic.event.Event;
 import com.kdp.golf.game.logic.event.SwapCardEvent;
 
 import java.util.List;
-import java.util.Map;
 
 public class DiscardState implements GameState {
     private static DiscardState instance;
@@ -73,11 +72,11 @@ public class DiscardState implements GameState {
     public List<CardLocation> playableCards(Game game) {
         return List.of(
                 CardLocation.HELD,
-                CardLocation.HAND0,
-                CardLocation.HAND1,
-                CardLocation.HAND2,
-                CardLocation.HAND3,
-                CardLocation.HAND4,
-                CardLocation.HAND5);
+                CardLocation.H0,
+                CardLocation.H1,
+                CardLocation.H2,
+                CardLocation.H3,
+                CardLocation.H4,
+                CardLocation.H5);
     }
 }
