@@ -1,25 +1,22 @@
-import { createSvgElement, drawGame, Size } from './draw';
-import { createGameButton, startGameButton } from './ui';
+import { createSvgElement, drawGame } from './draw';
+import { createUiElements } from './ui';
 import { initWebSocket } from './websocket';
-import { getGame, store } from './store';
+import { store } from './store';
 
-const svgSize: Size = { width: 600, height: 500 };
-export const svgElem = createSvgElement(svgSize);
+export const svg = createSvgElement({ width: 600, height: 500 });
+export const root = document.getElementById('root');
 
-console.log('initial store: ' + JSON.stringify(store));
-
-export const rootElem = document.getElementById('root');
-
-if (rootElem == null) {
+if (root == null) {
   throw new Error('root elem is null');
 }
 
-rootElem.appendChild(svgElem);
+root.appendChild(svg);
 
 initWebSocket();
-createGameButton(rootElem);
-startGameButton(rootElem);
+createUiElements(root);
+
+console.log('initial state: ' + JSON.stringify(store.state));
 
 store.subscribe((state) => {
-  drawGame(svgElem, state);
+  drawGame(svg, state);
 });

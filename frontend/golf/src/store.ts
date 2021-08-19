@@ -1,17 +1,17 @@
-import { Game, Player } from "./game";
+import { CardLocation, Game, Player } from "./game";
 import { User } from "./user";
 
 export interface State {
-  user?: User;   // the logged in user
+  user?: User;   // the current user
   game?: Game;   // the user's current game
   games: Game[]; // a list of all games
 }
 
-export type Reducer = (state: State, payload: any) => State;
+export type StateReducer = (state: State, payload: any) => State;
 
 export type ActionType = 'LOGIN' | 'SET_GAMES' | 'SET_GAME';
 
-export type Actions = Record<ActionType, Reducer>;
+export type Actions = Record<ActionType, StateReducer>;
 
 export type Callback = (state: State) => any;
 
@@ -67,6 +67,10 @@ export function getPlayer(state: State): Player | undefined {
   }
 }
 
+export function getPlayerId(state: State): number | undefined {
+  return getPlayer(state)?.id;
+}
+
 export function getHand(state: State): string[] | undefined {
   return getPlayer(state)?.hand.cards;
 }
@@ -77,6 +81,21 @@ export function getHeldCard(state: State): string | undefined {
 
 export function getScore(state: State): number | undefined {
   return getPlayer(state)?.hand.visibleScore;
+}
+
+export function isPlayersTurn(state: State): boolean {
+  const playerId = getPlayerId(state);
+  return state.game?.playerTurn === playerId;
+}
+
+export function getPlayableCards(state: State): CardLocation[] | undefined {
+  return isPlayersTurn(state)
+    ? state.game?.playableCards
+    : [];
+}
+
+export function getUncoveredCards(state: State): number[] | undefined {
+  return getPlayer(state)?.hand.uncoveredCards;
 }
 
 const initialState: State = {

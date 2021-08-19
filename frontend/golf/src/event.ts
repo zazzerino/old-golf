@@ -1,45 +1,48 @@
-// import { getGame, getPlayerId } from "./oldstate";
+import { getGame, getPlayerId, store } from "./store";
 import { sendDiscard, sendSwapCard, sendTakeFromDeck, sendTakeFromTable, sendUncover } from "./websocket";
 
 export function deckCardClicked() {
-  // const game = getGame();
-  // const playerId = getPlayerId();
+  const game = getGame(store.state);
+  const playerId = getPlayerId(store.state);
 
-  // if (game.stateType === 'TAKE') {
-  //   sendTakeFromDeck(game.id, playerId);
-  // }
+  if (game?.stateType === 'TAKE' && playerId != null) {
+    sendTakeFromDeck(game.id, playerId);
+  }
 }
 
 export function tableCardClicked() {
-  // const game = getGame();
-  // const playerId = getPlayerId();
+  const game = getGame(store.state);
+  const playerId = getPlayerId(store.state);
 
-  // if (game.stateType === 'TAKE') {
-  //   sendTakeFromTable(game.id, playerId);
-  // }
+  if (game?.stateType === 'TAKE' && playerId != null) {
+    sendTakeFromTable(game.id, playerId);
+  }
 }
 
 export function heldCardClicked() {
-  // const game = getGame();
-  // const playerId = getPlayerId();
+  const game = getGame(store.state);
+  const playerId = getPlayerId(store.state);
 
-  // if (game.stateType === 'DISCARD') {
-  //   sendDiscard(game.id, playerId);
-  // }
+  if (game != null && game.stateType === 'DISCARD' && playerId != null) {
+    sendDiscard(game.id, playerId);
+  }
 }
 
 export function handCardClicked(handIndex: number) {
-  // const game = getGame();
-  // const playerId = getPlayerId();
-  
-  // switch (game.stateType) {
-  //   case 'UNCOVER':
-  //   case 'UNCOVER_TWO':
-  //     sendUncover(game.id, playerId, handIndex);
-  //     break;
-    
-  //   case 'DISCARD':
-  //     sendSwapCard(game.id, playerId, handIndex);
-  //     break;
-  // }
+  const game = getGame(store.state);
+  const playerId = getPlayerId(store.state);
+
+  if (game && playerId != null) {
+
+    switch (game.stateType) {
+      case 'UNCOVER':
+      case 'UNCOVER_TWO':
+        sendUncover(game.id, playerId, handIndex);
+        break;
+
+      case 'DISCARD':
+        sendSwapCard(game.id, playerId, handIndex);
+        break;
+    }
+  }
 }

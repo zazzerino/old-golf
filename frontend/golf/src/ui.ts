@@ -40,3 +40,8 @@ export function startGameButton(parent: HTMLElement, id = 'start-game-button'): 
 
   return button;
 }
+
+export function createUiElements(parent: HTMLElement) {
+  createGameButton(parent);
+  startGameButton(parent);
+}

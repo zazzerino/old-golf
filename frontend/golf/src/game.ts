@@ -16,7 +16,8 @@ export interface Player {
 export type StateType =
   'INIT' | 'UNCOVER_TWO' | 'TAKE' | 'DISCARD' | 'UNCOVER' | 'FINAL_PICKUP' | 'FINAL_DISCARD' | 'GAME_OVER';
 
-export type CardLocation = 'DECK' | 'TABLE' | 'HELD' | 'HAND0' | 'HAND1' | 'HAND2' | 'HAND3' | 'HAND4' | 'HAND5';
+export type CardLocation =
+  'DECK' | 'TABLE' | 'HELD' | 'HAND0' | 'HAND1' | 'HAND2' | 'HAND3' | 'HAND4' | 'HAND5';
 
 export interface Game {
   id: number;
