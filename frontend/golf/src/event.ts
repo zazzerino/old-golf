@@ -1,4 +1,5 @@
-import { getGame, getPlayerId, store } from "./store";
+import { store } from "./store";
+import { getGame, getPlayerId } from "./select";
 import { sendDiscard, sendSwapCard, sendTakeFromDeck, sendTakeFromTable, sendUncover } from "./websocket";
 
 export function deckCardClicked() {

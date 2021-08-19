@@ -1,6 +1,7 @@
 import { deckCardClicked, handCardClicked, heldCardClicked, tableCardClicked } from "./event";
-import { CardLocation, Game, HAND_SIZE } from "./game";
-import { getGame, getHand, getHeldCard, getPlayableCards, getScore, getUncoveredCards, State } from "./store";
+import { CardLocation, HAND_SIZE } from "./game";
+import { State } from "./store";
+import { getGame, getHand, getHeldCard, getPlayableCards, getScore, getUncoveredCards } from "./select";
 
 export interface Coord {
   x: number;

@@ -1,4 +1,5 @@
-import { getGame, getUser, store } from "./store";
+import { store } from "./store";
+import { getGame, getUser } from "./select";
 import { sendCreateGame, sendStartGame } from "./websocket";
 
 function createButton(parent: HTMLElement, text: string): HTMLButtonElement {
