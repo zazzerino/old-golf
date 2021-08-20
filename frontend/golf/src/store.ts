@@ -33,13 +33,9 @@ export class Store {
   }
 
   dispatch = (action: ActionType, payload: any) => {
-    const oldState = { ...this.state };
     const newState = this.actions[action](this.state, payload);
-
-    if (JSON.stringify(newState) !== JSON.stringify(oldState)) {
-      this.state = { ...oldState, ...newState };
-      this.processCallbacks(this.state);
-    }
+    this.state = newState;
+    this.processCallbacks(this.state);
   }
 
   subscribe = (callback: Callback) => {
@@ -66,13 +62,11 @@ const actions: Actions = {
     return { ...state, game: payload };
   },
   SET_HOVER: (state: State, payload: CardLocation): State => {
-    console.log('set payload: ' + payload);
     return { ...state, hoverCard: payload };
   },
   UNSET_HOVER: (state: State, _payload: any): State => {
     const copy = { ...state };
     delete copy.hoverCard;
-    console.log('unset');
     return copy;
   }
 };
