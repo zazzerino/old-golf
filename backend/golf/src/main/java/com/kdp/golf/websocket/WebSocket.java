@@ -77,9 +77,14 @@ public class WebSocket {
                 });
     }
 
-    public void sendToSessionIds(Collection<String> sessionIds, Response response) {
-        sessionIds.forEach(id -> sendToSession(sessions.get(id), response));
+    public void sendToSessionId(String sessionId, Response response) {
+        sendToSession(sessions.get(sessionId), response);
     }
+
+//    public void sendToSessionIds(Collection<String> sessionIds, Response response) {
+//        sessionIds.forEach(id -> sendToSessionId(id, response));
+////        sessionIds.forEach(id -> sendToSession(sessions.get(id), response));
+//    }
 
     public void broadcast(Response response) {
         sessions.values()

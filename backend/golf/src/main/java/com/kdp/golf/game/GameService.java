@@ -4,10 +4,12 @@ import com.kdp.golf.IdService;
 import com.kdp.golf.game.logic.Game;
 import com.kdp.golf.game.logic.Player;
 import com.kdp.golf.game.logic.event.Event;
+import com.kdp.golf.game.logic.state.GameState;
 import com.kdp.golf.user.UserService;
 
 import javax.enterprise.context.ApplicationScoped;
 import java.util.Collection;
+import java.util.Optional;
 
 @ApplicationScoped
 public class GameService {
@@ -59,8 +61,14 @@ public class GameService {
         return game;
     }
 
-    public Game joinGame(Long gameId, Long userId) {
+    public Optional<Game> joinGame(Long gameId, Long userId) {
         var game = gameDao.getById(gameId).orElseThrow();
+
+        if (game.getStateType() != GameState.StateType.INIT
+                && game.getPlayer(userId).isEmpty()) {
+            return Optional.empty();
+        }
+
         var user = userService.getById(userId).orElseThrow();
         var player = Player.from(user);
         game.addPlayer(player);
@@ -70,6 +78,6 @@ public class GameService {
         user.setGameId(game.id);
         userService.save(user);
 
-        return game;
+        return Optional.of(game);
     }
 }

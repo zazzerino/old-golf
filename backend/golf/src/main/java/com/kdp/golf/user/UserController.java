@@ -22,9 +22,7 @@ public class UserController {
     public void loginAnonymous(Session session) {
         var user = userService.createAnonymous(session.getId());
         log.info("user created: " + user);
-
-        var response = new LoginResponse(user);
-        webSocket.sendToSession(session, response);
+        webSocket.sendToSession(session, new LoginResponse(user));
     }
 
     public void sessionClosed(Session session) {

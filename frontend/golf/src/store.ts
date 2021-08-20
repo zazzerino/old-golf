@@ -33,8 +33,7 @@ export class Store {
   }
 
   dispatch = (action: ActionType, payload: any) => {
-    const newState = this.actions[action](this.state, payload);
-    this.state = newState;
+    this.state = this.actions[action](this.state, payload);;
     this.processCallbacks(this.state);
   }
 

@@ -15,7 +15,6 @@ function createCreateGameButton(id = 'create-game-button'): HTMLButtonElement {
   button.id = id;
 
   button.onclick = () => {
-    console.log('creating game...');
     const user = getUser(store.state);
     if (user) {
       sendCreateGame(user.id);
@@ -30,7 +29,6 @@ function createStartGameButton(id = 'start-game-button'): HTMLButtonElement {
   button.id = id;
 
   button.onclick = () => {
-    console.log('starting game...');
     const user = getUser(store.state);
     const game = getGame(store.state);
 
@@ -42,35 +40,35 @@ function createStartGameButton(id = 'start-game-button'): HTMLButtonElement {
   return button;
 }
 
-export function createJoinGameButton(gameId: number, userId: number, id = 'join-game-button'): HTMLButtonElement {
+export function createJoinGameButton(gameId: number, userId?: number, id = 'join-game-button'): HTMLButtonElement {
   const button = createButton('Join Game');
   button.id = id;
-
-  button.onclick = () => {
-    sendJoinGame(gameId, userId);
-  }
-
+  button.onclick = () => userId != null && sendJoinGame(gameId, userId);
   return button;
 }
 
-export function createGamesTable(games: Game[], id = 'create-games-table'): HTMLTableElement {
+export function createGamesTable(games: Game[], userId?: number, id = 'create-games-table'): HTMLTableElement {
   const table = document.createElement('table');
   table.id = id;
+  table.caption = table.createCaption();
+  table.caption.innerHTML = 'Games';
 
   const head = table.createTHead();
   const headRow = head.insertRow();
+
   const headId = headRow.insertCell();
-  headId.appendChild(document.createTextNode('Game Id'));
-  const headState = headRow.insertCell();
-  headState.appendChild(document.createTextNode('Status'));
+  headId.appendChild(document.createTextNode('Id'));
+  const headJoin = headRow.insertCell();
+  headJoin.appendChild(document.createTextNode('Join'));
 
   for (const game of games) {
     const body = table.createTBody();
     const bodyRow = body.insertRow();
+
     const bodyId = bodyRow.insertCell();
     bodyId.appendChild(document.createTextNode(game.id.toString()));
-    const bodyState = bodyRow.insertCell();
-    bodyState.appendChild(document.createTextNode(game.stateType));
+    const bodyJoin = bodyRow.insertCell();
+    bodyJoin.appendChild(createJoinGameButton(game.id, userId));
   }
 
   return table;

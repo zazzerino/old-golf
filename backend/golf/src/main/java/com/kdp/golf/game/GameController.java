@@ -1,6 +1,8 @@
 package com.kdp.golf.game;
 
+import com.kdp.golf.game.logic.Game;
 import com.kdp.golf.game.logic.event.Event;
+import com.kdp.golf.user.UserService;
 import com.kdp.golf.websocket.WebSocket;
 import com.kdp.golf.websocket.response.GameResponse;
 import com.kdp.golf.websocket.response.GamesResponse;
@@ -12,49 +14,52 @@ import javax.websocket.Session;
 @ApplicationScoped
 public class GameController {
 
-    private final GameService gameService;
     private final WebSocket webSocket;
+    private final GameService gameService;
+    private final UserService userService;
     private final Logger log = Logger.getLogger(GameController.class);
 
-    public GameController(GameService gameService, WebSocket webSocket) {
-        this.gameService = gameService;
+    public GameController(WebSocket webSocket, GameService gameService, UserService userService) {
         this.webSocket = webSocket;
+        this.gameService = gameService;
+        this.userService = userService;
     }
 
     public void getAll(Session session) {
         var games = gameService.getAll();
-        var response = new GamesResponse(games);
-        webSocket.sendToSession(session, response);
+        webSocket.sendToSession(session, new GamesResponse(games));
     }
 
     public void joinGame(Session session, Long gameId, Long userId) {
-
+        var game = gameService.joinGame(gameId, userId);
+        game.ifPresent(this::notifyPlayers);
     }
 
     public void createGame(Session session, Long userId) {
         var game = gameService.createGame(userId);
         log.info("game created: " + game);
-
-        var response = new GameResponse(game);
-        webSocket.sendToSession(session, response);
+        webSocket.sendToSession(session, new GameResponse(game));
         broadcastGames();
     }
 
     public void startGame(Session session, Long gameId) {
         var game = gameService.startGame(gameId);
         log.info("game started: " + game);
-
-        var response = new GameResponse(game);
-        webSocket.sendToSession(session, response);
+        notifyPlayers(game);
     }
 
     public void handleEvent(Session session, Event event) {
         log.info("handling event: " + event);
         var game = gameService.handleEvent(event);
         log.info("event handled: " + game);
+        webSocket.sendToSession(session, new GameResponse(game));
+    }
 
-        var response = new GameResponse(game);
-        webSocket.sendToSession(session, response);
+    public void notifyPlayers(Game game) {
+        for (var player : game.getPlayers()) {
+            var user = userService.getById(player.id).orElseThrow();
+            webSocket.sendToSessionId(user.sessionId, new GameResponse(game));
+        }
     }
 
     public void broadcastGames() {
