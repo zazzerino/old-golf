@@ -1,15 +1,16 @@
-import { Game } from "./game";
+import { CardLocation, Game } from "./game";
 import { User } from "./user";
 
 export interface State {
   user?: User;   // the current user
   game?: Game;   // the user's current game
   games: Game[]; // a list of all games
+  hoverCard?: CardLocation;
 }
 
 export type StateReducer = (state: State, payload: any) => State;
 
-export type ActionType = 'LOGIN' | 'SET_GAMES' | 'SET_GAME';
+export type ActionType = 'LOGIN' | 'SET_GAMES' | 'SET_GAME' | 'SET_HOVER' | 'UNSET_HOVER';
 
 export type Actions = Record<ActionType, StateReducer>;
 
@@ -60,6 +61,16 @@ const actions: Actions = {
   SET_GAME: (state: State, payload: Game): State => {
     return { ...state, game: payload };
   },
+  SET_HOVER: (state: State, payload: CardLocation): State => {
+    console.log('set payload: ' + payload);
+    return { ...state, hoverCard: payload };
+  },
+  UNSET_HOVER: (state: State, _payload: any): State => {
+    const copy = { ...state };
+    delete copy.hoverCard;
+    console.log('unset');
+    return copy;
+  }
 };
 
 export const store = new Store({ initialState, actions });

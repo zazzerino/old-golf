@@ -34,7 +34,6 @@ export function handCardClicked(handIndex: number) {
   const playerId = getPlayerId(store.state);
 
   if (game && playerId != null) {
-
     switch (game.stateType) {
       case 'UNCOVER':
       case 'UNCOVER_TWO':

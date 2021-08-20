@@ -53,3 +53,7 @@ export function getPlayableCards(state: State): CardLocation[] | undefined {
 export function getUncoveredCards(state: State): number[] | undefined {
   return getPlayer(state)?.hand.uncoveredCards;
 }
+
+export function getHoverCard(state: State): CardLocation | undefined {
+  return state.hoverCard;
+}
