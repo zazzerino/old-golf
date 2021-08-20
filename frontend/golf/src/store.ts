@@ -2,10 +2,10 @@ import { CardLocation, Game } from "./game";
 import { User } from "./user";
 
 export interface State {
-  user?: User;   // the current user
-  game?: Game;   // the user's current game
+  user?: User; // the current user
+  game?: Game; // the user's current game
   games: Game[]; // a list of all games
-  hoverCard?: CardLocation;
+  hoverCard?: CardLocation; // the card being hovered over
 }
 
 export type StateReducer = (state: State, payload: any) => State;
@@ -33,9 +33,13 @@ export class Store {
   }
 
   dispatch = (action: ActionType, payload: any) => {
+    const oldState = { ...this.state };
     const newState = this.actions[action](this.state, payload);
-    this.state = { ...this.state, ...newState };
-    this.processCallbacks(this.state);
+
+    if (JSON.stringify(newState) !== JSON.stringify(oldState)) {
+      this.state = { ...oldState, ...newState };
+      this.processCallbacks(this.state);
+    }
   }
 
   subscribe = (callback: Callback) => {

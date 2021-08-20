@@ -3,13 +3,10 @@ import { createUiElements } from './ui';
 import { initWebSocket } from './websocket';
 import { store } from './store';
 
-export const svg = createSvgElement({ width: 600, height: 500 });
-export const root = document.getElementById('root');
+const root = document.getElementById('root');
+if (root == null) { throw new Error('root elem is null'); }
 
-if (root == null) {
-  throw new Error('root elem is null');
-}
-
+const svg = createSvgElement({ width: 600, height: 500 });
 root.appendChild(svg);
 
 initWebSocket();

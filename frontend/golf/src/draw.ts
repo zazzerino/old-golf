@@ -93,10 +93,22 @@ function drawDeck(svg: SVGSVGElement, hasStarted: boolean, playableCards: CardLo
 
   const highlight = playableCards.includes('DECK');
   const card = drawCard(svg, '2B', { x, y }, highlight);
-  card.onclick = (_ev) => deckCardClicked();
+  card.onclick = () => deckCardClicked();
 
-  card.addEventListener('mouseover', _e => store.dispatch('SET_HOVER', 'DECK'));
-  card.addEventListener('mouseout', _e => store.dispatch('UNSET_HOVER', null));
+  const mouseOver = () => {
+    if (hoverCard !== 'DECK') {
+      store.dispatch('SET_HOVER', 'DECK');
+    }
+  }
+
+  const mouseOut = () => {
+    if (hoverCard === 'DECK') {
+      store.dispatch('UNSET_HOVER', null);
+    }
+  }
+
+  card.addEventListener('mouseover', mouseOver);
+  card.addEventListener('mouseout', mouseOut);
 
   return card;
 }
@@ -108,7 +120,7 @@ function drawTableCard(svg: SVGSVGElement, cardName: string, playableCards: Card
 
   const highlight = playableCards.includes('TABLE');
   const card = drawCard(svg, cardName, { x, y }, highlight);
-  card.onclick = (_ev) => tableCardClicked();
+  card.onclick = () => tableCardClicked();
 
   // card.addEventListener('mouseenter', _e => store.dispatch('SET_HOVER', 'TABLE'));
   // card.addEventListener('mouseleave', _e => store.dispatch('UNSET_HOVER', null));
@@ -130,7 +142,7 @@ function createHandCard(coord: Coord, i: number, cards: string[], uncovered: num
   const card = uncovered.includes(i) ? cards[i] : '2B';
 
   const image = createCardImage(card, coord);
-  image.onclick = (_ev) => handCardClicked(i);
+  image.onclick = () => handCardClicked(i);
 
   return image;
 }
@@ -205,7 +217,7 @@ function drawHeldCard(svg: SVGSVGElement, cardName: string, playableCards: CardL
   const highlight = playableCards.includes('HELD');
 
   const card = drawCard(svg, cardName, { x, y }, highlight);
-  card.onclick = (_ev) => heldCardClicked();
+  card.onclick = () => heldCardClicked();
 
   return card;
 }
