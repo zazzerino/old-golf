@@ -58,6 +58,8 @@ public class WebSocket {
             gameController.startGame(session, s.gameId());
         } else if (message instanceof EventMessage e) {
             gameController.handleEvent(session, e.event());
+        } else if (message instanceof JoinGameMessage j) {
+            gameController.joinGame(session, j.gameId(), j.userId());
         }
     }
 

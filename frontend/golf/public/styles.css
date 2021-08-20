@@ -25,3 +25,9 @@
 #title {
   margin: auto;
 }
+
+#create-games-table {
+  text-align: center;
+  width: 33%;
+  margin: auto;
+}

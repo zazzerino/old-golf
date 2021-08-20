@@ -22,12 +22,6 @@ const CARD_SIZE: Size = { width: 60, height: 85 };
 const HAND_PADDING = 2;
 const HL_PADDING = 2;
 
-function empty(elem: Element) {
-  while (elem.firstChild) {
-    elem.firstChild.remove();
-  }
-}
-
 function cardPath(card: string): string {
   return `img/cards/${card}.svg`;
 }
@@ -286,8 +280,6 @@ function drawScore(svg: SVGElement, score: number) {
 }
 
 export function drawGame(svg: SVGSVGElement, state: State) {
-  empty(svg);
-
   const game = getGame(state);
   if (game == null) { return; }
 
@@ -301,7 +293,6 @@ export function drawGame(svg: SVGSVGElement, state: State) {
 
     const hand = getHand(state);
     const uncoveredCards = getUncoveredCards(state);
-
     if (hand != null && uncoveredCards != null) { 
       drawHand(svg, hand, 'BOTTOM', uncoveredCards, playableCards, hoverCard);
     }

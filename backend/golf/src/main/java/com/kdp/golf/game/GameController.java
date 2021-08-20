@@ -27,12 +27,17 @@ public class GameController {
         webSocket.sendToSession(session, response);
     }
 
+    public void joinGame(Session session, Long gameId, Long userId) {
+
+    }
+
     public void createGame(Session session, Long userId) {
         var game = gameService.createGame(userId);
         log.info("game created: " + game);
 
         var response = new GameResponse(game);
         webSocket.sendToSession(session, response);
+        broadcastGames();
     }
 
     public void startGame(Session session, Long gameId) {
@@ -50,5 +55,10 @@ public class GameController {
 
         var response = new GameResponse(game);
         webSocket.sendToSession(session, response);
+    }
+
+    public void broadcastGames() {
+        var games = gameService.getAll();
+        webSocket.broadcast(new GamesResponse(games));
     }
 }

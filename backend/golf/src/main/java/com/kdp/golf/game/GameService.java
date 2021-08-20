@@ -31,32 +31,13 @@ public class GameService {
         gameDao.save(game);
 
         user.setGameId(gameId);
-        userService.update(user);
+        userService.save(user);
 
         return game;
     }
 
-//    public Game createGame(String sessionId) {
-//        var user = userService
-//                .getBySessionId(sessionId)
-//                .orElseThrow();
-//
-//        var gameId = idService.nextGameId();
-//        var player = Player.from(user);
-//        var game = new Game(gameId, player);
-//
-//        gameDao.save(game);
-//
-//        user.setGameId(gameId);
-//        userService.update(user);
-//
-//        return game;
-//    }
-
     public Game startGame(Long gameId) {
-        var game = gameDao
-                .getById(gameId)
-                .orElseThrow();
+        var game = gameDao.getById(gameId).orElseThrow();
 
         if (game.hasStarted()) {
             throw new IllegalStateException("game has already started");
@@ -64,7 +45,6 @@ public class GameService {
 
         game.start();
         gameDao.save(game);
-
         return game;
     }
 
@@ -72,29 +52,24 @@ public class GameService {
         return gameDao.getAll();
     }
 
-    public Game takeFromDeck(Long gameId, Long playerId) {
-        var game = gameDao
-                .getById(gameId)
-                .orElseThrow();
-
-        game.takeFromDeck(playerId);
-        gameDao.save(game);
-
-        return game;
-    }
-
     public Game handleEvent(Event event) {
-        var game = gameDao
-                .getById(event.gameId())
-                .orElseThrow();
-
+        var game = gameDao.getById(event.gameId()).orElseThrow();
         game.handleEvent(event);
         gameDao.save(game);
-
         return game;
     }
 
-//    public Game addPlayer(Long gameId, Long userId) {
-//
-//    }
+    public Game joinGame(Long gameId, Long userId) {
+        var game = gameDao.getById(gameId).orElseThrow();
+        var user = userService.getById(userId).orElseThrow();
+        var player = Player.from(user);
+        game.addPlayer(player);
+
+        gameDao.save(game);
+
+        user.setGameId(game.id);
+        userService.save(user);
+
+        return game;
+    }
 }

@@ -5,6 +5,7 @@ public interface Message {
 
     enum Type {
         LOGIN,
+        JOIN_GAME,
         CREATE_GAME,
         START_GAME,
         DISCARD,

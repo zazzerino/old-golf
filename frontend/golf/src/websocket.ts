@@ -46,7 +46,7 @@ function onMessage(event: MessageEvent) {
 
 // send messages
 
-export type MessageType = 'LOGIN' | 'CREATE_GAME' | 'START_GAME' | 'EVENT';
+export type MessageType = 'LOGIN' | 'CREATE_GAME' | 'START_GAME' | 'EVENT' | 'JOIN_GAME';
 
 export interface Message {
   type: MessageType;
@@ -84,6 +84,22 @@ export function startGameMessage(gameId: number, playerId: number): StartGameMes
 
 export function sendStartGame(gameId: number, playerId: number) {
   send(startGameMessage(gameId, playerId));
+}
+
+export interface JoinGameMessage extends Message {
+  type: 'JOIN_GAME';
+  gameId: number;
+  userId: number;
+}
+
+export function sendJoinGame(gameId: number, userId: number) {
+  const message: JoinGameMessage = {
+    type: 'JOIN_GAME',
+    gameId,
+    userId,
+  }
+
+  send(message);
 }
 
 export type EventType =

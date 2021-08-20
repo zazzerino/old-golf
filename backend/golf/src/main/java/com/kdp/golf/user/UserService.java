@@ -30,7 +30,7 @@ public class UserService {
         return userDao.getBySessionId(sessionId);
     }
 
-    public User update(User user) {
+    public User save(User user) {
         userDao.save(user);
         return user;
     }

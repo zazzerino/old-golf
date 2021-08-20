@@ -23,6 +23,12 @@ public class MessageDecoder implements Decoder.Text<Message> {
                 return new LoginMessage(name);
             }
 
+            case JOIN_GAME -> {
+                var gameId = jsonObject.getLong("gameId");
+                var userId = jsonObject.getLong("userId");
+                return new JoinGameMessage(gameId, userId);
+            }
+
             case CREATE_GAME -> {
                 var userId = jsonObject.getLong("userId");
                 return new CreateGameMessage(userId);
