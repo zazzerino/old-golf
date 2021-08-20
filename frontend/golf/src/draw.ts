@@ -137,9 +137,6 @@ function drawTableCard(svg: SVGSVGElement, cardName: string, playableCards: Card
   card.addEventListener('mouseover', mouseOver);
   card.addEventListener('mouseout', mouseOut);
 
-  // card.addEventListener('mouseenter', _e => store.dispatch('SET_HOVER', 'TABLE'));
-  // card.addEventListener('mouseleave', _e => store.dispatch('UNSET_HOVER', null));
-
   return card;
 }
 
@@ -188,9 +185,11 @@ function drawHand(svg: SVGSVGElement, cards: string[], pos: HandPosition, uncove
     const y = i < 3 ? 0 : CARD_SIZE.height + HAND_PADDING;
     const location = `H${i}` as CardLocation;
 
-    const highlight = handIndexes(playableCards).includes(i);
+    const highlight = hoverCard === location
+      && handIndexes(playableCards).includes(i)
+      && !(uncovered.includes(i));
 
-    if (highlight && hoverCard === location) {
+    if (highlight) {
       const rect = createCardHighlight({ x, y });
       group.appendChild(rect);
     }

@@ -1,6 +1,12 @@
 #root {
   display: flex;
   justify-content: center;
+  flex-direction: column; display: flex;
+}
+
+#game-page {
+  display: flex;
+  justify-content: center;
   flex-direction: column;
 }
 
@@ -13,5 +19,9 @@
 }
 
 #start-game-button {
+  margin: auto;
+}
+
+#title {
   margin: auto;
 }
