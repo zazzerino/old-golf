@@ -1,4 +1,5 @@
 import { CardLocation, Game } from "./game";
+import { Route } from "./ui";
 import { User } from "./user";
 
 export class Store<State, ActionType extends string | symbol> {
@@ -27,12 +28,14 @@ export interface State {
   game?: Game; // the user's current game
   games: Game[]; // a list of all games
   hoverCard?: CardLocation; // the card being hovered over
+  route: Route;
 }
 
-export type ActionType = 'LOGIN' | 'SET_GAMES' | 'SET_GAME' | 'SET_HOVER' | 'UNSET_HOVER';
+export type ActionType = 'LOGIN' | 'SET_GAMES' | 'SET_GAME' | 'SET_HOVER' | 'UNSET_HOVER' | 'NAVIGATE';
 
 const initialState: State = {
   games: [],
+  route: '/',
 };
 
 const actions: Record<ActionType, (s: State, payload: any) => State> = {
@@ -52,6 +55,9 @@ const actions: Record<ActionType, (s: State, payload: any) => State> = {
     const copy = { ...state };
     delete copy.hoverCard;
     return copy;
+  },
+  NAVIGATE: (state: State, payload: Route): State => {
+    return { ...state, route: payload };
   }
 };
 

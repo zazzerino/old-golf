@@ -1,8 +1,6 @@
-import { drawGame } from './draw';
-import { createGamePage, createGamesTable } from './ui';
+import { getPage, Route } from './ui';
 import { initWebSocket } from './websocket';
-import { store } from './store';
-import { getGames, getUserId } from './select';
+import { State, store } from './store';
 import { emptyElement } from './util';
 
 const root = document.getElementById('root');
@@ -13,22 +11,20 @@ if (root == null) {
 
 initWebSocket();
 
-const [gamePage, svg] = createGamePage();
-root.appendChild(gamePage);
+// redraw after navigation
+window.onpopstate = () => {
+  store.publish('NAVIGATE', window.location.pathname as Route);
+  render(root, store.state);
+}
 
-let gamesTable: HTMLTableElement;
+function render(root: HTMLElement, state: State) {
+  emptyElement(root);
+  const page = getPage(state.route);
+  root.appendChild(page);
+}
 
+// rerender on state change
 store.subscribe(state => {
   console.log('state updated: ' + JSON.stringify({ ...state, games: state.games.map(g => g.id) }));
-  emptyElement(svg);
-  drawGame({ svg, state });
-
-  const games = getGames(state);
-  const userId = getUserId(state);
-
-  if (state.games.length > 0 && userId != null) {
-    gamesTable && gamesTable.remove();
-    gamesTable = createGamesTable(games, userId);
-    root.appendChild(gamesTable);
-  }
+  render(root, state);
 });

@@ -1,32 +1,23 @@
 #root {
   display: flex;
   justify-content: center;
-  flex-direction: column; display: flex;
-}
-
-#game-page {
-  display: flex;
-  justify-content: center;
   flex-direction: column;
+  text-align: center;
 }
 
-#root svg {
+.game-page svg {
   margin: auto;
 }
 
-#create-game-button {
+.create-game-button {
   margin: auto;
 }
 
-#start-game-button {
+.start-game-button {
   margin: auto;
 }
 
-#title {
-  margin: auto;
-}
-
-#games-table {
+.games-table {
   text-align: center;
   width: 33%;
   margin: 1rem auto;

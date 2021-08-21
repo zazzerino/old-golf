@@ -1,19 +1,18 @@
 import { store } from "./store";
-import { getGame, getUser } from "./select";
+import { getGame, getGames, getUser, getUserId } from "./select";
 import { sendCreateGame, sendJoinGame, sendStartGame } from "./websocket";
 import { createSvgElement } from "./draw";
 import { Game } from "./game";
-import { hideElement } from "./util";
 
-function createButton(text: string): HTMLButtonElement {
+export function createButton(text: string): HTMLButtonElement {
   const button = document.createElement('button');
   button.innerHTML = text;
   return button;
 }
 
-function createCreateGameButton(id = 'create-game-button'): HTMLButtonElement {
+function createCreateGameButton(): HTMLButtonElement {
   const button = createButton('Create Game');
-  button.id = id;
+  button.className += 'create-game-button';
 
   button.onclick = () => {
     const user = getUser(store.state);
@@ -25,9 +24,9 @@ function createCreateGameButton(id = 'create-game-button'): HTMLButtonElement {
   return button;
 }
 
-function createStartGameButton(id = 'start-game-button'): HTMLButtonElement {
+function createStartGameButton(): HTMLButtonElement {
   const button = createButton('Start Game');
-  button.id = id;
+  button.className += 'start-game-button';
 
   button.onclick = () => {
     const user = getUser(store.state);
@@ -41,16 +40,16 @@ function createStartGameButton(id = 'start-game-button'): HTMLButtonElement {
   return button;
 }
 
-export function createJoinGameButton(gameId: number, userId?: number, id = 'join-game-button'): HTMLButtonElement {
+export function createJoinGameButton(gameId: number, userId?: number): HTMLButtonElement {
   const button = createButton('Join Game');
-  button.id = id;
+  button.className += 'join-game-button';
   button.onclick = () => userId != null && sendJoinGame(gameId, userId);
   return button;
 }
 
-export function createGamesTable(games: Game[], userId?: number, id = 'games-table'): HTMLTableElement {
+export function createGamesTable(games: Game[], userId?: number): HTMLTableElement {
   const table = document.createElement('table');
-  table.id = id;
+  table.className += 'games-table';
   table.caption = table.createCaption();
   table.caption.innerHTML = 'Games';
 
@@ -75,15 +74,116 @@ export function createGamesTable(games: Game[], userId?: number, id = 'games-tab
   return table;
 }
 
-export function createGamePage(id = 'game-page'): [HTMLDivElement, SVGSVGElement] {
+// export function createGamePage(): [HTMLDivElement, SVGSVGElement] {
+//   const div = document.createElement('div');
+//   div.className += 'game-page';
+
+//   const svg = createSvgElement({ width: 600, height: 500 });
+//   const createGameButton = createCreateGameButton();
+//   const startGameButton = createStartGameButton();
+
+//   [svg, createGameButton, startGameButton].forEach(elem => div.appendChild(elem));
+
+//   return [div, svg];
+// }
+
+export type Route = '/' | '/game';
+
+interface Link {
+  route: Route;
+  text: string;
+}
+
+const links: Link[] = [
+  { route: '/', text: 'Home' },
+  { route: '/game', text: 'Game' }
+];
+
+export function navigate(route: Route) {
+  window.history.pushState({}, route, window.location.origin + route)
+  store.publish('NAVIGATE', route);
+}
+
+function createNavbar(links: Link[]) {
+  const list = document.createElement('ul');
+  list.className += 'navbar';
+
+  links.forEach(link => {
+    const item = document.createElement('li');
+
+    const a = document.createElement('a');
+    a.text = link.text;
+    a.href = '#';
+    a.onclick = () => {
+      navigate(link.route);
+      return false;
+    };
+    item.appendChild(a);
+
+    list.appendChild(item);
+  });
+
+  return list;
+}
+
+function homePage() {
+  const games = getGames(store.state);
+  const userId = getUserId(store.state);
+
   const div = document.createElement('div');
-  div.id = id;
+  div.className += 'home-page';
+
+  const heading = document.createElement('h2');
+  heading.innerText = 'Home';
+  div.appendChild(heading);
+
+  const navbar = createNavbar(links);
+  div.appendChild(navbar);
+
+  const createGameButton = createCreateGameButton();
+  div.appendChild(createGameButton);
+
+  const gamesTable = createGamesTable(games, userId);
+  div.appendChild(gamesTable);
+
+  return div;
+};
+
+// export function createGamePage(): [HTMLDivElement, SVGSVGElement] {
+//   const div = document.createElement('div');
+//   div.className += 'game-page';
+
+//   const svg = createSvgElement({ width: 600, height: 500 });
+//   const createGameButton = createCreateGameButton();
+//   const startGameButton = createStartGameButton();
+
+//   [svg, createGameButton, startGameButton].forEach(elem => div.appendChild(elem));
+
+//   return [div, svg];
+// }
+
+function gamePage() {
+  const div = document.createElement('div');
+  div.className += 'game-page';
+
+  const heading = document.createElement('h2');
+  heading.innerText = 'Game';
+  div.appendChild(heading);
+
+  const navbar = createNavbar(links);
+  div.appendChild(navbar);
 
   const svg = createSvgElement({ width: 600, height: 500 });
-  const createGameButton = createCreateGameButton();
-  const startGameButton = createStartGameButton();
+  div.appendChild(svg);
 
-  [svg, createGameButton, startGameButton].forEach(elem => div.appendChild(elem));
+  return div;
+}
 
-  return [div, svg];
+const routes: Record<Route, () => HTMLElement> = {
+  '/': homePage,
+  '/game': gamePage,
+}
+
+export function getPage(route: Route): HTMLElement {
+  return routes[route]();
 }
