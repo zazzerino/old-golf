@@ -76,7 +76,17 @@ function drawCard(svg: SVGSVGElement, card: string, coord: Coord, highlight = fa
   return image;
 }
 
-function drawDeck(svg: SVGSVGElement, hasStarted: boolean, playableCards: CardLocation[] = [], hoverCard?: CardLocation): SVGImageElement {
+interface DrawDeckOpts {
+  svg: SVGSVGElement;
+  hasStarted?: boolean;
+  playableCards?: CardLocation[];
+  hoverCard?: CardLocation;
+}
+
+function drawDeck(opts: DrawDeckOpts) {
+  const { svg, playableCards, hoverCard } = opts;
+  const hasStarted = opts.hasStarted || false;
+
   const rect = svg.getBoundingClientRect();
   let x = rect.width / 2 - CARD_SIZE.width / 2 - HAND_PADDING;
   const y = rect.height / 2 - CARD_SIZE.height / 2;
@@ -85,7 +95,7 @@ function drawDeck(svg: SVGSVGElement, hasStarted: boolean, playableCards: CardLo
     x -= CARD_SIZE.width / 2;
   }
 
-  const highlight = playableCards.includes('DECK') && hoverCard === 'DECK';
+  const highlight = playableCards && playableCards.includes('DECK') && hoverCard === 'DECK';
   const card = drawCard(svg, '2B', { x, y }, highlight);
   card.onclick = () => deckCardClicked();
 
@@ -286,7 +296,7 @@ export function drawGame(svg: SVGSVGElement, state: State) {
   const playableCards = getPlayableCards(state);
   const hoverCard = getHoverCard(state);
 
-  drawDeck(svg, game.hasStarted, playableCards, hoverCard);
+  drawDeck({ svg, hasStarted: game.hasStarted, playableCards, hoverCard });
 
   if (game.hasStarted) {
     drawTableCard(svg, game.tableCard, playableCards, hoverCard);

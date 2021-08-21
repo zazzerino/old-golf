@@ -84,10 +84,9 @@ public class Game {
         var player = getPlayer(playerId).orElseThrow();
         var hand = player.hand();
         var heldCard = player.heldCard().orElseThrow();
-
         var cardAtIndex = hand.cardAtIndex(index);
-        tableCards.push(cardAtIndex);
 
+        tableCards.push(cardAtIndex);
         hand.setCardAtIndex(index, heldCard);
         hand.uncover(index);
         player.setHeldCard(null);

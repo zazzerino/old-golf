@@ -1,9 +1,12 @@
 package com.kdp.golf.game.logic.state;
 
 import com.kdp.golf.game.logic.Game;
+import com.kdp.golf.game.logic.card.CardLocation;
 import com.kdp.golf.game.logic.event.DiscardEvent;
 import com.kdp.golf.game.logic.event.Event;
 import com.kdp.golf.game.logic.event.SwapCardEvent;
+
+import java.util.List;
 
 public class FinalDiscardState implements GameState {
     private static FinalDiscardState instance;
@@ -57,6 +60,18 @@ public class FinalDiscardState implements GameState {
 
     @Override
     public StateType type() {
-        return null;
+        return StateType.FINAL_DISCARD;
+    }
+
+    @Override
+    public List<CardLocation> playableCards(Game game) {
+        return List.of(
+                CardLocation.HELD,
+                CardLocation.H0,
+                CardLocation.H1,
+                CardLocation.H2,
+                CardLocation.H3,
+                CardLocation.H4,
+                CardLocation.H5);
     }
 }

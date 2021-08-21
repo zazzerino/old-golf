@@ -23,6 +23,6 @@ public class GameOverState implements GameState {
 
     @Override
     public Game handleEvent(Game game, Event event) {
-        return null;
+        return game;
     }
 }

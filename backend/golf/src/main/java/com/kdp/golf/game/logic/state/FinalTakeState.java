@@ -1,9 +1,13 @@
 package com.kdp.golf.game.logic.state;
 
 import com.kdp.golf.game.logic.Game;
+import com.kdp.golf.game.logic.card.CardLocation;
 import com.kdp.golf.game.logic.event.Event;
 import com.kdp.golf.game.logic.event.TakeFromDeckEvent;
 import com.kdp.golf.game.logic.event.TakeFromTableEvent;
+
+import java.util.List;
+import java.util.Map;
 
 public class FinalTakeState implements GameState {
     private static FinalTakeState instance;
@@ -32,6 +36,15 @@ public class FinalTakeState implements GameState {
         }
 
         return game;
+    }
+
+    @Override
+    public List<CardLocation> playableCards(Game game) {
+        return List.of(CardLocation.DECK, CardLocation.TABLE);
+    }
+
+    public Map<Long, List<CardLocation>> allPlayableCards(Game game) {
+        return Map.of();
     }
 
     @Override

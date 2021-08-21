@@ -7,6 +7,7 @@ import com.kdp.golf.game.logic.event.Event;
 import java.util.List;
 
 public interface GameState {
+
     StateType type();
     Game handleEvent(Game game, Event event);
 
