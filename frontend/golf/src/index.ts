@@ -20,7 +20,7 @@ let gamesTable: HTMLTableElement;
 
 store.subscribe(state => {
   emptyElem(svg);
-  drawGame(svg, state);
+  drawGame({ svg, state });
 
   const games = getGames(state);
   const userId = getUser(state)?.id;

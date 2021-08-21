@@ -156,10 +156,8 @@ type HandPosition = 'BOTTOM' | 'LEFT' | 'TOP' | 'RIGHT';
 
 function createHandCard(coord: Coord, i: number, cards: string[], uncovered: number[]) {
   const card = uncovered.includes(i) ? cards[i] : '2B';
-
   const image = createCardImage(card, coord);
   image.onclick = () => handCardClicked(i);
-
   return image;
 }
 
@@ -187,8 +185,8 @@ function drawHand(svg: SVGSVGElement, cards: string[], pos: HandPosition, uncove
     const offset = i % 3;
     const x = CARD_SIZE.width * offset + HAND_PADDING * offset;
     const y = i < 3 ? 0 : CARD_SIZE.height + HAND_PADDING;
-    const location = `H${i}` as CardLocation;
 
+    const location = `H${i}` as CardLocation;
     const highlight = hoverCard === location
       && handIndexes(playableCards).includes(i)
       && !(uncovered.includes(i));
@@ -289,17 +287,25 @@ function drawScore(svg: SVGElement, score: number) {
   return elem;
 }
 
-export function drawGame(svg: SVGSVGElement, state: State) {
+interface DrawGameOpts {
+  svg: SVGSVGElement;
+  state: State;
+}
+
+export function drawGame(opts: DrawGameOpts) {
+  const { svg, state } = opts;
+
   const game = getGame(state);
   if (game == null) { return; }
 
+  const { hasStarted, tableCard } = game;
   const playableCards = getPlayableCards(state);
   const hoverCard = getHoverCard(state);
 
-  drawDeck({ svg, hasStarted: game.hasStarted, playableCards, hoverCard });
+  drawDeck({ svg, hasStarted, playableCards, hoverCard });
 
-  if (game.hasStarted) {
-    drawTableCard(svg, game.tableCard, playableCards, hoverCard);
+  if (hasStarted) {
+    drawTableCard(svg, tableCard, playableCards, hoverCard);
 
     const hand = getHand(state);
     const uncoveredCards = getUncoveredCards(state);

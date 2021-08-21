@@ -21,6 +21,22 @@ export interface StoreProps {
   actions: Actions;
 }
 
+// class Stork<S, A> {
+//   state: S;
+//   actions: A;
+//   callbacks: Array<(s: S) => any>;
+
+//   constructor(props: { state?: S, actions?: A }) {
+//     this.state = props.state || {} as S;
+//     this.actions = props.actions || {} as A;
+//     this.callbacks = [];
+//   }
+
+//   dispatch = (actionType: keyof A, payload: any) => {
+//     this.state = this.actions[actionType](this.state, payload);
+//   }
+// }
+
 export class Store {
   state: State;
   actions: Actions;
