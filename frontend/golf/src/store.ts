@@ -1,6 +1,27 @@
 import { CardLocation, Game } from "./game";
 import { User } from "./user";
 
+export class Store<State, ActionType extends string> {
+  state: State;
+  callbacks: Array<(state: State) => any>;
+  actions: Record<ActionType, (state: State, payload: any) => State>;
+
+  constructor(state: State, actions: Record<ActionType, (s: State, payload: any) => State>) {
+    this.state = state;
+    this.callbacks = [];
+    this.actions = actions;
+  }
+
+  publish = (actionType: ActionType, payload: any) => {
+    this.state = this.actions[actionType](this.state, payload);
+    this.callbacks.forEach(callback => callback(this.state));
+  }
+
+  subscribe = (callback: (state: State) => any) => {
+    this.callbacks.push(callback);
+  }
+}
+
 export interface State {
   user?: User; // the current user
   game?: Game; // the user's current game
@@ -8,65 +29,13 @@ export interface State {
   hoverCard?: CardLocation; // the card being hovered over
 }
 
-export type StateReducer = (state: State, payload: any) => State;
-
 export type ActionType = 'LOGIN' | 'SET_GAMES' | 'SET_GAME' | 'SET_HOVER' | 'UNSET_HOVER';
-
-export type Actions = Record<ActionType, StateReducer>;
-
-export type Callback = (state: State) => any;
-
-export interface StoreProps {
-  initialState: any;
-  actions: Actions;
-}
-
-// class Stork<S, A> {
-//   state: S;
-//   actions: A;
-//   callbacks: Array<(s: S) => any>;
-
-//   constructor(props: { state?: S, actions?: A }) {
-//     this.state = props.state || {} as S;
-//     this.actions = props.actions || {} as A;
-//     this.callbacks = [];
-//   }
-
-//   dispatch = (actionType: keyof A, payload: any) => {
-//     this.state = this.actions[actionType](this.state, payload);
-//   }
-// }
-
-export class Store {
-  state: State;
-  actions: Actions;
-  callbacks: Callback[];
-
-  constructor(props: StoreProps) {
-    this.state = props.initialState;
-    this.actions = props.actions;
-    this.callbacks = [];
-  }
-
-  dispatch = (action: ActionType, payload: any) => {
-    this.state = this.actions[action](this.state, payload);;
-    this.processCallbacks(this.state);
-  }
-
-  subscribe = (callback: Callback) => {
-    this.callbacks.push(callback);
-  }
-
-  processCallbacks = (state: State) => {
-    this.callbacks.forEach(callback => callback(state));
-  }
-}
 
 const initialState: State = {
   games: [],
 };
 
-const actions: Actions = {
+const actions: Record<ActionType, (s: State, payload: any) => State> = {
   LOGIN: (state: State, payload: User): State => {
     return { ...state, user: payload }
   },
@@ -86,4 +55,4 @@ const actions: Actions = {
   }
 };
 
-export const store = new Store({ initialState, actions });
+export const store = new Store(initialState, actions);

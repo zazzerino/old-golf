@@ -101,13 +101,13 @@ function drawDeck(opts: DrawDeckOpts) {
 
   const mouseOver = () => {
     if (hoverCard !== 'DECK') {
-      store.dispatch('SET_HOVER', 'DECK');
+      store.publish('SET_HOVER', 'DECK');
     }
   }
 
   const mouseOut = () => {
     if (hoverCard === 'DECK') {
-      store.dispatch('UNSET_HOVER', null);
+      store.publish('UNSET_HOVER', null);
     }
   }
 
@@ -128,13 +128,13 @@ function drawTableCard(svg: SVGSVGElement, cardName: string, playableCards: Card
 
   const mouseOver = () => {
     if (hoverCard !== 'TABLE') {
-      store.dispatch('SET_HOVER', 'TABLE');
+      store.publish('SET_HOVER', 'TABLE');
     }
   }
 
   const mouseOut = () => {
     if (hoverCard === 'TABLE') {
-      store.dispatch('UNSET_HOVER', null);
+      store.publish('UNSET_HOVER', null);
     }
   }
 
@@ -200,13 +200,13 @@ function drawHand(svg: SVGSVGElement, cards: string[], pos: HandPosition, uncove
 
     const mouseOver = () => {
       if (hoverCard !== location) {
-        store.dispatch('SET_HOVER', location);
+        store.publish('SET_HOVER', location);
       }
     }
 
     const mouseOut = () => {
       if (hoverCard === location) {
-        store.dispatch('UNSET_HOVER', null);
+        store.publish('UNSET_HOVER', null);
       }
     }
 
@@ -249,13 +249,13 @@ function drawHeldCard(svg: SVGSVGElement, cardName: string, playableCards: CardL
 
   const mouseOver = () => {
     if (hoverCard !== 'HELD') {
-      store.dispatch('SET_HOVER', 'HELD');
+      store.publish('SET_HOVER', 'HELD');
     }
   }
 
   const mouseOut = () => {
     if (hoverCard === 'HELD') {
-      store.dispatch('UNSET_HOVER', null);
+      store.publish('UNSET_HOVER', null);
     }
   }
 

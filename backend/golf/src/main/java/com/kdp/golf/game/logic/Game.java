@@ -1,5 +1,6 @@
 package com.kdp.golf.game.logic;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.kdp.golf.game.logic.card.Card;
 import com.kdp.golf.game.logic.card.CardLocation;
@@ -143,7 +144,8 @@ public class Game {
         return this;
     }
 
-    public Deck deck() {
+    @JsonIgnore
+    public Deck getDeck() {
         return deck;
     }
 

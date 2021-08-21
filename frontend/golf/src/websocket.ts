@@ -188,7 +188,7 @@ export interface LoginResponse extends Response {
 
 export function handleLogin(response: LoginResponse) {
   console.log('logging in ' + JSON.stringify(response.user));
-  store.dispatch('LOGIN', response.user);
+  store.publish('LOGIN', response.user);
 }
 
 export interface GameResponse extends Response {
@@ -197,7 +197,7 @@ export interface GameResponse extends Response {
 }
 
 export function handleGame(response: GameResponse) {
-  store.dispatch('SET_GAME', response.game);
+  store.publish('SET_GAME', response.game);
 }
 
 export interface GamesResponse extends Response {
@@ -206,5 +206,5 @@ export interface GamesResponse extends Response {
 }
 
 export function handleGames(response: GamesResponse) {
-  store.dispatch('SET_GAMES', response.games);
+  store.publish('SET_GAMES', response.games);
 }

@@ -6,6 +6,10 @@ export function getUser(state: State): User | undefined {
   return state.user;
 }
 
+export function getUserId(state: State): number | undefined {
+  return state.user?.id;
+}
+
 export function getGame(state: State): Game | undefined {
   return state.game;
 }

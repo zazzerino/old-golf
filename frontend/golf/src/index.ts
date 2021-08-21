@@ -2,7 +2,7 @@ import { drawGame } from './draw';
 import { createGamePage, createGamesTable } from './ui';
 import { initWebSocket } from './websocket';
 import { store } from './store';
-import { getGames, getUser } from './select';
+import { getGames, getUserId } from './select';
 import { emptyElem } from './util';
 
 const root = document.getElementById('root');
@@ -23,7 +23,7 @@ store.subscribe(state => {
   drawGame({ svg, state });
 
   const games = getGames(state);
-  const userId = getUser(state)?.id;
+  const userId = getUserId(state);
 
   if (state.games.length > 0 && userId != null) {
     gamesTable && gamesTable.remove();
