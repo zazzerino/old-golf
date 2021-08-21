@@ -3,7 +3,7 @@ import { createGamePage, createGamesTable } from './ui';
 import { initWebSocket } from './websocket';
 import { store } from './store';
 import { getGames, getUserId } from './select';
-import { emptyElem } from './util';
+import { emptyElement } from './util';
 
 const root = document.getElementById('root');
 
@@ -19,7 +19,8 @@ root.appendChild(gamePage);
 let gamesTable: HTMLTableElement;
 
 store.subscribe(state => {
-  emptyElem(svg);
+  console.log('state updated: ' + JSON.stringify({ ...state, games: state.games.map(g => g.id) }));
+  emptyElement(svg);
   drawGame({ svg, state });
 
   const games = getGames(state);

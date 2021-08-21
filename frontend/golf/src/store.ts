@@ -1,20 +1,20 @@
 import { CardLocation, Game } from "./game";
 import { User } from "./user";
 
-export class Store<State, ActionType extends string> {
+export class Store<State, ActionType extends string | symbol> {
   state: State;
-  callbacks: Array<(state: State) => any>;
   actions: Record<ActionType, (state: State, payload: any) => State>;
+  callbacks: Array<(state: State) => any>;
 
   constructor(state: State, actions: Record<ActionType, (s: State, payload: any) => State>) {
     this.state = state;
-    this.callbacks = [];
     this.actions = actions;
+    this.callbacks = [];
   }
 
   publish = (actionType: ActionType, payload: any) => {
-    this.state = this.actions[actionType](this.state, payload);
-    this.callbacks.forEach(callback => callback(this.state));
+    this.state = this.actions[actionType](this.state, payload); // update state
+    this.callbacks.forEach(callback => callback(this.state)); // call callbacks with new state
   }
 
   subscribe = (callback: (state: State) => any) => {

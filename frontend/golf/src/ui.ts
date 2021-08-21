@@ -3,6 +3,7 @@ import { getGame, getUser } from "./select";
 import { sendCreateGame, sendJoinGame, sendStartGame } from "./websocket";
 import { createSvgElement } from "./draw";
 import { Game } from "./game";
+import { hideElement } from "./util";
 
 function createButton(text: string): HTMLButtonElement {
   const button = document.createElement('button');
@@ -47,7 +48,7 @@ export function createJoinGameButton(gameId: number, userId?: number, id = 'join
   return button;
 }
 
-export function createGamesTable(games: Game[], userId?: number, id = 'create-games-table'): HTMLTableElement {
+export function createGamesTable(games: Game[], userId?: number, id = 'games-table'): HTMLTableElement {
   const table = document.createElement('table');
   table.id = id;
   table.caption = table.createCaption();

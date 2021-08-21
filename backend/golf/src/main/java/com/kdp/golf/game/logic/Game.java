@@ -10,6 +10,7 @@ import com.kdp.golf.game.logic.state.InitState;
 import com.kdp.golf.game.logic.state.UncoverTwoState;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 public class Game {
 
@@ -188,9 +189,17 @@ public class Game {
         return this;
     }
 
+    public List<CardLocation> playableCards(Long playerId) {
+        if (isPlayersTurn(playerId)) {
+            return state.playableCards(this);
+        }
+        return List.of();
+    }
+
     @JsonProperty
-    public List<CardLocation> playableCards() {
-        return state.playableCards(this);
+    public Map<Long, List<CardLocation>> playableCards() {
+        return players.values().stream()
+                .collect(Collectors.toMap(p -> p.id, p -> playableCards(p.id)));
     }
 
     @Override

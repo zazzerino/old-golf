@@ -48,10 +48,13 @@ export function isPlayersTurn(state: State): boolean {
   return state.game?.playerTurn === playerId;
 }
 
-export function getPlayableCards(state: State): CardLocation[] | undefined {
-  return isPlayersTurn(state)
-    ? state.game?.playableCards
-    : [];
+export function getPlayableCards(state: State) {
+  const playerId = getPlayerId(state);
+  const map = state.game?.playableCards;
+
+  if (playerId != null && map) {
+    return map[playerId];
+  }
 }
 
 export function getUncoveredCards(state: State): number[] | undefined {
