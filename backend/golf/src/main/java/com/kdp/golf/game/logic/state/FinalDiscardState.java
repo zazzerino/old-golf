@@ -8,7 +8,7 @@ import com.kdp.golf.game.logic.event.SwapCardEvent;
 
 import java.util.List;
 
-public class FinalDiscardState implements GameState {
+public class FinalDiscardState implements State {
     private static FinalDiscardState instance;
 
     private FinalDiscardState() {}

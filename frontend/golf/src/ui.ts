@@ -127,7 +127,7 @@ function homePage(state: State) {
 };
 
 function gamePage(state: State) {
-  const { size: svgSize } = state;
+  const { size } = state;
   const userId = getUserId(state);
   const gameId = getGameId(state);
 
@@ -141,10 +141,10 @@ function gamePage(state: State) {
   h2.innerText = 'Game';
   div.appendChild(h2);
 
-  const svg = createSvgElement(svgSize);
+  const svg = createSvgElement(size);
   div.appendChild(svg);
 
-  drawGame({ svg, size: svgSize, state });
+  drawGame({ svg, size, state });
 
   if (userId != null) {
     const createGameButton = createCreateGameButton(userId);
@@ -165,8 +165,8 @@ const routes: Record<Route, (state: State) => HTMLElement> = {
 }
 
 function createPage(state: State): HTMLElement {
-  return routes['/game'](state);
-  // return routes[state.route](state);
+  // return routes['/game'](state);
+  return routes[state.route](state);
 }
 
 export function render(root: HTMLElement, state: State) {

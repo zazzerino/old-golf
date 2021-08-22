@@ -1,9 +1,6 @@
 package com.kdp.golf.game.logic.state;
 
-import com.kdp.golf.game.logic.Game;
-import com.kdp.golf.game.logic.event.Event;
-
-public class GameOverState implements GameState {
+public class GameOverState implements State {
     private static GameOverState instance;
 
     private GameOverState() {
@@ -19,10 +16,5 @@ public class GameOverState implements GameState {
     @Override
     public StateType type() {
         return StateType.GAME_OVER;
-    }
-
-    @Override
-    public Game handleEvent(Game game, Event event) {
-        return game;
     }
 }

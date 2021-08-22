@@ -131,74 +131,74 @@ public class Hand {
         return score;
     }
 
-    public int score() {
-        if (cards.isEmpty()) {
-            return 0;
-        }
-
-        var ranks = cards.stream().map(Card::rank).toList();
-        var values = cards.stream().map(Card::golfValue).toList();
-        assert(values.size() == HAND_SIZE);
-
-        // all six match
-        if (Util.allEqual(ranks)) {
-            return -50;
-        }
-
-        // outer four match
-        var outerFourRanks = Util.pickItems(ranks, List.of(0, 2, 3, 5));
-        if (Util.allEqual(outerFourRanks)) {
-            var middleVals = Util.pickItems(values, List.of(1, 4));
-            if (Util.allEqual(Util.pickItems(ranks, List.of(1, 4)))) {
-                return -20;
-            }
-            return Util.sumInt(middleVals) - 20;
-        }
-
-        var leftFourRanks = Util.pickItems(ranks, List.of(0, 1, 3, 4));
-        var rightFourRanks = Util.pickItems(ranks, List.of(1, 2, 4, 5));
-
-        // left four match
-        if (Util.allEqual(leftFourRanks)) {
-            var rightVals = Util.pickItems(values, List.of(2, 5));
-            if (Util.allEqual(Util.pickItems(ranks, List.of(2, 5)))) {
-                return -10;
-            }
-            return Util.sumInt(rightVals) - 10;
-        }
-
-        // right four match
-        if (Util.allEqual(rightFourRanks)) {
-            var leftVals = Util.pickItems(values, List.of(0, 3));
-            if (Util.allEqual(Util.pickItems(ranks, List.of(0, 3)))) {
-                return -10;
-            }
-            return Util.sumInt(leftVals) - 10;
-        }
-
-        var score = 0;
-
-        var leftRanks = Util.pickItems(ranks, List.of(0, 3));
-        var middleRanks = Util.pickItems(ranks, List.of(1, 4));
-        var rightRanks = Util.pickItems(ranks, List.of(2, 5));
-
-        if (!Util.allEqual(leftRanks)) {
-            var leftVals = leftRanks.stream().map(Card.Rank::golfValue).toList();
-            score += Util.sumInt(leftVals);
-        }
-
-        if (!Util.allEqual(middleRanks)) {
-            var middleVals = middleRanks.stream().map(Card.Rank::golfValue).toList();
-            score += Util.sumInt(middleVals);
-        }
-
-        if (!Util.allEqual(rightRanks)) {
-            var rightVals = rightRanks.stream().map(Card.Rank::golfValue).toList();
-            score += Util.sumInt(rightVals);
-        }
-
-        return score;
-    }
+//    public int score() {
+//        if (cards.isEmpty()) {
+//            return 0;
+//        }
+//
+//        var ranks = cards.stream().map(Card::rank).toList();
+//        var values = cards.stream().map(Card::golfValue).toList();
+//        assert(values.size() == HAND_SIZE);
+//
+//        // all six match
+//        if (Util.allEqual(ranks)) {
+//            return -50;
+//        }
+//
+//        // outer four match
+//        var outerFourRanks = Util.pickItems(ranks, List.of(0, 2, 3, 5));
+//        if (Util.allEqual(outerFourRanks)) {
+//            var middleVals = Util.pickItems(values, List.of(1, 4));
+//            if (Util.allEqual(Util.pickItems(ranks, List.of(1, 4)))) {
+//                return -20;
+//            }
+//            return Util.sumInt(middleVals) - 20;
+//        }
+//
+//        var leftFourRanks = Util.pickItems(ranks, List.of(0, 1, 3, 4));
+//        var rightFourRanks = Util.pickItems(ranks, List.of(1, 2, 4, 5));
+//
+//        // left four match
+//        if (Util.allEqual(leftFourRanks)) {
+//            var rightVals = Util.pickItems(values, List.of(2, 5));
+//            if (Util.allEqual(Util.pickItems(ranks, List.of(2, 5)))) {
+//                return -10;
+//            }
+//            return Util.sumInt(rightVals) - 10;
+//        }
+//
+//        // right four match
+//        if (Util.allEqual(rightFourRanks)) {
+//            var leftVals = Util.pickItems(values, List.of(0, 3));
+//            if (Util.allEqual(Util.pickItems(ranks, List.of(0, 3)))) {
+//                return -10;
+//            }
+//            return Util.sumInt(leftVals) - 10;
+//        }
+//
+//        var score = 0;
+//
+//        var leftRanks = Util.pickItems(ranks, List.of(0, 3));
+//        var middleRanks = Util.pickItems(ranks, List.of(1, 4));
+//        var rightRanks = Util.pickItems(ranks, List.of(2, 5));
+//
+//        if (!Util.allEqual(leftRanks)) {
+//            var leftVals = leftRanks.stream().map(Card.Rank::golfValue).toList();
+//            score += Util.sumInt(leftVals);
+//        }
+//
+//        if (!Util.allEqual(middleRanks)) {
+//            var middleVals = middleRanks.stream().map(Card.Rank::golfValue).toList();
+//            score += Util.sumInt(middleVals);
+//        }
+//
+//        if (!Util.allEqual(rightRanks)) {
+//            var rightVals = rightRanks.stream().map(Card.Rank::golfValue).toList();
+//            score += Util.sumInt(rightVals);
+//        }
+//
+//        return score;
+//    }
 
     @Override
     public String toString() {

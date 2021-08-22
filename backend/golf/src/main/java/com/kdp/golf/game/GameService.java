@@ -4,7 +4,7 @@ import com.kdp.golf.IdService;
 import com.kdp.golf.game.logic.Game;
 import com.kdp.golf.game.logic.Player;
 import com.kdp.golf.game.logic.event.Event;
-import com.kdp.golf.game.logic.state.GameState;
+import com.kdp.golf.game.logic.state.State;
 import com.kdp.golf.user.UserService;
 
 import javax.enterprise.context.ApplicationScoped;
@@ -27,6 +27,7 @@ public class GameService {
     public Game createGame(Long userId) {
         var user = userService.getById(userId).orElseThrow();
         var gameId = idService.nextGameId();
+
         var player = Player.from(user);
         var game = new Game(gameId, player);
 
@@ -38,7 +39,7 @@ public class GameService {
         return game;
     }
 
-    public Game startGame(Long gameId) {
+    public Game startGame(Long gameId, Long playerId) {
         var game = gameDao.getById(gameId).orElseThrow();
 
         if (game.hasStarted()) {
@@ -64,7 +65,7 @@ public class GameService {
     public Optional<Game> joinGame(Long gameId, Long userId) {
         var game = gameDao.getById(gameId).orElseThrow();
 
-        if (game.getStateType() != GameState.StateType.INIT
+        if (game.getStateType() != State.StateType.INIT
                 && game.getPlayer(userId).isEmpty()) {
             return Optional.empty();
         }

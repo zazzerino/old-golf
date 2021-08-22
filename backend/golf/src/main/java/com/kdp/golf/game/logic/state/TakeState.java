@@ -7,9 +7,8 @@ import com.kdp.golf.game.logic.event.TakeFromDeckEvent;
 import com.kdp.golf.game.logic.event.TakeFromTableEvent;
 
 import java.util.List;
-import java.util.Map;
 
-public class TakeState implements GameState {
+public class TakeState implements State {
     private static TakeState instance;
 
     private TakeState() {}

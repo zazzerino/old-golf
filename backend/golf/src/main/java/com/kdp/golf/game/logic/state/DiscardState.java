@@ -9,7 +9,7 @@ import com.kdp.golf.game.logic.event.SwapCardEvent;
 
 import java.util.List;
 
-public class DiscardState implements GameState {
+public class DiscardState implements State {
     private static DiscardState instance;
 
     private DiscardState() {}

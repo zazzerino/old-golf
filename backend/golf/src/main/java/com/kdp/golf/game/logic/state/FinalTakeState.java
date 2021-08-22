@@ -7,9 +7,8 @@ import com.kdp.golf.game.logic.event.TakeFromDeckEvent;
 import com.kdp.golf.game.logic.event.TakeFromTableEvent;
 
 import java.util.List;
-import java.util.Map;
 
-public class FinalTakeState implements GameState {
+public class FinalTakeState implements State {
     private static FinalTakeState instance;
 
     private FinalTakeState() {}
@@ -41,10 +40,6 @@ public class FinalTakeState implements GameState {
     @Override
     public List<CardLocation> playableCards(Game game) {
         return List.of(CardLocation.DECK, CardLocation.TABLE);
-    }
-
-    public Map<Long, List<CardLocation>> allPlayableCards(Game game) {
-        return Map.of();
     }
 
     @Override

@@ -1,7 +1,11 @@
 import { Size } from "./draw";
 import { CardLocation, Game } from "./game";
 import { Route } from "./ui";
-import { User } from "./user";
+
+export interface User {
+  id: number;
+  name: string;
+}
 
 export class Store<State, ActionType extends string | symbol> {
   state: State;

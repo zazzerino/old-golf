@@ -9,7 +9,7 @@ import com.kdp.golf.game.logic.event.UncoverEvent;
 import java.util.List;
 import java.util.function.Predicate;
 
-public class UncoverTwoState implements GameState {
+public class UncoverTwoState implements State {
     private static UncoverTwoState instance;
 
     private UncoverTwoState() {}

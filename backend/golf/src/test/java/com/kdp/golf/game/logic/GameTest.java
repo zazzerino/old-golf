@@ -1,7 +1,7 @@
 package com.kdp.golf.game.logic;
 
 import com.kdp.golf.game.logic.event.UncoverEvent;
-import com.kdp.golf.game.logic.state.GameState;
+import com.kdp.golf.game.logic.state.State;
 import com.kdp.golf.game.logic.state.InitState;
 import com.kdp.golf.game.logic.state.UncoverTwoState;
 import io.quarkus.test.junit.QuarkusTest;
@@ -28,11 +28,11 @@ class GameTest {
 
         var event0 = new UncoverEvent(gameId, playerId, 0);
         game.handleEvent(event0);
-        assertEquals(GameState.StateType.UNCOVER_TWO, game.getStateType());
+        assertEquals(State.StateType.UNCOVER_TWO, game.getStateType());
 
         var event1 = new UncoverEvent(gameId, playerId, 5);
         game.handleEvent(event1);
-        assertEquals(GameState.StateType.TAKE, game.getStateType());
+        assertEquals(State.StateType.TAKE, game.getStateType());
     }
 
 //    @Test

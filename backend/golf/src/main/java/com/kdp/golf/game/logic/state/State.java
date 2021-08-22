@@ -6,10 +6,13 @@ import com.kdp.golf.game.logic.event.Event;
 
 import java.util.List;
 
-public interface GameState {
+public interface State {
 
     StateType type();
-    Game handleEvent(Game game, Event event);
+
+    default Game handleEvent(Game game, Event event) {
+        return game;
+    }
 
     default List<CardLocation> playableCards(Game game) {
         return List.of();

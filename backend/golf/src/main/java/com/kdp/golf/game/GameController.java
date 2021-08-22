@@ -30,11 +30,6 @@ public class GameController {
         webSocket.sendToSession(session, new GamesResponse(games));
     }
 
-    public void joinGame(Session session, Long gameId, Long userId) {
-        var game = gameService.joinGame(gameId, userId);
-        game.ifPresent(this::notifyPlayers);
-    }
-
     public void createGame(Session session, Long userId) {
         var game = gameService.createGame(userId);
         log.info("game created: " + game);
@@ -42,10 +37,15 @@ public class GameController {
         broadcastGames();
     }
 
-    public void startGame(Session session, Long gameId) {
-        var game = gameService.startGame(gameId);
+    public void startGame(Session session, Long gameId, Long playerId) {
+        var game = gameService.startGame(gameId, playerId);
         log.info("game started: " + game);
         notifyPlayers(game);
+    }
+
+    public void joinGame(Session session, Long gameId, Long userId) {
+        var game = gameService.joinGame(gameId, userId);
+        game.ifPresent(this::notifyPlayers);
     }
 
     public void handleEvent(Session session, Event event) {

@@ -55,7 +55,7 @@ public class WebSocket {
         if (message instanceof CreateGameMessage c) {
             gameController.createGame(session, c.userId());
         } else if (message instanceof StartGameMessage s) {
-            gameController.startGame(session, s.gameId());
+            gameController.startGame(session, s.gameId(), s.playerId());
         } else if (message instanceof EventMessage e) {
             gameController.handleEvent(session, e.event());
         } else if (message instanceof JoinGameMessage j) {

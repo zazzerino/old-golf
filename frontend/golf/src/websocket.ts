@@ -1,6 +1,5 @@
 import { Game } from './game';
-import { User } from './user';
-import { store } from './store';
+import { store, User } from './store';
 
 const WS_URL = 'ws://localhost:8080/ws';
 
@@ -56,15 +55,13 @@ export interface CreateGameMessage extends Message {
   userId: number;
 }
 
-export function createGameMessage(userId: number): CreateGameMessage {
-  return { 
+export function sendCreateGame(userId: number) {
+  const message: CreateGameMessage = {
     type: 'CREATE_GAME',
     userId,
   };
-}
 
-export function sendCreateGame(userId: number) {
-  send(createGameMessage(userId));
+  send(message);
 }
 
 export interface StartGameMessage extends Message {
@@ -73,16 +70,14 @@ export interface StartGameMessage extends Message {
   playerId: number;
 }
 
-export function startGameMessage(gameId: number, playerId: number): StartGameMessage {
-  return { 
+export function sendStartGame(gameId: number, playerId: number) {
+  const message: StartGameMessage = {
     type: 'START_GAME',
     gameId,
     playerId,
- };
-}
+  };
 
-export function sendStartGame(gameId: number, playerId: number) {
-  send(startGameMessage(gameId, playerId));
+  send(message);
 }
 
 export interface JoinGameMessage extends Message {

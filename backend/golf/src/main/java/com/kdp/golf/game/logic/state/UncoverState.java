@@ -7,7 +7,7 @@ import com.kdp.golf.game.logic.event.UncoverEvent;
 
 import java.util.List;
 
-public class UncoverState implements GameState {
+public class UncoverState implements State {
     private static UncoverState instance;
 
     private UncoverState() {}

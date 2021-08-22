@@ -8,6 +8,7 @@ public interface Response {
     Type type();
 
     enum Type {
+        ERROR,
         LOGIN,
         GAME,
         GAMES

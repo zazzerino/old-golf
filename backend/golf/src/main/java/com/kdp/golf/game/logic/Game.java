@@ -5,7 +5,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.kdp.golf.game.logic.card.Card;
 import com.kdp.golf.game.logic.card.CardLocation;
 import com.kdp.golf.game.logic.event.*;
-import com.kdp.golf.game.logic.state.GameState;
+import com.kdp.golf.game.logic.state.State;
 import com.kdp.golf.game.logic.state.InitState;
 import com.kdp.golf.game.logic.state.UncoverTwoState;
 
@@ -19,7 +19,7 @@ public class Game {
     private final Map<Long, Player> players;
     private final List<Long> playerOrder;
     private final Stack<Card> tableCards;
-    private GameState state;
+    private State state;
     private Long hostId;
     private int turn;
 
@@ -167,15 +167,15 @@ public class Game {
         return !(state instanceof InitState);
     }
 
-    public GameState state() {
+    public State state() {
         return state;
     }
 
-    public GameState.StateType getStateType() {
+    public State.StateType getStateType() {
         return state.type();
     }
 
-    public Game setState(GameState state) {
+    public Game setState(State state) {
         this.state = state;
         return this;
     }

@@ -1,6 +1,5 @@
 import { CardLocation, Game, Player } from "./game";
-import { State } from "./store";
-import { User } from "./user";
+import { State, User } from "./store";
 
 export function getUser(state: State): User | undefined {
   return state.user;

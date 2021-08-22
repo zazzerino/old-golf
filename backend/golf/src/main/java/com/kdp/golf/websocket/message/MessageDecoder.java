@@ -2,7 +2,6 @@ package com.kdp.golf.websocket.message;
 
 import com.kdp.golf.game.logic.event.Event;
 import io.vertx.core.json.JsonObject;
-import org.jboss.logging.Logger;
 
 import javax.websocket.DecodeException;
 import javax.websocket.Decoder;
@@ -10,7 +9,6 @@ import javax.websocket.EndpointConfig;
 import java.util.Optional;
 
 public class MessageDecoder implements Decoder.Text<Message> {
-    Logger log = Logger.getLogger("MessageDecoder");
 
     @Override
     public Message decode(String s) throws DecodeException {
@@ -36,7 +34,8 @@ public class MessageDecoder implements Decoder.Text<Message> {
 
             case START_GAME -> {
                 var gameId = jsonObject.getLong("gameId");
-                return new StartGameMessage(gameId);
+                var userId = jsonObject.getLong("userId");
+                return new StartGameMessage(gameId, userId);
             }
 
             case EVENT -> {

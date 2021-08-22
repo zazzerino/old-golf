@@ -333,22 +333,23 @@ export function drawGame(opts: DrawGameOpts) {
   const { hasStarted, tableCard } = game;
   const playableCards = getPlayableCards(state);
   const hoverCard = getHoverCard(state);
-  drawDeck({ svg, size: size, hasStarted, playableCards, hoverCard });
+
+  drawDeck({ svg, size, hasStarted, playableCards, hoverCard });
 
   if (hasStarted) {
     if (tableCard) {
-      drawTableCard({ svg, size: size, card: tableCard, playableCards, hoverCard });
+      drawTableCard({ svg, size, card: tableCard, playableCards, hoverCard });
     }
 
     const cards = getHand(state);
     const uncovered = getUncoveredCards(state);
     if (cards && uncovered) { 
-      drawHand({ svg, size: size, cards, position: 'BOTTOM', uncovered, playableCards, hoverCard });
+      drawHand({ svg, size, cards, position: 'BOTTOM', uncovered, playableCards, hoverCard });
     }
 
     const heldCard = getHeldCard(state);
     if (heldCard) { 
-      drawHeldCard({ svg, size: size, card: heldCard, playableCards, hoverCard }); 
+      drawHeldCard({ svg, size, card: heldCard, playableCards, hoverCard }); 
     }
 
     const score = getScore(state);
