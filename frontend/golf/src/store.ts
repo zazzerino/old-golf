@@ -1,3 +1,4 @@
+import { Size } from "./draw";
 import { CardLocation, Game } from "./game";
 import { Route } from "./ui";
 import { User } from "./user";
@@ -29,13 +30,15 @@ export interface State {
   games: Game[]; // a list of all games
   hoverCard?: CardLocation; // the card being hovered over
   route: Route;
+  size: Size;
 }
 
 export type ActionType = 'LOGIN' | 'SET_GAMES' | 'SET_GAME' | 'SET_HOVER' | 'UNSET_HOVER' | 'NAVIGATE';
 
 const initialState: State = {
-  games: [],
   route: '/',
+  size: { width: 600, height: 500 },
+  games: [],
 };
 
 const actions: Record<ActionType, (s: State, payload: any) => State> = {

@@ -1,7 +1,6 @@
-import { getPage, Route } from './ui';
+import { render, Route } from './ui';
 import { initWebSocket } from './websocket';
-import { State, store } from './store';
-import { emptyElement } from './util';
+import { store } from './store';
 
 const root = document.getElementById('root');
 
@@ -10,17 +9,12 @@ if (root == null) {
 }
 
 initWebSocket();
+render(root, store.state);
 
-// redraw after navigation
+// rerender after navigation
 window.onpopstate = () => {
   store.publish('NAVIGATE', window.location.pathname as Route);
   render(root, store.state);
-}
-
-function render(root: HTMLElement, state: State) {
-  emptyElement(root);
-  const page = getPage(state.route);
-  root.appendChild(page);
 }
 
 // rerender on state change

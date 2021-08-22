@@ -14,6 +14,10 @@ export function getGame(state: State): Game | undefined {
   return state.game;
 }
 
+export function getGameId(state: State): number | undefined {
+  return state.game?.id;
+}
+
 export function getGames(state: State): Game[] {
   return state.games;
 }

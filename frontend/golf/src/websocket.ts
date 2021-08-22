@@ -8,7 +8,6 @@ let socket: WebSocket;
 
 export function initWebSocket() {
   socket = new WebSocket(WS_URL);
-
   socket.onopen = onOpen;
   socket.onclose = onClose;
   socket.onclose = onClose;

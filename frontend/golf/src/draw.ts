@@ -13,6 +13,8 @@ export interface Size {
   height: number;
 }
 
+type HandPosition = 'BOTTOM' | 'LEFT' | 'TOP' | 'RIGHT';
+
 const SVG_NS = 'http://www.w3.org/2000/svg';
 const XLINK_NS = 'http://www.w3.org/1999/xlink';
 
@@ -28,35 +30,29 @@ function cardPath(card: string): string {
 
 export function createSvgElement(size: Size, backgroundColor = 'aliceblue'): SVGSVGElement {
   const elem = document.createElementNS(SVG_NS, 'svg');
-
   elem.setAttribute('width', size.width.toString());
   elem.setAttribute('height', size.height.toString());
   elem.style.backgroundColor = backgroundColor;
-
   return elem;
 }
 
 function createCardImage(card: string, coord: Coord): SVGImageElement {
   const image = document.createElementNS(SVG_NS, 'image');
-
   image.setAttribute('width', CARD_SCALE);
   image.setAttribute('x', coord.x.toString());
   image.setAttribute('y', coord.y.toString());
   image.setAttributeNS(XLINK_NS, 'href', cardPath(card));
-
   return image;
 }
 
 function makeRect(coord: Coord, size: Size, color = '#44ff00'): SVGRectElement {
   const rect = document.createElementNS(SVG_NS, 'rect');
-
   rect.setAttribute('x', coord.x.toString());
   rect.setAttribute('y', coord.y.toString());
   rect.setAttribute('width', size.width.toString());
   rect.setAttribute('height', size.height.toString());
   rect.setAttribute('stroke', color);
   rect.setAttribute('stroke-width', HL_PADDING.toString());
-
   return rect;
 }
 
@@ -67,7 +63,6 @@ interface DrawCardOpts {
   highlight?: boolean;
 }
 
-// function drawCard(svg: SVGSVGElement, card: string, coord: Coord, highlight = false): SVGImageElement {
 function drawCard(opts: DrawCardOpts): SVGImageElement {
   const { svg, card, coord } = opts;
   const highlight = opts.highlight || false;
@@ -84,18 +79,17 @@ function drawCard(opts: DrawCardOpts): SVGImageElement {
 
 interface DrawDeckOpts {
   svg: SVGSVGElement;
+  size: Size;
   hasStarted?: boolean;
   playableCards?: CardLocation[];
   hoverCard?: CardLocation;
 }
 
 function drawDeck(opts: DrawDeckOpts) {
-  const { svg, playableCards, hoverCard } = opts;
+  const { svg, size, playableCards, hoverCard } = opts;
   const hasStarted = opts.hasStarted || false;
-
-  const rect = svg.getBoundingClientRect();
-  let x = rect.width / 2 - CARD_SIZE.width / 2 - HAND_PADDING;
-  const y = rect.height / 2 - CARD_SIZE.height / 2;
+  let x = size.width / 2 - CARD_SIZE.width / 2 - HAND_PADDING;
+  const y = size.height / 2 - CARD_SIZE.height / 2;
 
   if (hasStarted) {
     x -= CARD_SIZE.width / 2;
@@ -121,17 +115,27 @@ function drawDeck(opts: DrawDeckOpts) {
 
   cardImage.addEventListener('mouseover', mouseOver);
   cardImage.addEventListener('mouseout', mouseOut);
-
   return cardImage;
 }
 
-function drawTableCard(svg: SVGSVGElement, cardName: string, playableCards: CardLocation[] = [], hoverCard?: CardLocation): SVGImageElement {
-  const rect = svg.getBoundingClientRect();
-  const x = rect.width / 2 + HAND_PADDING;
-  const y = rect.height / 2 - CARD_SIZE.height / 2;
+interface DrawTableOpts {
+  svg: SVGSVGElement;
+  size: Size;
+  card: string;
+  playableCards?: CardLocation[];
+  hoverCard?: CardLocation;
+}
+
+function drawTableCard(opts: DrawTableOpts) {
+  const { svg, size, card, hoverCard } = opts;
+  const playableCards = opts.playableCards || [];
+
+  const x = size.width / 2 + HAND_PADDING;
+  const y = size.height / 2 - CARD_SIZE.height / 2;
 
   const highlight = playableCards.includes('TABLE') && hoverCard === 'TABLE';
-  const cardImage = drawCard({ svg, card: cardName, coord: { x, y }, highlight });
+  const cardImage = drawCard({ svg, card, coord: { x, y }, highlight });
+
   cardImage.onclick = () => tableCardClicked();
 
   const mouseOver = () => {
@@ -148,19 +152,8 @@ function drawTableCard(svg: SVGSVGElement, cardName: string, playableCards: Card
 
   cardImage.addEventListener('mouseover', mouseOver);
   cardImage.addEventListener('mouseout', mouseOut);
-
   return cardImage;
 }
-
-function svgSize(elem: SVGElement): Size {
-  const rect = elem.getBoundingClientRect();
-  const width = rect.width;
-  const height = rect.height;
-
-  return { width, height };
-}
-
-type HandPosition = 'BOTTOM' | 'LEFT' | 'TOP' | 'RIGHT';
 
 function createHandCard(coord: Coord, i: number, cards: string[], uncovered: number[]) {
   const card = uncovered.includes(i) ? cards[i] : '2B';
@@ -186,15 +179,25 @@ function handIndexes(locations: CardLocation[]): number[] {
   return locations.map(loc => handIndex(loc));
 }
 
-function drawHand(svg: SVGSVGElement, cards: string[], pos: HandPosition, uncovered: number[] = [], playableCards: CardLocation[] = [], hoverCard?: CardLocation): SVGGElement {
+interface CreateHandOpts {
+  cards: string[];
+  uncovered?: number[];
+  playableCards?: CardLocation[];
+  hoverCard?: CardLocation;
+}
+
+function createHand(opts: CreateHandOpts) {
+  const { cards, hoverCard } = opts;
+  const uncovered = opts.uncovered || [];
+  const playableCards = opts.playableCards || [];
   const group = document.createElementNS(SVG_NS, 'g');
 
   for (let i = 0; i < HAND_SIZE; i++) {
     const offset = i % 3;
     const x = CARD_SIZE.width * offset + HAND_PADDING * offset;
     const y = i < 3 ? 0 : CARD_SIZE.height + HAND_PADDING;
-
     const location = `H${i}` as CardLocation;
+
     const highlight = hoverCard === location
       && handIndexes(playableCards).includes(i)
       && !(uncovered.includes(i));
@@ -220,18 +223,33 @@ function drawHand(svg: SVGSVGElement, cards: string[], pos: HandPosition, uncove
 
     image.addEventListener('mouseover', mouseOver);
     image.addEventListener('mouseout', mouseOut);
-
     group.appendChild(image);
   }
 
-  const size = svgSize(svg);
+  return group;
+}
+
+interface DrawHandOpts {
+  svg: SVGSVGElement;
+  size: Size;
+  cards: string[];
+  position: HandPosition;
+  uncovered?: number[];
+  playableCards?: CardLocation[];
+  hoverCard?: CardLocation;
+}
+
+function drawHand(opts: DrawHandOpts) {
+  const { svg, size, position } = opts;
+  const group = createHand(opts);
+
   const midX = size.width / 2 - CARD_SIZE.width * 1.5;
   const bottomY = size.height - CARD_SIZE.height * 2 - HAND_PADDING * 2;
 
   let x: number;
   let y: number;
 
-  switch (pos) {
+  switch (position) {
     case 'BOTTOM':
       group.setAttribute('transform', `translate(${midX}, ${bottomY})`);
       break;
@@ -246,14 +264,24 @@ function drawHand(svg: SVGSVGElement, cards: string[], pos: HandPosition, uncove
   return group;
 }
 
-function drawHeldCard(svg: SVGSVGElement, cardName: string, playableCards: CardLocation[] = [], hoverCard?: CardLocation): SVGImageElement {
-  const size = svgSize(svg);
+interface DrawHeldCardOpts {
+  svg: SVGSVGElement;
+  size: Size;
+  card: string;
+  playableCards?: CardLocation[];
+  hoverCard?: CardLocation;
+}
+
+function drawHeldCard(opts: DrawHeldCardOpts): SVGImageElement {
+  const { svg, size, card, hoverCard } = opts;
+  const playableCards = opts.playableCards || [];
+
   const x = size.width * 0.75;
   const y = size.height - CARD_SIZE.height * 1.5;
   const highlight = playableCards.includes('HELD') && hoverCard === 'HELD';
 
-  const card = drawCard({ svg, card: cardName, coord: { x, y }, highlight });
-  card.onclick = () => heldCardClicked();
+  const cardImage = drawCard({ svg, card, coord: { x, y }, highlight });
+  cardImage.onclick = () => heldCardClicked();
 
   const mouseOver = () => {
     if (hoverCard !== 'HELD') {
@@ -267,29 +295,24 @@ function drawHeldCard(svg: SVGSVGElement, cardName: string, playableCards: CardL
     }
   }
 
-  card.addEventListener('mouseover', mouseOver);
-  card.addEventListener('mouseout', mouseOut);
-
-  return card;
+  cardImage.addEventListener('mouseover', mouseOver);
+  cardImage.addEventListener('mouseout', mouseOut);
+  return cardImage;
 }
 
 function createText(coord: Coord, text: string, color = 'gray') {
   const elem = document.createElementNS(SVG_NS, 'text');
-  
   elem.textContent = text;
   elem.setAttribute('x', coord.x.toString());
   elem.setAttribute('y', coord.y.toString());
   elem.setAttribute('fill', color);
-
   return elem;
 }
 
-function drawScore(svg: SVGElement, score: number) {
-  const size = svgSize(svg);
+function drawScore(svg: SVGElement, size: Size, score: number) {
   const x = size.width / 7;
   const y = size.height - CARD_SIZE.height * 1;
   const text = 'Score: ' + score;
-
   const elem = createText({ x, y }, text);
   svg.appendChild(elem);
   return elem;
@@ -297,11 +320,12 @@ function drawScore(svg: SVGElement, score: number) {
 
 interface DrawGameOpts {
   svg: SVGSVGElement;
+  size: Size;
   state: State;
 }
 
 export function drawGame(opts: DrawGameOpts) {
-  const { svg, state } = opts;
+  const { svg, size, state } = opts;
 
   const game = getGame(state);
   if (game == null) { return; }
@@ -309,26 +333,27 @@ export function drawGame(opts: DrawGameOpts) {
   const { hasStarted, tableCard } = game;
   const playableCards = getPlayableCards(state);
   const hoverCard = getHoverCard(state);
-
-  drawDeck({ svg, hasStarted, playableCards, hoverCard });
+  drawDeck({ svg, size: size, hasStarted, playableCards, hoverCard });
 
   if (hasStarted) {
-    drawTableCard(svg, tableCard, playableCards, hoverCard);
+    if (tableCard) {
+      drawTableCard({ svg, size: size, card: tableCard, playableCards, hoverCard });
+    }
 
-    const hand = getHand(state);
-    const uncoveredCards = getUncoveredCards(state);
-    if (hand != null && uncoveredCards != null) { 
-      drawHand(svg, hand, 'BOTTOM', uncoveredCards, playableCards, hoverCard);
+    const cards = getHand(state);
+    const uncovered = getUncoveredCards(state);
+    if (cards && uncovered) { 
+      drawHand({ svg, size: size, cards, position: 'BOTTOM', uncovered, playableCards, hoverCard });
     }
 
     const heldCard = getHeldCard(state);
     if (heldCard) { 
-      drawHeldCard(svg, heldCard, playableCards, hoverCard); 
+      drawHeldCard({ svg, size: size, card: heldCard, playableCards, hoverCard }); 
     }
 
     const score = getScore(state);
     if (score != null) { 
-      drawScore(svg, score); 
+      drawScore(svg, size, score); 
     }
   }
 }

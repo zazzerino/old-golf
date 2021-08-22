@@ -1,3 +1,12 @@
+body {
+  margin: 0;
+  padding: 0;
+}
+
+button {
+  padding: 0.5rem;
+}
+
 #root {
   display: flex;
   justify-content: center;
@@ -11,14 +20,35 @@
 
 .create-game-button {
   margin: auto;
+  margin-bottom: 0.4rem;
+  display: block;
 }
 
 .start-game-button {
   margin: auto;
+  display: block;
 }
 
 .games-table {
-  text-align: center;
   width: 33%;
   margin: 1rem auto;
+}
+
+.navbar {
+  display: flex;
+  margin-bottom: -2rem;
+  padding: -2rem;
+}
+
+.navbar ul {
+  list-style-type: none;
+}
+
+.navbar li {
+  float: left;
+}
+
+.navbar a {
+  display: block;
+  margin-right: 1rem;
 }
