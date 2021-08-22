@@ -46,7 +46,7 @@ public class DiscardState implements State {
             } else if (event instanceof SwapCardEvent s) {
                 game.swapCard(playerId, s.handIndex());
 
-                var playerFlipped = player.hand().allUncovered();
+                var playerFlipped = player.getHand().allUncovered();
 
                 if (playerFlipped) {
                     game.setState(FinalTakeState.instance());
@@ -55,7 +55,7 @@ public class DiscardState implements State {
                 }
 
                 var allFlipped = game.getPlayers().stream()
-                        .allMatch(p -> p.hand().allUncovered());
+                        .allMatch(p -> p.getHand().allUncovered());
 
                 if (allFlipped) {
                     game.setState(GameOverState.instance());

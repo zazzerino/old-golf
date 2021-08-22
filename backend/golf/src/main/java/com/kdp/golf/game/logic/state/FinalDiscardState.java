@@ -28,10 +28,10 @@ public class FinalDiscardState implements State {
         if (game.isPlayersTurn(playerId)) {
             if (event instanceof DiscardEvent) {
                 game.discard(playerId);
-                player.hand().uncoverAll();
+                player.getHand().uncoverAll();
 
                 var gameOver = game.getPlayers().stream()
-                        .allMatch(p -> p.hand().allUncovered());
+                        .allMatch(p -> p.getHand().allUncovered());
 
                 if (gameOver) {
                     game.setState(GameOverState.instance());
@@ -41,10 +41,10 @@ public class FinalDiscardState implements State {
                 }
             } else if (event instanceof SwapCardEvent s) {
                 game.swapCard(playerId, s.handIndex());
-                player.hand().uncoverAll();
+                player.getHand().uncoverAll();
 
                 var gameOver = game.getPlayers().stream()
-                        .allMatch(p -> p.hand().allUncovered());
+                        .allMatch(p -> p.getHand().allUncovered());
 
                 if (gameOver) {
                     game.setState(GameOverState.instance());

@@ -76,7 +76,7 @@ public class Game {
 
     public Game discard(Long playerId) {
         var player = getPlayer(playerId).orElseThrow();
-        var card = player.heldCard().orElseThrow();
+        var card = player.getHeldCard().orElseThrow();
         tableCards.push(card);
         player.setHeldCard(null);
         return this;
@@ -84,8 +84,8 @@ public class Game {
 
     public Game swapCard(Long playerId, int index) {
         var player = getPlayer(playerId).orElseThrow();
-        var hand = player.hand();
-        var heldCard = player.heldCard().orElseThrow();
+        var hand = player.getHand();
+        var heldCard = player.getHeldCard().orElseThrow();
         var cardAtIndex = hand.cardAtIndex(index);
 
         tableCards.push(cardAtIndex);
@@ -98,7 +98,7 @@ public class Game {
 
     public Game uncover(Long playerId, int handIndex) {
         var player = getPlayer(playerId).orElseThrow();
-        player.hand().uncover(handIndex);
+        player.getHand().uncover(handIndex);
         return this;
     }
 

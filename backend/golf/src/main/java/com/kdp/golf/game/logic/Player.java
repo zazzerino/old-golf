@@ -29,13 +29,11 @@ public class Player {
         return new Player(user.id, user.getName());
     }
 
-    @JsonProperty
-    public Hand hand() {
+    public Hand getHand() {
         return hand;
     }
 
-    @JsonProperty
-    public Optional<Card> heldCard() {
+    public Optional<Card> getHeldCard() {
         return Optional.ofNullable(heldCard);
     }
 
