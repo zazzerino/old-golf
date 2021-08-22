@@ -1,0 +1,10 @@
+.Navbar ul {
+  list-style-type: none;
+  display: flex;
+  margin-bottom: -1em;
+}
+
+.Navbar li a {
+  text-decoration: none;
+  margin-right: 1em;
+}

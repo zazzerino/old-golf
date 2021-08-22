@@ -2,11 +2,6 @@ import { Size } from "./draw";
 import { CardLocation, Game } from "./game";
 import { Route } from "./ui";
 
-export interface User {
-  id: number;
-  name: string;
-}
-
 export class Store<State, ActionType extends string | symbol> {
   state: State;
   actions: Record<ActionType, (state: State, payload: any) => State>;
@@ -28,6 +23,11 @@ export class Store<State, ActionType extends string | symbol> {
   }
 }
 
+export interface User {
+  id: number;
+  name: string;
+}
+
 export interface State {
   user?: User; // the current user
   game?: Game; // the user's current game
@@ -37,7 +37,7 @@ export interface State {
   size: Size;
 }
 
-export type ActionType = 'LOGIN' | 'SET_GAMES' | 'SET_GAME' | 'SET_HOVER' | 'UNSET_HOVER' | 'NAVIGATE';
+export type ActionType = 'SET_USER' | 'SET_GAMES' | 'SET_GAME' | 'SET_HOVER' | 'UNSET_HOVER' | 'NAVIGATE';
 
 const initialState: State = {
   route: '/',
@@ -46,7 +46,7 @@ const initialState: State = {
 };
 
 const actions: Record<ActionType, (s: State, payload: any) => State> = {
-  LOGIN: (state: State, payload: User): State => {
+  SET_USER: (state: State, payload: User): State => {
     return { ...state, user: payload }
   },
   SET_GAMES: (state: State, payload: Game[]): State => {

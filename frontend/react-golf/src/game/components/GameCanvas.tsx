@@ -1,8 +1,8 @@
 import React, { useRef } from 'react';
-import { useAppSelector } from '../hooks';
-import { selectGame, selectUserId } from '../select';
-import { emptyElement } from '../util';
-import { drawGame } from './draw';
+import { useAppSelector } from '../../hooks';
+import { selectGame, selectUserId } from '../../store/select';
+import { emptyElement } from '../../util';
+import { drawGame } from '../draw';
 
 function GameCanvas() {
   const ref = useRef<SVGSVGElement>(null);

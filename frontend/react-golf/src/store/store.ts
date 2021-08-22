@@ -1,5 +1,5 @@
 import { Action, configureStore, ThunkAction } from "@reduxjs/toolkit";
-import golf from "./golfSlice";
+import golf from "../golfSlice";
 
 export const store = configureStore({
   reducer: {

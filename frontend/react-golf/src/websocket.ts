@@ -1,6 +1,6 @@
 import { Game } from "./game/game";
 import { setGame, setGames, setUser } from "./golfSlice";
-import { store } from "./store";
+import { store } from "./store/store";
 import { User } from "./user";
 
 const WS_URL = 'ws://localhost:8080/ws';

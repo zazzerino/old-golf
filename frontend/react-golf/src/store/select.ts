@@ -8,6 +8,8 @@ export const selectUserId = createSelector(
   user => user?.id
 );
 
+export const selectGames = (state: RootState) => state.golf.games;
+
 export const selectGame = (state: RootState) => state.golf.game;
 
 export const selectGameId = createSelector(

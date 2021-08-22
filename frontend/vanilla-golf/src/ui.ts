@@ -165,8 +165,8 @@ const routes: Record<Route, (state: State) => HTMLElement> = {
 }
 
 function createPage(state: State): HTMLElement {
-  // return routes['/game'](state);
-  return routes[state.route](state);
+  return routes['/game'](state);
+  // return routes[state.route](state);
 }
 
 export function render(root: HTMLElement, state: State) {

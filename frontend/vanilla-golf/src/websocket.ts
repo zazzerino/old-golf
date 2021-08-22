@@ -182,7 +182,7 @@ export interface LoginResponse extends Response {
 
 export function handleLogin(response: LoginResponse) {
   console.log('logging in ' + JSON.stringify(response.user));
-  store.publish('LOGIN', response.user);
+  store.publish('SET_USER', response.user);
 }
 
 export interface GameResponse extends Response {

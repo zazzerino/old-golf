@@ -95,7 +95,8 @@ function drawDeck(opts: DrawDeckOpts) {
     x -= CARD_SIZE.width / 2;
   }
 
-  const highlight = playableCards && playableCards.includes('DECK') && hoverCard === 'DECK';
+  const includesCard = playableCards && playableCards.includes('DECK');
+  const highlight = includesCard && hoverCard === 'DECK';
   const card = '2B';
   const coord = { x, y };
   const cardImage = drawCard({ svg, card, coord, highlight });

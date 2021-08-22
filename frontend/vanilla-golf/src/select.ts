@@ -53,10 +53,10 @@ export function isPlayersTurn(state: State): boolean {
 
 export function getPlayableCards(state: State) {
   const playerId = getPlayerId(state);
-  const map = state.game?.playableCards;
+  const cards = state.game?.playableCards;
 
-  if (playerId != null && map) {
-    return map[playerId];
+  if (playerId != null && cards) {
+    return cards[playerId];
   }
 }
 
@@ -66,4 +66,8 @@ export function getUncoveredCards(state: State): number[] | undefined {
 
 export function getHoverCard(state: State): CardLocation | undefined {
   return state.hoverCard;
+}
+
+export function getHandPosition(state: State, playerId: number) {
+
 }
