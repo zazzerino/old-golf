@@ -29,6 +29,7 @@ export interface Game {
   playerTurn: number;
   hasStarted: boolean;
   playableCards: Record<number, CardLocation[]>;
+  playerOrders: Record<number, number[]>;
 }
 
 export type EventType = 'TAKE_FROM_DECK' | 'TAKE_FROM_TABLE' | 'SWAP_CARD' | 'DISCARD';

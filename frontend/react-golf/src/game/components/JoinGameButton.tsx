@@ -8,7 +8,7 @@ export function JoinGameButton(props: { gameId: number, userId?: number }) {
     <button
       onClick={() => {
         if (userId != null) {
-          sendJoinGame(props.gameId, userId)
+          sendJoinGame(gameId, userId)
         }
       }}
     >

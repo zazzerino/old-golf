@@ -4,7 +4,7 @@ body {
 }
 
 button {
-  padding: 0.5rem;
+  padding: 0.5em;
 }
 
 #root {
@@ -20,7 +20,7 @@ button {
 
 .create-game-button {
   margin: auto;
-  margin-bottom: 0.4rem;
+  margin-bottom: 0.4em;
   display: block;
 }
 
@@ -34,10 +34,16 @@ button {
   margin: 1rem auto;
 }
 
+.games-table caption {
+  font-weight: bold;
+  font-size: 1.2em;
+  margin-bottom: 0.5em;
+}
+
 .navbar {
   display: flex;
-  margin-bottom: -2rem;
-  padding: -2rem;
+  margin-bottom: -2em;
+  padding: -2em;
 }
 
 .navbar ul {
@@ -50,5 +56,5 @@ button {
 
 .navbar a {
   display: block;
-  margin-right: 1rem;
+  margin-right: 1em;
 }

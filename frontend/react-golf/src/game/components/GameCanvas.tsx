@@ -22,8 +22,8 @@ function GameCanvas() {
 
   return (
     <svg
-      ref={ref}
       className="GameCanvas"
+      ref={ref}
       width={size.width}
       height={size.height}
       style={{ backgroundColor: "aliceblue" }}

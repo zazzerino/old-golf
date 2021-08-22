@@ -13,7 +13,8 @@ render(root, store.state);
 
 // rerender after navigation
 window.onpopstate = () => {
-  store.publish('NAVIGATE', window.location.pathname as Route);
+  const route = window.location.pathname as Route;
+  store.publish('NAVIGATE', route);
   render(root, store.state);
 }
 

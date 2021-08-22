@@ -64,10 +64,6 @@ export function getUncoveredCards(state: State): number[] | undefined {
   return getPlayer(state)?.hand.uncoveredCards;
 }
 
-export function getHoverCard(state: State): CardLocation | undefined {
+export function getHoverCard(state: State): CardLocation | null {
   return state.hoverCard;
-}
-
-export function getHandPosition(state: State, playerId: number) {
-
 }

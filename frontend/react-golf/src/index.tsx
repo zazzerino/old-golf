@@ -16,12 +16,14 @@ ReactDOM.render(
 
 type StoreType = typeof store;
 
-function prettyState(store: StoreType) {
-  const state = store.getState();
-  const golf = { ...(state.golf), games: []}
-  return JSON.stringify({ ...state, golf });
+function prettify(store: StoreType) {
+  const state = store.getState().golf;
+  return JSON.stringify({ ...state, games: [] });
 }
 
-console.log('initial state: ' + prettyState(store));
+function logState() {
+  console.log('state: ' + prettify(store));
+}
 
-store.subscribe(() => console.log('state updated: ' + prettyState(store)));
+logState();
+store.subscribe(() => logState());

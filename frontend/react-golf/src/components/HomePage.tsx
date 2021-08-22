@@ -5,8 +5,8 @@ import { selectGames, selectUserId } from '../store/select';
 import './HomePage.css';
 
 export function HomePage() {
-  const games = useAppSelector(selectGames);
   const userId = useAppSelector(selectUserId);
+  const games = useAppSelector(selectGames);
 
   return (
     <div className="HomePage">

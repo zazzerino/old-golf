@@ -14,8 +14,9 @@ export class Store<State, ActionType extends string | symbol> {
   }
 
   publish = (actionType: ActionType, payload: any) => {
-    this.state = this.actions[actionType](this.state, payload); // update state
-    this.callbacks.forEach(callback => callback(this.state)); // call callbacks with new state
+    const newState = this.actions[actionType](this.state, payload);
+    this.state = newState; 
+    this.callbacks.forEach(callback => callback(this.state));
   }
 
   subscribe = (callback: (state: State) => any) => {
@@ -29,20 +30,21 @@ export interface User {
 }
 
 export interface State {
-  user?: User; // the current user
-  game?: Game; // the user's current game
-  games: Game[]; // a list of all games
-  hoverCard?: CardLocation; // the card being hovered over
   route: Route;
+  user?: User; // the current user
+  games: Game[]; // a list of all games
+  game?: Game; // the user's current game
   size: Size;
+  hoverCard: CardLocation | null; // the card being hovered over
 }
 
-export type ActionType = 'SET_USER' | 'SET_GAMES' | 'SET_GAME' | 'SET_HOVER' | 'UNSET_HOVER' | 'NAVIGATE';
+export type ActionType = 'SET_USER' | 'SET_GAMES' | 'SET_GAME' | 'SET_HOVER' | 'NAVIGATE';
 
 const initialState: State = {
   route: '/',
-  size: { width: 600, height: 500 },
   games: [],
+  size: { width: 600, height: 500 },
+  hoverCard: null,
 };
 
 const actions: Record<ActionType, (s: State, payload: any) => State> = {
@@ -55,13 +57,8 @@ const actions: Record<ActionType, (s: State, payload: any) => State> = {
   SET_GAME: (state: State, payload: Game): State => {
     return { ...state, game: payload };
   },
-  SET_HOVER: (state: State, payload: CardLocation): State => {
+  SET_HOVER: (state: State, payload: CardLocation | null): State => {
     return { ...state, hoverCard: payload };
-  },
-  UNSET_HOVER: (state: State, _payload: any): State => {
-    const copy = { ...state };
-    delete copy.hoverCard;
-    return copy;
   },
   NAVIGATE: (state: State, payload: Route): State => {
     return { ...state, route: payload };

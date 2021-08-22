@@ -1,48 +1,44 @@
 import { store } from "./store";
-import { getGame, getPlayerId } from "./select";
 import { sendDiscard, sendSwapCard, sendTakeFromDeck, sendTakeFromTable, sendUncover } from "./websocket";
+import { CardLocation, Game } from "./game";
 
-export function deckCardClicked() {
-  const game = getGame(store.state);
-  const playerId = getPlayerId(store.state);
-
-  if (game?.stateType === 'TAKE' && playerId != null) {
-    sendTakeFromDeck(game.id, playerId);
+export function onMouseOver(location: CardLocation, hoverCard: CardLocation | null) {
+  if (location !== hoverCard) {
+    store.publish('SET_HOVER', location);
   }
 }
 
-export function tableCardClicked() {
-  const game = getGame(store.state);
-  const playerId = getPlayerId(store.state);
-
-  if (game?.stateType === 'TAKE' && playerId != null) {
-    sendTakeFromTable(game.id, playerId);
+export function onMouseOut(location: CardLocation, hoverCard: CardLocation | null) {
+  if (location === hoverCard) {
+    store.publish('SET_HOVER', null);
   }
 }
 
-export function heldCardClicked() {
-  const game = getGame(store.state);
-  const playerId = getPlayerId(store.state);
-
-  if (game != null && game.stateType === 'DISCARD' && playerId != null) {
-    sendDiscard(game.id, playerId);
+export function deckCardClicked(game: Game, userId: number) {
+  if (game.stateType === 'TAKE') {
+    sendTakeFromDeck(game.id, userId);
   }
 }
 
-export function handCardClicked(handIndex: number) {
-  const game = getGame(store.state);
-  const playerId = getPlayerId(store.state);
+export function tableCardClicked(game: Game, userId: number) {
+  if (game.stateType === 'TAKE') {
+    sendTakeFromTable(game.id, userId);
+  }
+}
 
-  if (game && playerId != null) {
-    switch (game.stateType) {
-      case 'UNCOVER':
-      case 'UNCOVER_TWO':
-        sendUncover(game.id, playerId, handIndex);
-        break;
+export function heldCardClicked(game: Game, userId: number) {
+  if (game.stateType === 'DISCARD') {
+    sendDiscard(game.id, userId);
+  }
+}
 
-      case 'DISCARD':
-        sendSwapCard(game.id, playerId, handIndex);
-        break;
-    }
+export function handCardClicked(game: Game, userId: number, handIndex: number) {
+  switch (game.stateType) {
+    case 'UNCOVER':
+    case 'UNCOVER_TWO':
+      sendUncover(game.id, userId, handIndex);
+      break;
+    case 'DISCARD':
+      sendSwapCard(game.id, userId, handIndex);
   }
 }

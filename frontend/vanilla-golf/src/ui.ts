@@ -1,34 +1,65 @@
 import { State, store } from "./store";
-import { getGameId, getGames, getUserId } from "./select";
+import { getGame, getGames, getHoverCard, getUserId } from "./select";
 import { sendCreateGame, sendJoinGame, sendStartGame } from "./websocket";
 import { createSvgElement, drawGame } from "./draw";
 import { Game } from "./game";
 import { emptyElement } from "./util";
 
-function createButton(text: string): HTMLButtonElement {
+interface CreateButtonOpts {
+  text?: string; 
+  className?: string;
+  onClick?: () => any;
+}
+
+function createButton(opts: CreateButtonOpts = {}): HTMLButtonElement {
+  const { text, className, onClick } = opts;
   const button = document.createElement('button');
-  button.innerHTML = text;
+
+  if (text) {
+    button.innerHTML = text;
+  }
+
+  if (className) {
+    button.className += className;
+  }
+
+  if (onClick) {
+    button.onclick = onClick;
+  }
+
   return button;
 }
 
 function createCreateGameButton(userId: number): HTMLButtonElement {
-  const button = createButton('Create Game');
-  button.className += 'create-game-button';
-  button.onclick = () => sendCreateGame(userId);
+  const opts = {
+    text: 'Create Game',
+    className: 'create-game-button',
+    onClick: () => sendCreateGame(userId)
+  };
+
+  const button = createButton(opts);
   return button;
 }
 
 function createStartGameButton(gameId: number, userId: number): HTMLButtonElement {
-  const button = createButton('Start Game');
-  button.className += 'start-game-button';
-  button.onclick = () => sendStartGame(gameId, userId);
+  const opts = { 
+    text: 'Start Game', 
+    className: 'start-game-button',
+    onClick: () => sendStartGame(gameId, userId),
+  };
+
+  const button = createButton(opts);
   return button;
 }
 
 function createJoinGameButton(gameId: number, userId: number): HTMLButtonElement {
-  const button = createButton('Join Game');
-  button.className += 'join-game-button';
-  button.onclick = () => sendJoinGame(gameId, userId);
+  const opts = { 
+    text: 'Click To Join',
+    className: 'join-game-button',
+    onClick: () => sendJoinGame(gameId, userId),
+  };
+
+  const button = createButton(opts);
   return button;
 }
 
@@ -82,10 +113,10 @@ function createNavbar(links: Link[]) {
   const div = document.createElement('div');
   div.className += 'navbar';
 
-  const list = document.createElement('ul');
+  const ul = document.createElement('ul');
 
   links.forEach(link => {
-    const item = document.createElement('li');
+    const li = document.createElement('li');
     const a = document.createElement('a');
     a.text = link.text;
     a.href = '#';
@@ -95,11 +126,11 @@ function createNavbar(links: Link[]) {
       return false;
     };
 
-    item.appendChild(a);
-    list.appendChild(item);
+    li.appendChild(a);
+    ul.appendChild(li);
   });
 
-  div.appendChild(list);
+  div.appendChild(ul);
   return div;
 }
 
@@ -129,7 +160,8 @@ function homePage(state: State) {
 function gamePage(state: State) {
   const { size } = state;
   const userId = getUserId(state);
-  const gameId = getGameId(state);
+  const game = getGame(state);
+  const hoverCard = getHoverCard(state);
 
   const div = document.createElement('div');
   div.className += 'game-page';
@@ -144,14 +176,14 @@ function gamePage(state: State) {
   const svg = createSvgElement(size);
   div.appendChild(svg);
 
-  drawGame({ svg, size, state });
-
   if (userId != null) {
     const createGameButton = createCreateGameButton(userId);
     div.appendChild(createGameButton);
 
-    if (gameId != null) {
-      const startGameButton = createStartGameButton(gameId, userId);
+    if (game) {
+      drawGame({ svg, size, userId, game, hoverCard });
+
+      const startGameButton = createStartGameButton(game.id, userId);
       div.appendChild(startGameButton);
     }
   }

@@ -4,8 +4,8 @@ import { User } from "./user";
 
 export interface GolfState {
   user?: User;
-  games: Game[];
   game?: Game;
+  games: Game[];
 }
 
 const initialState: GolfState = {

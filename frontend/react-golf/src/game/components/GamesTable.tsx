@@ -8,7 +8,10 @@ export function GamesTable(props: { games: Game[], userId?: number }) {
     <table className="GamesTable">
       <caption>Games</caption>
       <thead>
-        <tr>Id</tr>
+        <tr>
+          <td>Id</td>
+          <td>Join</td>
+        </tr>
       </thead>
       <tbody>
         {props.games.map(game => {

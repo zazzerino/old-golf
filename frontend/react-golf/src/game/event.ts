@@ -1,14 +1,14 @@
 // import { store } from "./store";
 // import { getGame, getPlayerId } from "./select";
-import { sendDiscard, sendSwapCard, sendTakeFromDeck, sendTakeFromTable, sendUncover } from '../websocket';
+// import { sendDiscard, sendSwapCard, sendTakeFromDeck, sendTakeFromTable, sendUncover } from '../websocket';
 
-export function deckCardClicked() {
-  // const game = getGame(store.state);
-  // const playerId = getPlayerId(store.state);
+import { sendTakeFromDeck } from "../websocket";
+import { StateType } from "./game";
 
-  // if (game?.stateType === 'TAKE' && playerId != null) {
-  //   sendTakeFromDeck(game.id, playerId);
-  // }
+export function deckCardClicked(gameId: number, playerId: number, stateType: StateType) {
+  if (stateType === 'TAKE') {
+    sendTakeFromDeck(gameId, playerId);
+  }
 }
 
 export function tableCardClicked() {
