@@ -106,6 +106,17 @@ public class Game {
         return state.handleEvent(this, event);
     }
 
+    public List<Long> getPlayerOrder() {
+        return playerOrder;
+    }
+
+    public List<Long> playerOrderFrom(Long playerId) {
+        var index = playerOrder.indexOf(playerId);
+        List<Long> copy = new ArrayList<>(playerOrder);
+        Collections.rotate(copy, -index);
+        return copy;
+    }
+
     @JsonProperty
     public Long playerTurn() {
         var index = turn % players.size();
@@ -196,10 +207,16 @@ public class Game {
         return List.of();
     }
 
-    @JsonProperty
-    public Map<Long, List<CardLocation>> playableCards() {
+    public Map<Long, List<CardLocation>> getPlayableCards() {
         return players.values().stream()
                 .collect(Collectors.toMap(p -> p.id, p -> playableCards(p.id)));
+    }
+
+    public Map<Long, List<Long>> getPlayerOrders() {
+        return players.keySet().stream()
+                .collect(Collectors.toMap(
+                        id -> id,
+                        this::playerOrderFrom));
     }
 
     @Override

@@ -1,0 +1,13 @@
+.GamePage {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.GameCanvas {
+  margin: auto;
+}
+
+.GamePage button {
+  margin: auto;
+}

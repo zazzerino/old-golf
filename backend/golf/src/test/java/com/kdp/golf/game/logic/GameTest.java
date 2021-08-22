@@ -8,11 +8,33 @@ import io.quarkus.test.junit.QuarkusTest;
 import org.jboss.logging.Logger;
 import org.junit.jupiter.api.Test;
 
+import java.util.List;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 @QuarkusTest
 class GameTest {
     Logger log = Logger.getLogger(GameTest.class);
+
+    @Test
+    void playerOrder() {
+        var gameId = 11L;
+        var player1Id = 42L;
+        var player1 = new Player(player1Id, "Alice");
+        var game = new Game(gameId, player1);
+
+        log.info(game);
+        assertEquals(List.of(player1Id), game.getPlayerOrder());
+        assertEquals(List.of(player1Id), game.playerOrderFrom(player1Id));
+
+        var player2Id = 43L;
+        var player2 = new Player(player2Id, "Bob");
+        game.addPlayer(player2);
+
+        assertEquals(List.of(player1Id, player2Id), game.getPlayerOrder());
+        assertEquals(List.of(player1Id, player2Id), game.playerOrderFrom(player1Id));
+        assertEquals(List.of(player2Id, player1Id), game.playerOrderFrom(player2Id));
+    }
 
     @Test
     void uncoverTwo() {
