@@ -1,4 +1,5 @@
-import { render, Route } from './ui';
+import { render } from './ui';
+import { Route } from './route';
 import { initWebSocket } from './websocket';
 import { store } from './store';
 

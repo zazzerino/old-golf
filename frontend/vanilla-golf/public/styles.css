@@ -18,15 +18,9 @@ button {
   margin: auto;
 }
 
-.create-game-button {
-  margin: auto;
-  margin-bottom: 0.4em;
-  display: block;
-}
-
-.start-game-button {
-  margin: auto;
-  display: block;
+.game-buttons button {
+  margin-right: 1em;
+  margin-bottom: 1em;
 }
 
 .games-table {

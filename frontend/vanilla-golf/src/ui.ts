@@ -1,9 +1,10 @@
-import { State, store } from "./store";
+import { State } from "./store";
 import { getGame, getGames, getHoverCard, getUserId } from "./select";
 import { sendCreateGame, sendJoinGame, sendStartGame } from "./websocket";
 import { createSvgElement, drawGame } from "./draw";
 import { Game } from "./game";
 import { emptyElement } from "./util";
+import { navigate, Link, LINKS, routes } from "./route";
 
 interface CreateButtonOpts {
   text?: string; 
@@ -37,8 +38,7 @@ function createCreateGameButton(userId: number): HTMLButtonElement {
     onClick: () => sendCreateGame(userId)
   };
 
-  const button = createButton(opts);
-  return button;
+  return createButton(opts);
 }
 
 function createStartGameButton(gameId: number, userId: number): HTMLButtonElement {
@@ -48,8 +48,7 @@ function createStartGameButton(gameId: number, userId: number): HTMLButtonElemen
     onClick: () => sendStartGame(gameId, userId),
   };
 
-  const button = createButton(opts);
-  return button;
+  return createButton(opts);
 }
 
 function createJoinGameButton(gameId: number, userId: number): HTMLButtonElement {
@@ -59,8 +58,7 @@ function createJoinGameButton(gameId: number, userId: number): HTMLButtonElement
     onClick: () => sendJoinGame(gameId, userId),
   };
 
-  const button = createButton(opts);
-  return button;
+  return createButton(opts);
 }
 
 function createGamesTable(games: Game[], userId: number): HTMLTableElement {
@@ -73,7 +71,7 @@ function createGamesTable(games: Game[], userId: number): HTMLTableElement {
   const headRow = head.insertRow();
 
   const headId = headRow.insertCell();
-  headId.appendChild(document.createTextNode('Id'));
+  headId.appendChild(document.createTextNode('Game Id'));
 
   const headJoin = headRow.insertCell();
   headJoin.appendChild(document.createTextNode('Join'));
@@ -90,23 +88,6 @@ function createGamesTable(games: Game[], userId: number): HTMLTableElement {
   }
 
   return table;
-}
-
-export type Route = '/' | '/game';
-
-interface Link {
-  route: Route;
-  text: string;
-}
-
-const links: Link[] = [
-  { route: '/', text: 'Home' },
-  { route: '/game', text: 'Game' }
-];
-
-export function navigate(route: Route) {
-  window.history.pushState({}, route, window.location.origin + route)
-  store.publish('NAVIGATE', route);
 }
 
 function createNavbar(links: Link[]) {
@@ -134,14 +115,14 @@ function createNavbar(links: Link[]) {
   return div;
 }
 
-function homePage(state: State) {
+export function homePage(state: State) {
   const games = getGames(state);
   const userId = getUserId(state);
 
   const div = document.createElement('div');
   div.className += 'home-page';
 
-  const navbar = createNavbar(links);
+  const navbar = createNavbar(LINKS);
   div.appendChild(navbar);
 
   const heading = document.createElement('h2');
@@ -157,7 +138,7 @@ function homePage(state: State) {
   return div;
 };
 
-function gamePage(state: State) {
+export function gamePage(state: State) {
   const { size } = state;
   const userId = getUserId(state);
   const game = getGame(state);
@@ -166,7 +147,7 @@ function gamePage(state: State) {
   const div = document.createElement('div');
   div.className += 'game-page';
 
-  const navbar = createNavbar(links);
+  const navbar = createNavbar(LINKS);
   div.appendChild(navbar);
 
   const h2 = document.createElement('h2');
@@ -176,29 +157,28 @@ function gamePage(state: State) {
   const svg = createSvgElement(size);
   div.appendChild(svg);
 
+  const buttonDiv = document.createElement('div');
+  buttonDiv.className += 'game-buttons';
+
   if (userId != null) {
     const createGameButton = createCreateGameButton(userId);
-    div.appendChild(createGameButton);
+    buttonDiv.appendChild(createGameButton);
 
     if (game) {
-      drawGame({ svg, size, userId, game, hoverCard });
+      drawGame({ size, userId, game, hoverCard }, svg);
 
       const startGameButton = createStartGameButton(game.id, userId);
-      div.appendChild(startGameButton);
+      buttonDiv.appendChild(startGameButton);
     }
   }
 
+  div.appendChild(buttonDiv);
   return div;
 }
 
-const routes: Record<Route, (state: State) => HTMLElement> = {
-  '/': homePage,
-  '/game': gamePage,
-}
-
 function createPage(state: State): HTMLElement {
-  return routes['/game'](state);
-  // return routes[state.route](state);
+  // return routes['/game'](state);
+  return routes[state.route](state);
 }
 
 export function render(root: HTMLElement, state: State) {
