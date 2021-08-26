@@ -1,6 +1,5 @@
 package com.kdp.golf.game.logic;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
 import com.kdp.golf.game.logic.card.Card;
 import com.kdp.golf.user.User;
 

@@ -3,7 +3,7 @@ import { getGame, getGames, getHoverCard, getUserId } from "./select";
 import { sendCreateGame, sendJoinGame, sendStartGame } from "./websocket";
 import { createSvgElement, drawGame } from "./draw";
 import { Game } from "./game";
-import { emptyElement } from "./util";
+import { removeChildren } from "./util";
 import { navigate, Link, LINKS, routes } from "./route";
 
 interface CreateButtonOpts {
@@ -35,7 +35,7 @@ function createCreateGameButton(userId: number): HTMLButtonElement {
   const opts = {
     text: 'Create Game',
     className: 'create-game-button',
-    onClick: () => sendCreateGame(userId)
+    onClick: () => sendCreateGame(userId),
   };
 
   return createButton(opts);
@@ -55,7 +55,10 @@ function createJoinGameButton(gameId: number, userId: number): HTMLButtonElement
   const opts = { 
     text: 'Click To Join',
     className: 'join-game-button',
-    onClick: () => sendJoinGame(gameId, userId),
+    onClick: () => {
+      sendJoinGame(gameId, userId);
+      navigate('/game');
+    }
   };
 
   return createButton(opts);
@@ -140,7 +143,7 @@ export function homePage(state: State) {
 
 export function gamePage(state: State) {
   const { size } = state;
-  const userId = getUserId(state);
+  const userId = getUserId(state)!;
   const game = getGame(state);
   const hoverCard = getHoverCard(state);
 
@@ -177,12 +180,11 @@ export function gamePage(state: State) {
 }
 
 function createPage(state: State): HTMLElement {
-  // return routes['/game'](state);
   return routes[state.route](state);
 }
 
 export function render(root: HTMLElement, state: State) {
-  emptyElement(root);
+  removeChildren(root);
   const page = createPage(state);
   root.appendChild(page);
 }

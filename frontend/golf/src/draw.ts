@@ -1,4 +1,4 @@
-import { deckCardClicked, handCardClicked, heldCardClicked, onMouseOut, onMouseOver, tableCardClicked } from "./event";
+import { deckCardClicked, handCardClicked, heldCardClicked, HoverEventContext, mouseOut, mouseOver, tableCardClicked } from "./event";
 import { CardLocation, Game, handIndexes, HAND_SIZE } from "./game";
 
 export interface Coord {
@@ -113,14 +113,14 @@ function createCard(opts: CreateCardOpts): SVGImageElement | SVGGElement {
   return image;
 }
 
-interface Context {
+interface DrawContext {
   size: Size;
   userId: number;
   game: Game;
   hoverCard: CardLocation | null;
 }
 
-function createDeck(context: Context): SVGImageElement | SVGGElement {
+function createDeck(context: DrawContext): SVGImageElement | SVGGElement {
   const { size, game, userId, hoverCard } = context;
   const playableCards = game.playableCards[userId];
   
@@ -133,14 +133,21 @@ function createDeck(context: Context): SVGImageElement | SVGGElement {
   const coord = { x, y };
   const cardImage = createCard({ card, coord, highlight });
 
+  const eventContext: HoverEventContext = {
+    game,
+    userId,
+    hoverCard,
+    location: 'DECK',
+  };
+
   cardImage.onclick = () => deckCardClicked(game, userId);
-  cardImage.addEventListener('mouseover', () => onMouseOver('DECK', hoverCard));
-  cardImage.addEventListener('mouseout', () => onMouseOut('DECK', hoverCard));
+  cardImage.addEventListener('mouseover', () => mouseOver(eventContext));
+  cardImage.addEventListener('mouseout', () => mouseOut(eventContext));
 
   return cardImage;
 }
 
-export function createTableCard(context: Context) {
+export function createTableCard(context: DrawContext) {
   const { size, userId, game, hoverCard } = context;
   const playableCards = game.playableCards[userId];
   const card = game.tableCard;
@@ -149,11 +156,18 @@ export function createTableCard(context: Context) {
   const y = size.height / 2 - CARD_SIZE.height / 2;
   const coord = { x, y };
   const highlight = playableCards.includes('TABLE') && hoverCard === 'TABLE';
-  const cardElem = createCard({ card, coord, highlight })
+  const cardElem = createCard({ card, coord, highlight });
+
+  const eventContext: HoverEventContext = {
+    game,
+    userId,
+    hoverCard,
+    location: 'TABLE',
+  };
 
   cardElem.onclick = () => tableCardClicked(game, userId);
-  cardElem.onmouseover = () => onMouseOver('TABLE', hoverCard);
-  cardElem.onmouseout = () => onMouseOver('TABLE', hoverCard);
+  cardElem.onmouseover = () => mouseOver(eventContext);
+  cardElem.onmouseout = () => mouseOver(eventContext);
 
   return cardElem;
 }
@@ -186,11 +200,12 @@ function handTransform(size: Size, pos: HandPosition): { coord: Coord, rotate: n
       break;
   }
 
-  return { coord: { x, y }, rotate };
+  const coord = { x, y };
+  return { coord, rotate };
 }
 
-function createHand(context: Context, playerId: number, pos: HandPosition): SVGGElement {
-  const { size, game, hoverCard } = context;
+function createHand(context: DrawContext, playerId: number, pos: HandPosition): SVGGElement {
+  const { size, game, userId, hoverCard } = context;
   const playableCards = game.playableCards[playerId];
   const indexes = handIndexes(playableCards);
   const player = game.players.find(p => p.id === playerId);
@@ -209,9 +224,9 @@ function createHand(context: Context, playerId: number, pos: HandPosition): SVGG
     const x = CARD_SIZE.width * offset + HAND_PADDING * offset;
     const y = i < 3 ? 0 : CARD_SIZE.height + HAND_PADDING;
     const coord = { x, y };
-    const loc = `H${i}` as CardLocation;
+    const location = `H${i}` as CardLocation;
     const isPlayable = indexes.includes(i);
-    const isHovered = hoverCard === loc;
+    const isHovered = hoverCard === location;
     const highlight = isPlayable && isHovered;
 
     if (highlight) {
@@ -222,9 +237,16 @@ function createHand(context: Context, playerId: number, pos: HandPosition): SVGG
     const card = uncovered.includes(i) ? cards[i] : '2B';
     const cardElem = createCard({ card, coord, highlight });
 
-    cardElem.onclick = () => handCardClicked(game, playerId, i);
-    cardElem.onmouseover = () => onMouseOver(loc, hoverCard);
-    cardElem.onmouseout = () => onMouseOut(loc, hoverCard);
+    const eventContext: HoverEventContext = {
+      game,
+      userId,
+      hoverCard,
+      location,
+    };
+
+    cardElem.onclick = () => userId === playerId && handCardClicked(game, playerId, i);
+    cardElem.onmouseover = () => userId === playerId && mouseOver(eventContext);
+    cardElem.onmouseout = () => userId === playerId && mouseOut(eventContext);
 
     g.appendChild(cardElem);
   }
@@ -245,7 +267,7 @@ function handPositions(playerCount: number): HandPosition[] {
   }
 }
 
-function createHands(context: Context): SVGGElement[] {
+function createHands(context: DrawContext): SVGGElement[] {
   const { game, userId } = context;
   const { players } = game;
   const order = game.playerOrders[userId];
@@ -275,7 +297,7 @@ function createHands(context: Context): SVGGElement[] {
   return hands;
 }
 
-function createHeldCard(context: Context, heldCard: string) {
+function createHeldCard(context: DrawContext, heldCard: string) {
   const { size, userId, game, hoverCard } = context;
 
   const x = size.width * 0.75;
@@ -289,9 +311,16 @@ function createHeldCard(context: Context, heldCard: string) {
 
   const card = createCard({ card: heldCard, coord: { x, y }, highlight });
 
+  const eventContext: HoverEventContext = {
+    game,
+    userId,
+    hoverCard,
+    location: 'HELD',
+  };
+
   card.onclick = () => heldCardClicked(game, userId);
-  card.onmouseover = () => onMouseOver('HELD', hoverCard);
-  card.onmouseout = () => onMouseOut('HELD', hoverCard);
+  card.onmouseover = () => mouseOver(eventContext);
+  card.onmouseout = () => mouseOut(eventContext);
   
   return card;
 }
@@ -304,7 +333,16 @@ export function createScore(size: Size, score: number) {
   return elem;
 }
 
-export function drawGame(context: Context, svg: SVGSVGElement) {
+export function createGameOver(size: Size) {
+  const x = size.width / 4;
+  const y = size.height / 2;
+  const text = 'GAME OVER';
+  const elem = createText({ x, y }, text, 'red');
+  elem.style.fontSize = '50px';
+  return elem;
+}
+
+export function drawGame(context: DrawContext, svg: SVGSVGElement) {
   const { userId, game, size } = context;
 
   const deck = createDeck(context);
@@ -331,5 +369,10 @@ export function drawGame(context: Context, svg: SVGSVGElement) {
       const scoreElem = createScore(size, score);
       svg.appendChild(scoreElem);
     }
+  }
+
+  if (game.stateType === 'GAME_OVER') {
+    const gameOver = createGameOver(size);
+    svg.appendChild(gameOver);
   }
 }

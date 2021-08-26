@@ -2,10 +2,12 @@ import { Size } from "./draw";
 import { CardLocation, Game } from "./game";
 import { Route } from "./route";
 
+type Callback<T> = (state: T) => any;
+
 export class Store<State, ActionType extends string | symbol> {
   state: State;
   actions: Record<ActionType, (state: State, payload: any) => State>;
-  callbacks: Array<(state: State) => any>;
+  callbacks: Callback<State>[];
 
   constructor(state: State, actions: Record<ActionType, (s: State, payload: any) => State>) {
     this.state = state;
@@ -19,7 +21,7 @@ export class Store<State, ActionType extends string | symbol> {
     this.callbacks.forEach(callback => callback(this.state));
   }
 
-  subscribe = (callback: (state: State) => any) => {
+  subscribe = (callback: Callback<State>) => {
     this.callbacks.push(callback);
   }
 }
@@ -30,11 +32,11 @@ export interface User {
 }
 
 export interface State {
-  route: Route;
+  route: Route; // the current page
   user?: User; // the current user
   games: Game[]; // a list of all games
   game?: Game; // the user's current game
-  size: Size;
+  size: Size; // size of the svg element
   hoverCard: CardLocation | null; // the card being hovered over
 }
 
