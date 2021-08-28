@@ -31,37 +31,36 @@ public class DiscardState implements State {
         var playerId = event.playerId();
         var player = game.getPlayer(playerId).orElseThrow();
 
-        if (game.isPlayersTurn(playerId)) {
-            if (event instanceof DiscardEvent) {
-                game.discard(playerId);
+        if (!game.isPlayersTurn(playerId)) {
+            return game;
+        }
 
-                var oneCardLeft = player.uncoveredCardCount() == Hand.HAND_SIZE - 1;
+        if (event instanceof DiscardEvent) {
+            game.discard(playerId);
+            var oneCardLeft = player.uncoveredCardCount() == Hand.HAND_SIZE - 1;
 
-                if (oneCardLeft) {
-                    game.setState(TakeState.instance());
-                    game.nextTurn();
-                } else {
-                    game.setState(UncoverState.instance());
-                }
-            } else if (event instanceof SwapCardEvent s) {
-                game.swapCard(playerId, s.handIndex());
-
-                var playerFlipped = player.getHand().allUncovered();
-
-                if (playerFlipped) {
-                    game.setState(FinalTakeState.instance());
-                } else {
-                    game.setState(TakeState.instance());
-                }
-
-                var allFlipped = game.getPlayers().stream()
-                        .allMatch(p -> p.getHand().allUncovered());
-
-                if (allFlipped) {
-                    game.setState(GameOverState.instance());
-                }
-
+            if (oneCardLeft) {
+                game.setState(TakeState.instance());
                 game.nextTurn();
+            } else {
+                game.setState(UncoverState.instance());
+            }
+        } else if (event instanceof SwapCardEvent s) {
+            game.swapCard(playerId, s.handIndex());
+
+            if (player.getHand().allUncovered()) {
+                game.setState(FinalTakeState.instance());
+            } else {
+                game.setState(TakeState.instance());
+            }
+
+            game.nextTurn();
+
+            var allFlipped = game.getPlayers().stream()
+                    .allMatch(p -> p.getHand().allUncovered());
+
+            if (allFlipped) {
+                game.setState(GameOverState.instance());
             }
         }
 

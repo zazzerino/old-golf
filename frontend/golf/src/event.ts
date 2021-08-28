@@ -27,7 +27,7 @@ export function mouseOver(context: HoverEventContext) {
 export function mouseOut(context: HoverEventContext) {
   const { game, userId, location, hoverCard } = context;
 
-  if ((game.playerTurn === userId || game.stateType) && location === hoverCard) {
+  if ((game.playerTurn === userId || game.stateType === 'UNCOVER_TWO') && location === hoverCard) {
     store.publish('SET_HOVER', null);
   }
 
@@ -55,10 +55,13 @@ export function heldCardClicked(game: Game, userId: number) {
 }
 
 export function handCardClicked(game: Game, userId: number, handIndex: number) {
+  if (game.stateType === 'UNCOVER_TWO') {
+    sendUncover(game.id, userId, handIndex);
+  }
+
   if (game.playerTurn === userId) {
     switch (game.stateType) {
       case 'UNCOVER':
-      case 'UNCOVER_TWO':
         sendUncover(game.id, userId, handIndex);
         break;
       case 'DISCARD':

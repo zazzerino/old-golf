@@ -201,7 +201,7 @@ public class Game {
     }
 
     public List<CardLocation> playableCards(Long playerId) {
-        if (isPlayersTurn(playerId)) {
+        if (isPlayersTurn(playerId) || state instanceof UncoverTwoState) {
             return state.playableCards(this);
         }
         return List.of();

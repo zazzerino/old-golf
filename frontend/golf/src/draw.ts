@@ -11,6 +11,13 @@ export interface Size {
   height: number;
 }
 
+interface DrawContext {
+  size: Size;
+  userId: number;
+  game: Game;
+  hoverCard: CardLocation | null;
+}
+
 type HandPosition = 'BOTTOM' | 'LEFT' | 'TOP' | 'RIGHT';
 
 const SVG_NS = 'http://www.w3.org/2000/svg';
@@ -67,8 +74,9 @@ interface CreateRectOpts {
   fill?: boolean;
 }
 
+const rectDefaults = { color: '#44ff00', fill: false };
+
 function createRect(opts: CreateRectOpts): SVGRectElement {
-  const rectDefaults = { color: '#44ff00', fill: false };
   opts = { ...rectDefaults, ...opts };
   const { coord, size, color, fill } = opts;
   const { x, y } = coord;
@@ -111,13 +119,6 @@ function createCard(opts: CreateCardOpts): SVGImageElement | SVGGElement {
   }
 
   return image;
-}
-
-interface DrawContext {
-  size: Size;
-  userId: number;
-  game: Game;
-  hoverCard: CardLocation | null;
 }
 
 function createDeck(context: DrawContext): SVGImageElement | SVGGElement {
@@ -172,6 +173,16 @@ export function createTableCard(context: DrawContext) {
   return cardElem;
 }
 
+function handPositions(playerCount: number): HandPosition[] {
+  switch (playerCount) {
+    case 1: return ['BOTTOM'];
+    case 2: return ['BOTTOM', 'TOP'];
+    case 3: return ['BOTTOM', 'LEFT', 'RIGHT'];
+    case 4: return ['BOTTOM', 'LEFT', 'TOP', 'RIGHT'];
+    default: return [];
+  }
+}
+
 function handTransform(size: Size, pos: HandPosition): { coord: Coord, rotate: number } {
   let x: number;
   let y: number;
@@ -206,17 +217,16 @@ function handTransform(size: Size, pos: HandPosition): { coord: Coord, rotate: n
 
 function createHand(context: DrawContext, playerId: number, pos: HandPosition): SVGGElement {
   const { size, game, userId, hoverCard } = context;
-  const playableCards = game.playableCards[playerId];
-  const indexes = handIndexes(playableCards);
   const player = game.players.find(p => p.id === playerId);
 
   if (player == null) {
     throw new Error('player not found');
   }
 
+  const playableCards = userId === playerId ? game.playableCards[playerId] : [];
+  const indexes = handIndexes(playableCards);
   const cards = player.hand.cards;
   const uncovered = player.hand.uncoveredCards;
-
   const g = document.createElementNS(SVG_NS, 'g');
 
   for (let i = 0; i < HAND_SIZE; i++) {
@@ -225,14 +235,16 @@ function createHand(context: DrawContext, playerId: number, pos: HandPosition): 
     const y = i < 3 ? 0 : CARD_SIZE.height + HAND_PADDING;
     const coord = { x, y };
     const location = `H${i}` as CardLocation;
+
+    let allUncovered = false;
+
+    if (game.stateType === 'UNCOVER_TWO' && uncovered.length >= 2) {
+      allUncovered = true;
+    }
+
     const isPlayable = indexes.includes(i);
     const isHovered = hoverCard === location;
-    const highlight = isPlayable && isHovered;
-
-    if (highlight) {
-      const rect = createRect({ coord, size: CARD_SIZE });
-      g.appendChild(rect);
-    }
+    const highlight = !allUncovered && isPlayable && isHovered;
 
     const card = uncovered.includes(i) ? cards[i] : '2B';
     const cardElem = createCard({ card, coord, highlight });
@@ -244,9 +256,11 @@ function createHand(context: DrawContext, playerId: number, pos: HandPosition): 
       location,
     };
 
-    cardElem.onclick = () => userId === playerId && handCardClicked(game, playerId, i);
-    cardElem.onmouseover = () => userId === playerId && mouseOver(eventContext);
-    cardElem.onmouseout = () => userId === playerId && mouseOut(eventContext);
+    if (userId === playerId) {
+      cardElem.onclick = () => handCardClicked(game, userId, i);
+      cardElem.onmouseover = () => mouseOver(eventContext);
+      cardElem.onmouseout = () => mouseOut(eventContext);
+    }
 
     g.appendChild(cardElem);
   }
@@ -257,22 +271,11 @@ function createHand(context: DrawContext, playerId: number, pos: HandPosition): 
   return g;
 }
 
-function handPositions(playerCount: number): HandPosition[] {
-  switch (playerCount) {
-    case 1: return ['BOTTOM'];
-    case 2: return ['BOTTOM', 'TOP'];
-    case 3: return ['BOTTOM', 'LEFT', 'RIGHT'];
-    case 4: return ['BOTTOM', 'LEFT', 'TOP', 'RIGHT'];
-    default: return [];
-  }
-}
-
 function createHands(context: DrawContext): SVGGElement[] {
   const { game, userId } = context;
   const { players } = game;
   const order = game.playerOrders[userId];
   const positions = handPositions(players.length);
-
   const hands: SVGGElement[] = [];
 
   for (let i = 0; i < players.length; i++) {

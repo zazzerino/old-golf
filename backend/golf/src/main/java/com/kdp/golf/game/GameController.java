@@ -52,7 +52,7 @@ public class GameController {
         log.info("handling event: " + event);
         var game = gameService.handleEvent(event);
         log.info("event handled: " + game);
-        webSocket.sendToSession(session, new GameResponse(game));
+        notifyPlayers(game);
     }
 
     public void notifyPlayers(Game game) {
