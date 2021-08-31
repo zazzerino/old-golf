@@ -14,7 +14,7 @@ export interface Player {
 }
 
 export type StateType =
-  'INIT' | 'UNCOVER_TWO' | 'TAKE' | 'DISCARD' | 'UNCOVER' | 'FINAL_PICKUP' | 'FINAL_DISCARD' | 'GAME_OVER';
+  'INIT' | 'UNCOVER_TWO' | 'TAKE' | 'DISCARD' | 'UNCOVER' | 'FINAL_TAKE' | 'FINAL_DISCARD' | 'GAME_OVER';
 
 export type CardLocation = 'DECK' | 'TABLE' | 'HELD' | 'H0' | 'H1' | 'H2' | 'H3' | 'H4' | 'H5';
 

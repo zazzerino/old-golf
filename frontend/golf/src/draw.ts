@@ -228,6 +228,15 @@ function createHand(context: DrawContext, playerId: number, pos: HandPosition): 
   const cards = player.hand.cards;
   const uncovered = player.hand.uncoveredCards;
   const g = document.createElementNS(SVG_NS, 'g');
+  const { coord, rotate } = handTransform(size, pos);
+  const highlightHand = game.stateType !== 'UNCOVER_TWO' && game.playerTurn === playerId;
+
+  if (highlightHand) {
+    const rectW = CARD_SIZE.width * 3 + HAND_PADDING * 4;
+    const rectH = CARD_SIZE.height * 2 + HAND_PADDING * 2;
+    const rect = createRect({ coord: { x: -HAND_PADDING, y: -HAND_PADDING }, size: { width: rectW, height: rectH }, color: 'plum', fill: true });
+    g.appendChild(rect);
+  }
 
   for (let i = 0; i < HAND_SIZE; i++) {
     const offset = i % 3;
@@ -265,9 +274,7 @@ function createHand(context: DrawContext, playerId: number, pos: HandPosition): 
     g.appendChild(cardElem);
   }
 
-  const { coord, rotate } = handTransform(size, pos);
   g.setAttribute('transform', `translate(${coord.x}, ${coord.y}), rotate(${rotate})`);
-
   return g;
 }
 
@@ -386,8 +393,8 @@ export function drawGame(context: DrawContext, svg: SVGSVGElement) {
     }
   }
 
-  if (game.stateType === 'GAME_OVER') {
+  // if (game.stateType === 'GAME_OVER') {
     const gameOver = createGameOver(size);
     svg.appendChild(gameOver);
-  }
+  // }
 }

@@ -29,19 +29,19 @@ export function mouseOut(context: HoverEventContext) {
 }
 
 export function deckCardClicked(game: Game, userId: number) {
-  if (game.playerTurn === userId && game.stateType === 'TAKE') {
+  if (game.playerTurn === userId && (game.stateType === 'TAKE' || game.stateType === 'FINAL_TAKE')) {
     sendTakeFromDeck(game.id, userId);
   }
 }
 
 export function tableCardClicked(game: Game, userId: number) {
-  if (game.playerTurn === userId && game.stateType === 'TAKE') {
+  if (game.playerTurn === userId && (game.stateType === 'TAKE' || game.stateType === 'FINAL_TAKE')) {
     sendTakeFromTable(game.id, userId);
   }
 }
 
 export function heldCardClicked(game: Game, userId: number) {
-  if (game.playerTurn === userId && game.stateType === 'DISCARD') {
+  if (game.playerTurn === userId && (game.stateType === 'DISCARD' || game.stateType === 'FINAL_DISCARD')) {
     sendDiscard(game.id, userId);
   }
 }
@@ -57,6 +57,7 @@ export function handCardClicked(game: Game, userId: number, handIndex: number) {
         sendUncover(game.id, userId, handIndex);
         break;
       case 'DISCARD':
+      case 'FINAL_DISCARD':
         sendSwapCard(game.id, userId, handIndex);
     }
   }
