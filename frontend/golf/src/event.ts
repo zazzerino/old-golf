@@ -18,10 +18,6 @@ export function mouseOver(context: HoverEventContext) {
   if ((game.playerTurn === userId || game.stateType === 'UNCOVER_TWO') && location !== hoverCard) {
     store.publish('SET_HOVER', location);
   }
-
-  // if (game.playerTurn === userId && location !== hoverCard) {
-  //   store.publish('SET_HOVER', location);
-  // }
 }
 
 export function mouseOut(context: HoverEventContext) {
@@ -30,10 +26,6 @@ export function mouseOut(context: HoverEventContext) {
   if ((game.playerTurn === userId || game.stateType === 'UNCOVER_TWO') && location === hoverCard) {
     store.publish('SET_HOVER', null);
   }
-
-  // if (game.playerTurn === userId && location === hoverCard) {
-  //   store.publish('SET_HOVER', null);
-  // }
 }
 
 export function deckCardClicked(game: Game, userId: number) {

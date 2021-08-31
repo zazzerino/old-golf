@@ -16,8 +16,7 @@ public class User {
     public User(Long id, String sessionId) {
         this.id = id;
         this.sessionId = sessionId;
-
-        name = DEFAULT_NAME;
+        this.name = DEFAULT_NAME;
     }
 
     public User(Long id, String sessionId, String name, Long gameId) {

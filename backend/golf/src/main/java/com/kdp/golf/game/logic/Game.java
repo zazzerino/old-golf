@@ -3,7 +3,6 @@ package com.kdp.golf.game.logic;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.kdp.golf.game.logic.card.Card;
-import com.kdp.golf.game.logic.card.CardLocation;
 import com.kdp.golf.game.logic.event.*;
 import com.kdp.golf.game.logic.state.State;
 import com.kdp.golf.game.logic.state.InitState;
@@ -33,7 +32,7 @@ public class Game {
         this.tableCards = new Stack<>();
         this.turn = 0;
         this.hostId = host.id;
-        this.state = InitState.instance();
+        this.state = InitState.instance;
 
         addPlayer(host);
     }
@@ -42,7 +41,7 @@ public class Game {
         deck.shuffle();
         dealStartingHands();
         dealTableCard();
-        state = UncoverTwoState.instance();
+        state = UncoverTwoState.instance;
         return this;
     }
 
@@ -200,14 +199,14 @@ public class Game {
         return this;
     }
 
-    public List<CardLocation> playableCards(Long playerId) {
+    public List<Card.Location> playableCards(Long playerId) {
         if (isPlayersTurn(playerId) || state instanceof UncoverTwoState) {
             return state.playableCards(this);
         }
         return List.of();
     }
 
-    public Map<Long, List<CardLocation>> getPlayableCards() {
+    public Map<Long, List<Card.Location>> getPlayableCards() {
         return players.values().stream()
                 .collect(Collectors.toMap(p -> p.id, p -> playableCards(p.id)));
     }

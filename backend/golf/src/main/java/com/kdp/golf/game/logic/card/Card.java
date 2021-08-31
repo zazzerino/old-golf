@@ -95,4 +95,16 @@ public record Card(Rank rank,
                     .findAny();
         }
     }
+
+    public enum Location {
+        DECK,
+        TABLE,
+        HELD,
+        H0,
+        H1,
+        H2,
+        H3,
+        H4,
+        H5;
+    }
 }

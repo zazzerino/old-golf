@@ -1,6 +1,6 @@
 package com.kdp.golf.game.logic.state;
 
-import com.kdp.golf.game.logic.card.CardLocation;
+import com.kdp.golf.game.logic.card.Card;
 import com.kdp.golf.game.logic.Game;
 import com.kdp.golf.game.logic.event.Event;
 import com.kdp.golf.game.logic.event.UncoverEvent;
@@ -8,16 +8,9 @@ import com.kdp.golf.game.logic.event.UncoverEvent;
 import java.util.List;
 
 public class UncoverState implements State {
-    private static UncoverState instance;
+    public static final UncoverState instance = new UncoverState();
 
     private UncoverState() {}
-
-    public static UncoverState instance() {
-        if (instance == null) {
-            instance = new UncoverState();
-        }
-        return instance;
-    }
 
     @Override
     public StateType type() {
@@ -32,7 +25,7 @@ public class UncoverState implements State {
             if (event instanceof UncoverEvent u) {
                 game.uncover(playerId, u.handIndex());
                 game.nextTurn();
-                game.setState(TakeState.instance());
+                game.setState(TakeState.instance);
             }
         }
 
@@ -40,13 +33,13 @@ public class UncoverState implements State {
     }
 
     @Override
-    public List<CardLocation> playableCards(Game game) {
+    public List<Card.Location> playableCards(Game game) {
         return List.of(
-                CardLocation.H0,
-                CardLocation.H1,
-                CardLocation.H2,
-                CardLocation.H3,
-                CardLocation.H4,
-                CardLocation.H5);
+                Card.Location.H0,
+                Card.Location.H1,
+                Card.Location.H2,
+                Card.Location.H3,
+                Card.Location.H4,
+                Card.Location.H5);
     }
 }

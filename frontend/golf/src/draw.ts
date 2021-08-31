@@ -337,12 +337,24 @@ export function createScore(size: Size, score: number) {
 }
 
 export function createGameOver(size: Size) {
-  const x = size.width / 4;
-  const y = size.height / 2;
-  const text = 'GAME OVER';
-  const elem = createText({ x, y }, text, 'red');
-  elem.style.fontSize = '50px';
-  return elem;
+  const width = size.width  / 2;
+  const height = size.height / 4;
+  const rectX = size.width / 2 - width / 2;
+  const rectY = size.height / 2 - height / 2;
+  const textX = size.width / 2;
+  const textY = size.height / 2;
+  const g = document.createElementNS(SVG_NS, 'g');
+
+  const rect = createRect({ coord: { x: rectX, y: rectY }, size: { width, height }, color: 'blue', fill: true });
+  const textEl = createText({ x: textX, y: textY }, 'GAME OVER', 'red');
+  textEl.setAttribute('font-size', '200%');
+  textEl.setAttribute('text-anchor', 'middle');
+  textEl.setAttribute('dominant-baseline', 'middle');
+
+  g.appendChild(rect);
+  g.appendChild(textEl);
+
+  return g;
 }
 
 export function drawGame(context: DrawContext, svg: SVGSVGElement) {

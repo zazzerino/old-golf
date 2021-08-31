@@ -1,16 +1,9 @@
 package com.kdp.golf.game.logic.state;
 
 public class InitState implements State {
-    private static InitState instance;
+    public static final InitState instance = new InitState();
 
     private InitState() {}
-
-    public static InitState instance() {
-        if (instance == null) {
-            instance = new InitState();
-        }
-        return instance;
-    }
 
     @Override
     public StateType type() {

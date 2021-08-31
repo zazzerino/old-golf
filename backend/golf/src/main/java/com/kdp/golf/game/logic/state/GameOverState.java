@@ -1,16 +1,9 @@
 package com.kdp.golf.game.logic.state;
 
 public class GameOverState implements State {
-    private static GameOverState instance;
+    public static final GameOverState instance = new GameOverState();
 
     private GameOverState() {
-    }
-
-    public static GameOverState instance() {
-        if (instance == null) {
-            instance = new GameOverState();
-        }
-        return instance;
     }
 
     @Override

@@ -1,6 +1,6 @@
 package com.kdp.golf.game.logic.state;
 
-import com.kdp.golf.game.logic.card.CardLocation;
+import com.kdp.golf.game.logic.card.Card;
 import com.kdp.golf.game.logic.Game;
 import com.kdp.golf.game.logic.Hand;
 import com.kdp.golf.game.logic.event.DiscardEvent;
@@ -10,16 +10,9 @@ import com.kdp.golf.game.logic.event.SwapCardEvent;
 import java.util.List;
 
 public class DiscardState implements State {
-    private static DiscardState instance;
+    public static final DiscardState instance = new DiscardState();
 
     private DiscardState() {}
-
-    public static DiscardState instance() {
-        if (instance == null) {
-            instance = new DiscardState();
-        }
-        return instance;
-    }
 
     @Override
     public StateType type() {
@@ -40,18 +33,18 @@ public class DiscardState implements State {
             var oneCardLeft = player.uncoveredCardCount() == Hand.HAND_SIZE - 1;
 
             if (oneCardLeft) {
-                game.setState(TakeState.instance());
+                game.setState(TakeState.instance);
                 game.nextTurn();
             } else {
-                game.setState(UncoverState.instance());
+                game.setState(UncoverState.instance);
             }
         } else if (event instanceof SwapCardEvent s) {
             game.swapCard(playerId, s.handIndex());
 
             if (player.getHand().allUncovered()) {
-                game.setState(FinalTakeState.instance());
+                game.setState(FinalTakeState.instance);
             } else {
-                game.setState(TakeState.instance());
+                game.setState(TakeState.instance);
             }
 
             game.nextTurn();
@@ -60,7 +53,7 @@ public class DiscardState implements State {
                     .allMatch(p -> p.getHand().allUncovered());
 
             if (allFlipped) {
-                game.setState(GameOverState.instance());
+                game.setState(GameOverState.instance);
             }
         }
 
@@ -68,14 +61,14 @@ public class DiscardState implements State {
     }
 
     @Override
-    public List<CardLocation> playableCards(Game game) {
+    public List<Card.Location> playableCards(Game game) {
         return List.of(
-                CardLocation.HELD,
-                CardLocation.H0,
-                CardLocation.H1,
-                CardLocation.H2,
-                CardLocation.H3,
-                CardLocation.H4,
-                CardLocation.H5);
+                Card.Location.HELD,
+                Card.Location.H0,
+                Card.Location.H1,
+                Card.Location.H2,
+                Card.Location.H3,
+                Card.Location.H4,
+                Card.Location.H5);
     }
 }

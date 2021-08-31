@@ -1,6 +1,6 @@
 package com.kdp.golf.game.logic.state;
 
-import com.kdp.golf.game.logic.card.CardLocation;
+import com.kdp.golf.game.logic.card.Card;
 import com.kdp.golf.game.logic.Game;
 import com.kdp.golf.game.logic.event.Event;
 
@@ -14,7 +14,7 @@ public interface State {
         return game;
     }
 
-    default List<CardLocation> playableCards(Game game) {
+    default List<Card.Location> playableCards(Game game) {
         return List.of();
     };
 
