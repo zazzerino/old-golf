@@ -1,0 +1,84 @@
+body {
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+    sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  background-color: aliceblue;
+}
+
+code {
+  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New', monospace;
+}
+
+button {
+  padding: 0.5rem;
+}
+
+.Navbar {
+  list-style-type: none;
+  display: flex;
+  margin-top: 0;
+  margin-bottom: 0;
+  background-color: cornflowerblue;
+  padding-top: 0.5rem;
+  padding-bottom: 0.5rem;
+}
+
+.Navbar li a {
+  /* text-decoration: none; */
+  margin-right: 1rem;
+  color: white;
+}
+
+.HomePage {
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+}
+
+.GamesTable {
+  width: 33%;
+  margin: auto;
+}
+
+.GamesTable caption {
+  font-size: 120%;
+  font-weight: bold;
+}
+
+.GamePage {
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+}
+
+.GameCanvas {
+  background-color: seagreen;
+  margin: auto;
+  margin-top: 1rem;
+}
+
+.game-buttons {
+  margin-top: 1rem;
+  margin-bottom: 1rem;
+}
+
+.game-buttons button {
+  margin-right: 1rem;
+}
+
+.Hand {
+  display: flex;
+}
+
+.GameOverMessage rect {
+  fill: cornflowerblue;
+}
+
+.GameOverMessage text {
+  fill: white;
+  font-size: 200%;
+  text-anchor: middle;
+}

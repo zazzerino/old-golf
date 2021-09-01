@@ -1,0 +1,14 @@
+import React from 'react';
+import { CARD_HEIGHT } from './Card';
+
+export function ScoreDisplay(props: { width: number, height: number, score: number }) {
+  const { width, height, score } = props;
+  const x = width / 7;
+  const y = height - CARD_HEIGHT;
+
+  return (
+    <text x={x} y={y}>
+      Score: {score}
+    </text>
+  );
+}

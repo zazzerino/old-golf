@@ -105,6 +105,7 @@ public class Game {
         return state.handleEvent(this, event);
     }
 
+    @JsonIgnore
     public List<Long> getPlayerOrder() {
         return playerOrder;
     }

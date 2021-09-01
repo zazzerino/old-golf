@@ -1,17 +1,22 @@
-import { Game } from './game';
-import { store, User } from './store';
+import React from "react";
+import { Action } from "./reducer";
+import { Game, User } from "./types";
 
 const WS_URL = 'ws://localhost:8080/ws';
 
 let socket: WebSocket;
+let dispatch: React.Dispatch<Action>;
 
-export function initWebSocket() {
+export function initWebSocket(disp: React.Dispatch<Action>) {
   socket = new WebSocket(WS_URL);
+
   socket.onopen = onOpen;
   socket.onclose = onClose;
   socket.onclose = onClose;
   socket.onerror = onError;
   socket.onmessage = onMessage;
+
+  dispatch = disp;
 }
 
 export function send(message: Message) {
@@ -182,7 +187,7 @@ export interface LoginResponse extends Response {
 
 export function handleLogin(response: LoginResponse) {
   console.log('logging in ' + JSON.stringify(response.user));
-  store.publish('SET_USER', response.user);
+  dispatch({ type: 'SET_USER', user: response.user });
 }
 
 export interface GameResponse extends Response {
@@ -191,7 +196,7 @@ export interface GameResponse extends Response {
 }
 
 export function handleGame(response: GameResponse) {
-  store.publish('SET_GAME', response.game);
+  dispatch({ type: 'SET_GAME', game: response.game });
 }
 
 export interface GamesResponse extends Response {
@@ -200,5 +205,5 @@ export interface GamesResponse extends Response {
 }
 
 export function handleGames(response: GamesResponse) {
-  store.publish('SET_GAMES', response.games);
+  dispatch({ type: 'SET_GAMES', games: response.games });
 }

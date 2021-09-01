@@ -1,3 +1,8 @@
+export interface User {
+  id: number;
+  name: string;
+}
+
 export const HAND_SIZE = 6;
 
 export interface Hand {
@@ -74,19 +79,19 @@ export function swapCard(playerId: number, index: number): SwapCardEvent {
   }
 }
 
-function handIndex(handLocation: CardLocation) {
-  const vals: Record<string, number> = {
-    'H0': 0,
-    'H1': 1,
-    'H2': 2,
-    'H3': 3,
-    'H4': 4,
-    'H5': 5,
-  };
+// function handIndex(handLocation: CardLocation) {
+//   const vals: Record<string, number> = {
+//     'H0': 0,
+//     'H1': 1,
+//     'H2': 2,
+//     'H3': 3,
+//     'H4': 4,
+//     'H5': 5,
+//   };
 
-  return vals[handLocation];
-}
+//   return vals[handLocation];
+// }
 
-export function handIndexes(locations: CardLocation[]): number[] {
-  return locations.map(l => handIndex(l));
-}
+// export function handIndexes(locations: CardLocation[]): number[] {
+//   return locations.map(l => handIndex(l));
+// }
