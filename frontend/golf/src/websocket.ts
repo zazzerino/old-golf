@@ -1,13 +1,13 @@
-import React from "react";
+import { Dispatch } from "react";
 import { Action } from "./reducer";
 import { Game, User } from "./types";
 
 const WS_URL = 'ws://localhost:8080/ws';
 
 let socket: WebSocket;
-let dispatch: React.Dispatch<Action>;
+let dispatch: Dispatch<Action>;
 
-export function initWebSocket(disp: React.Dispatch<Action>) {
+export function initWebSocket(disp: Dispatch<Action>) {
   socket = new WebSocket(WS_URL);
 
   socket.onopen = onOpen;
@@ -102,11 +102,12 @@ export function sendJoinGame(gameId: number, userId: number) {
 }
 
 export type EventType =
-  'TAKE_FROM_DECK'
+  | 'TAKE_FROM_DECK'
   | 'TAKE_FROM_TABLE'
   | 'SWAP_CARD'
   | 'DISCARD'
-  | 'UNCOVER';
+  | 'UNCOVER'
+  ;
 
 export interface EventMessage extends Message {
   eventType: EventType;

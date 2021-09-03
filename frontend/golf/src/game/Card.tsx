@@ -10,6 +10,7 @@ function cardPath(name: string): string {
 }
 
 interface CardProps {
+  id?: string;
   x: number;
   y: number;
   name: string;
@@ -22,22 +23,13 @@ interface CardProps {
 }
 
 export function Card(props: CardProps) {
-  const { name, x, y, highlight, onMouseOver, onMouseOut, onClick } = props;
-  const className = "Card";
+  const { id, name, x, y, highlight, onMouseOver, onMouseOut, onClick } = props;
+  const className = 'Card' + (highlight ? ' highlight' : '');
   const href = cardPath(name);
   const width = props.scale || '10%';
   const color = props.color || 'lime';
 
   return (
-    <>
-      {highlight ?
-        <g>
-          <rect x={x} y={y} width={CARD_WIDTH} height={CARD_HEIGHT} stroke={color} strokeWidth={HL_WIDTH} />
-          <image {...{className, href, x, y, width, onMouseOver, onMouseOut, onClick}} />
-        </g>
-        :
-        <image {...{className, href, x, y, width, onMouseOver, onMouseOut, onClick}} />
-      }
-    </>
+    <image {...{ id, className, href, x, y, width, onMouseOver, onMouseOut, onClick }} />
   );
 }

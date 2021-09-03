@@ -7,7 +7,7 @@ export function ScoreDisplay(props: { width: number, height: number, score: numb
   const y = height - CARD_HEIGHT;
 
   return (
-    <text x={x} y={y}>
+    <text className="ScoreDisplay" x={x} y={y}>
       Score: {score}
     </text>
   );

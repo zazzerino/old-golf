@@ -24,13 +24,13 @@ interface GameCanvasProps {
 
 export function GameCanvas(props: GameCanvasProps) {
   const { user, game } = props;
-  const className = "GameCanvas";
+  const className = 'GameCanvas';
   const width = 600;
   const height = 500;
   const [hoverCard, setHoverCard] = useState<string | null>(null);
 
   if (game == null) {
-    return <svg {...{ className, width, height }} />
+    return <svg {...{className, width, height}} />
   }
 
   const { hasStarted, tableCard, players } = game;
@@ -42,12 +42,12 @@ export function GameCanvas(props: GameCanvasProps) {
   const isOver = game.stateType === 'GAME_OVER';
 
   return (
-    <svg {...{ className, width, height }}>
-      <Deck {...{ user, game, width, height, hasStarted, hoverCard, setHoverCard }} />
+    <svg {...{className, width, height}}>
+      <Deck {...{user, game, width, height, hasStarted, hoverCard, setHoverCard}} />
 
       {hasStarted &&
         <>
-          <TableCard {...{ user, game, width, height, name: tableCard, hoverCard, setHoverCard }} />
+          <TableCard {...{user, game, width, height, name: tableCard, hoverCard, setHoverCard}} />
 
           {positions.map((pos, i) => { // draw hands
             const playerId = order[i];
@@ -58,18 +58,14 @@ export function GameCanvas(props: GameCanvasProps) {
               return null;
             }
 
-            const cards = player.hand.cards;
-            const uncoveredCards = player.hand.uncoveredCards;
+            const { cards, uncoveredCards } = player.hand;
             return <Hand {
-              ...{ key: i, user, game, playerId, width, height, pos, cards, uncoveredCards, hoverCard, setHoverCard }
+              ...{key: i, user, game, playerId, width, height, pos, cards, uncoveredCards, hoverCard, setHoverCard}
             } />
           })}
 
-          {heldCard &&
-            <HeldCard {...{ user, game, name: heldCard, width, height, hoverCard, setHoverCard }} />}
-
+          {heldCard && <HeldCard {...{user, game, name: heldCard, width, height, hoverCard, setHoverCard}} />}
           {score != null && <ScoreDisplay {...{width, height, score}} />}
-
           {isOver && <GameOverMessage {...{width, height}} />}
         </>
       }

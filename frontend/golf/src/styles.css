@@ -69,10 +69,6 @@ button {
   margin-right: 1rem;
 }
 
-.Hand {
-  display: flex;
-}
-
 .GameOverMessage rect {
   fill: cornflowerblue;
 }
@@ -82,3 +78,29 @@ button {
   font-size: 200%;
   text-anchor: middle;
 }
+
+.ScoreDisplay {
+  fill: white;
+}
+
+.Card.highlight {
+  filter: drop-shadow(0 0 0.3rem rgba(173, 255, 47, 1.0));
+  cursor: pointer;
+}
+
+/* .Card {
+  animation-duration: 2s;
+  animation-name: deckslide;
+}
+
+@keyframes deckslide {
+  from {
+    margin-left: 0%;
+    width: 0%;
+  }
+
+  to {
+    margin-left: 50%;
+    width: 10%;
+  }
+} */

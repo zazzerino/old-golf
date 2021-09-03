@@ -18,15 +18,15 @@ function handTransform(pos: HandPosition, width: number, height: number): string
       y = height - CARD_HEIGHT * 2 - HAND_PADDING * 6;
       rotate = 0;
       break;
-    case 'TOP':
-      x = width / 2 + CARD_WIDTH * 1.5 + HAND_PADDING * 2;
-      y = CARD_HEIGHT * 2 + HAND_PADDING * 6;
-      rotate = 180;
-      break;
     case 'LEFT':
       x = CARD_HEIGHT * 2 + HAND_PADDING * 6;
       y = height / 2 - CARD_WIDTH * 1.5;
       rotate = 90;
+      break;
+    case 'TOP':
+      x = width / 2 + CARD_WIDTH * 1.5 + HAND_PADDING * 2;
+      y = CARD_HEIGHT * 2 + HAND_PADDING * 6;
+      rotate = 180;
       break;
     case 'RIGHT':
       x = width - CARD_HEIGHT * 2 - HAND_PADDING * 6;
@@ -43,15 +43,16 @@ function shouldHighlight(user: User, game: Game, playerId: number, hoverCard: st
     return false;
   }
 
-  const loc = 'H' + i as CardLocation;
-  const name = pos + '-' + loc;
+  const location = 'H' + i as CardLocation;
+  const name = pos + '-' + location;
   const playableCards = game.playableCards[user.id];
-  const isPlayable = playableCards.includes(loc);
   const uncoveredCards = game.players.find(p => p.id === user.id)?.hand.uncoveredCards;
-  const isUncovered = uncoveredCards?.includes(i);
+
+  const isPlayable = playableCards.includes(location);
+  const isCovered = !uncoveredCards?.includes(i);
   const isPlayersTurn = game.playerTurn === user.id || game.stateType === 'UNCOVER_TWO';
 
-  return hoverCard === name && isPlayable && !isUncovered && isPlayersTurn;
+  return hoverCard === name && isPlayable && isCovered && isPlayersTurn;
 }
 
 export function handClicked(game: Game, user: User, i: number) {
@@ -96,12 +97,12 @@ export function Hand(props: HandProps) {
         const offset = i % 3;
         const x = CARD_WIDTH * offset + HAND_PADDING * offset;
         const y = i < 3 ? 0 : CARD_HEIGHT + HAND_PADDING;
-        const loc = `${pos}-H${i}`; // e.g. 'BOTTOM-H2' (the 2nd card in the bottom hand)
+        const loc = `${pos}-H${i}`; // e.g. 'BOTTOM-H2' (the 3rd card in the bottom hand)
         const highlight = shouldHighlight(user, game, playerId, hoverCard, pos, i);
         const onMouseOver = () => setHoverCard(loc);
         const onMouseOut = () => setHoverCard(null);
         const onClick = () => handClicked(game, user, i);
-        return <Card {...{ key: i, name, x, y, highlight, onMouseOver, onMouseOut, onClick }} />
+        return <Card {...{key: i, name, x, y, highlight, onMouseOver, onMouseOut, onClick}} />
       })}
     </g>
   );

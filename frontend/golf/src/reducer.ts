@@ -6,8 +6,10 @@ export interface AppState {
   game?: Game;
 }
 
+const DEFAULT_USER: User = { id: -1, name: '' };
+
 export const initialState: AppState = {
-  user: { id: -1, name: 'anon' },
+  user: DEFAULT_USER,
   games: [],
 };
 

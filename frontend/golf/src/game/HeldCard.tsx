@@ -4,13 +4,15 @@ import { sendDiscard } from '../websocket';
 import { Card, CARD_HEIGHT } from './Card';
 
 export function heldCardClicked(user: User, game: Game) {
-  const isPlayable = game.playerTurn === user.id
-    && (game.stateType === 'DISCARD' || game.stateType === 'FINAL_DISCARD');
+  const isPlayable = user.id === game.playerTurn
+    && ['DISCARD', 'FINAL_DISCARD'].includes(game.stateType);
 
   if (isPlayable) {
     sendDiscard(game.id, user.id);
   }
 }
+
+const RIGHT_OFFSET = 8;
 
 interface HeldCardProps {
   user: User;
@@ -25,7 +27,7 @@ interface HeldCardProps {
 export function HeldCard(props: HeldCardProps) {
   const { user, game, width, height, name, hoverCard, setHoverCard } = props;
   const x = width * 0.75;
-  const y = height - CARD_HEIGHT * 1.5 - 8;
+  const y = height - CARD_HEIGHT * 1.5 - RIGHT_OFFSET;
   const highlight = hoverCard === 'HELD';
   const onMouseOver = () => setHoverCard('HELD');
   const onMouseOut = () => setHoverCard(null);

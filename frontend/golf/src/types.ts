@@ -3,8 +3,6 @@ export interface User {
   name: string;
 }
 
-export const HAND_SIZE = 6;
-
 export interface Hand {
   cards: string[];
   uncoveredCards: number[];
@@ -23,6 +21,8 @@ export type StateType =
 
 export type CardLocation = 'DECK' | 'TABLE' | 'HELD' | 'H0' | 'H1' | 'H2' | 'H3' | 'H4' | 'H5';
 
+type PlayerId = number;
+
 export interface Game {
   id: number;
   stateType: StateType;
@@ -33,8 +33,8 @@ export interface Game {
   turn: number;
   playerTurn: number;
   hasStarted: boolean;
-  playableCards: Record<number, CardLocation[]>;
-  playerOrders: Record<number, number[]>;
+  playableCards: Record<PlayerId, CardLocation[]>;
+  playerOrders: Record<PlayerId, PlayerId[]>;
 }
 
 export type EventType = 'TAKE_FROM_DECK' | 'TAKE_FROM_TABLE' | 'SWAP_CARD' | 'DISCARD';
@@ -78,20 +78,3 @@ export function swapCard(playerId: number, index: number): SwapCardEvent {
     handIndex: index,
   }
 }
-
-// function handIndex(handLocation: CardLocation) {
-//   const vals: Record<string, number> = {
-//     'H0': 0,
-//     'H1': 1,
-//     'H2': 2,
-//     'H3': 3,
-//     'H4': 4,
-//     'H5': 5,
-//   };
-
-//   return vals[handLocation];
-// }
-
-// export function handIndexes(locations: CardLocation[]): number[] {
-//   return locations.map(l => handIndex(l));
-// }

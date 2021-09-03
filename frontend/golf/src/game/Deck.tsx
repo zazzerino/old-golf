@@ -5,7 +5,7 @@ import { Card, CARD_WIDTH, CARD_HEIGHT } from './Card';
 
 function deckCardClicked(user: User, game: Game) {
   const isPlayable = game.playerTurn === user.id
-    && (game.stateType === 'TAKE' || game.stateType === 'FINAL_TAKE');
+    && ['TAKE', 'FINAL_TAKE'].includes(game.stateType);
 
   if (isPlayable) {
     sendTakeFromDeck(game.id, user.id);
@@ -17,7 +17,7 @@ function shouldHighlight(user: User, game: Game, hoverCard: string | null): bool
 
   return hoverCard === 'DECK' &&
     playableCards.includes('DECK') &&
-    game?.playerTurn === user?.id;
+    game.playerTurn === user.id;
 }
 
 interface DeckProps {
@@ -32,6 +32,7 @@ interface DeckProps {
 
 export function Deck(props: DeckProps) {
   const { game, user, width, height, hasStarted, hoverCard, setHoverCard } = props;
+  const id = 'Deck';
   const name = '2B';
   const offset = hasStarted ? CARD_WIDTH : CARD_WIDTH / 2;
   const x = width / 2 - offset - 2;
@@ -42,6 +43,6 @@ export function Deck(props: DeckProps) {
   const onClick = () => deckCardClicked(user, game);
 
   return (
-    <Card {...{name, x, y, highlight, onMouseOver, onMouseOut, onClick}} />
+    <Card {...{ id, name, x, y, highlight, onMouseOver, onMouseOut, onClick }} />
   );
 }
