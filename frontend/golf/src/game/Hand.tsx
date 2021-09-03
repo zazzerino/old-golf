@@ -48,11 +48,12 @@ function shouldHighlight(user: User, game: Game, playerId: number, hoverCard: st
   const playableCards = game.playableCards[user.id];
   const uncoveredCards = game.players.find(p => p.id === user.id)?.hand.uncoveredCards;
 
+  const isHovered = hoverCard === name;
   const isPlayable = playableCards.includes(location);
   const isCovered = !uncoveredCards?.includes(i);
   const isPlayersTurn = game.playerTurn === user.id || game.stateType === 'UNCOVER_TWO';
 
-  return hoverCard === name && isPlayable && isCovered && isPlayersTurn;
+  return isHovered && isPlayable && isCovered && isPlayersTurn;
 }
 
 export function handClicked(game: Game, user: User, i: number) {
@@ -85,11 +86,13 @@ interface HandProps {
 
 export function Hand(props: HandProps) {
   const { user, game, playerId, width, height, pos, cards, uncoveredCards, hoverCard, setHoverCard } = props;
+  const isPlayersTurn = playerId === game.playerTurn || game.stateType === 'UNCOVER_TWO';
+  const className = 'Hand' + (isPlayersTurn ? ' outline' : '');
   const transform = handTransform(pos, width, height);
 
   return (
     <g
-      className="Hand"
+      className={className}
       transform={transform}
     >
       {cards.map((card, i) => {

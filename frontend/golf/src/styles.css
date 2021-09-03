@@ -88,6 +88,11 @@ button {
   cursor: pointer;
 }
 
+.Hand.outline {
+  outline: solid 0.2rem plum;
+  outline-offset: 0.2rem;
+}
+
 /* .Card {
   animation-duration: 2s;
   animation-name: deckslide;
