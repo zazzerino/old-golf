@@ -1,8 +1,8 @@
-import React, { useState } from 'react';
+import React, { Dispatch, SetStateAction, useState } from 'react';
 import { Hand, HandPosition } from './Hand';
 import { Deck } from './Deck';
 import { TableCard } from './TableCard';
-import { Game, User } from '../types';
+import { Game, Player, User } from '../types';
 import { HeldCard } from './HeldCard';
 import { GameOverMessage } from './GameOverMessage';
 import { ScoreDisplay } from './ScoreDisplay';
@@ -17,6 +17,77 @@ function handPositions(playerCount: number): HandPosition[] {
   }
 }
 
+interface HandsProps {
+  user: User;
+  game: Game;
+  width: number;
+  height: number;
+  hoverCard: string | null;
+  setHoverCard: Dispatch<SetStateAction<string | null>>;
+  positions: HandPosition[],
+  order: number[],
+  players: Player[]
+}
+
+function Hands(props: HandsProps) {
+  const { user, game, width, height, hoverCard, setHoverCard, positions, order, players } = props;
+
+  return (
+    <>
+      {positions.map((pos, key) => {
+        const playerId = order[key];
+        const player = players.find(p => p.id === playerId);
+
+        if (player == null) {
+          console.error(`player ${playerId} not found...`);
+          return null;
+        }
+
+        const { cards, uncoveredCards } = player.hand;
+        return <Hand {...{ key, user, game, playerId, width, height, pos, cards, uncoveredCards, hoverCard, setHoverCard }} />;
+      })}
+    </>
+  );
+}
+
+interface HeldCardsProps {
+  user: User;
+  game: Game;
+  width: number;
+  height: number;
+  hoverCard: string | null;
+  setHoverCard: Dispatch<SetStateAction<string | null>>;
+  positions: HandPosition[],
+  order: number[],
+  players: Player[]
+}
+
+function HeldCards(props: HeldCardsProps) {
+  const { positions, order, players, user, game, width, height, hoverCard, setHoverCard } = props;
+
+  return (
+    <>
+      {positions.map((pos, key) => {
+        const playerId = order[key];
+        const player = players.find(p => p.id === playerId);
+
+        if (player == null) {
+          console.error(`player ${playerId} not found...`);
+          return null;
+        }
+
+        const heldCard = player.heldCard;
+
+        if (heldCard == null) {
+          return null;
+        }
+
+        return <HeldCard {...{ key, pos, user, game, name: heldCard, width, height, playerId, hoverCard, setHoverCard }} />
+      })}
+    </>
+  );
+}
+
 interface GameCanvasProps {
   user: User;
   game?: Game;
@@ -29,6 +100,7 @@ export function GameCanvas(props: GameCanvasProps) {
   const height = 500;
   const [hoverCard, setHoverCard] = useState<string | null>(null);
 
+  // if there's no game, return an empty svg
   if (game == null) {
     return <svg {...{ className, width, height }} />
   }
@@ -43,43 +115,12 @@ export function GameCanvas(props: GameCanvasProps) {
   return (
     <svg {...{ className, width, height }}>
       <Deck {...{ user, game, width, height, hasStarted, hoverCard, setHoverCard }} />
-
       {hasStarted &&
         <>
           <TableCard {...{ user, game, width, height, name: tableCard, hoverCard, setHoverCard }} />
-
-          {positions.map((pos, key) => { // draw hands
-            const playerId = order[key];
-            const player = players.find(p => p.id === playerId);
-
-            if (player == null) {
-              console.error(`player ${playerId} not found...`);
-              return null;
-            }
-
-            const { cards, uncoveredCards } = player.hand;
-            return <Hand {...{ key, user, game, playerId, width, height, pos, cards, uncoveredCards, hoverCard, setHoverCard }} />;
-          })}
-
-          {positions.map((pos, key) => { // draw held cards
-            const playerId = order[key];
-            const player = players.find(p => p.id === playerId);
-
-            if (player == null) {
-              console.error(`player ${playerId} not found...`);
-              return null;
-            }
-
-            const heldCard = player.heldCard;
-
-            if (heldCard == null) {
-              return null;
-            }
-
-            return <HeldCard {...{ key, pos, user, game, name: heldCard, width, height, hoverCard, setHoverCard}} />
-          })}
-
-          {score != null && <ScoreDisplay {...{ width, height, score }} />}
+          <Hands {...{ user, game, width, height, players, order, positions, hoverCard, setHoverCard }} />
+          <HeldCards {...{ user, game, width, height, players, order, positions, hoverCard, setHoverCard }} />
+          <ScoreDisplay {...{ width, height, score }} />
           {isOver && <GameOverMessage {...{ width, height }} />}
         </>
       }

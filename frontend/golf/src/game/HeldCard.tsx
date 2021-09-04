@@ -51,14 +51,15 @@ interface HeldCardProps {
   hoverCard: string | null;
   setHoverCard: Dispatch<SetStateAction<string | null>>;
   pos: HandPosition;
+  playerId: number;
 }
 
 export function HeldCard(props: HeldCardProps) {
-  const { user, game, width, height, hoverCard, setHoverCard, pos } = props;
+  const { user, game, width, height, hoverCard, setHoverCard, pos, playerId } = props;
   const className = 'HeldCard ' + pos.toLowerCase();
-  const name = pos === 'BOTTOM' ? props.name : '2B'; // only show the card face to the player
+  const name = pos === 'BOTTOM' ? props.name : '2B'; // only show the card face to the player holding it
   const transform = heldCardCoord(pos, width, height);
-  const highlight = hoverCard === 'HELD';
+  const highlight = user.id === playerId && hoverCard === 'HELD';
   const onMouseOver = () => setHoverCard('HELD');
   const onMouseOut = () => setHoverCard(null);
   const onClick = () => heldCardClicked(user, game);

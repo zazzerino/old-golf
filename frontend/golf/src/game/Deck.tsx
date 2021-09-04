@@ -33,7 +33,7 @@ interface DeckProps {
 
 export function Deck(props: DeckProps) {
   const { game, user, width, height, hasStarted, hoverCard, setHoverCard } = props;
-  const className = ' Deck ' + (game.stateType === 'INIT' ? ' slide-in' : '');
+  const className = 'Deck' + (game.stateType === 'INIT' ? ' slide-in' : '');
   const name = '2B';
   const offset = hasStarted ? CARD_WIDTH : CARD_WIDTH / 2;
   const x = width / 2 - offset - 2;

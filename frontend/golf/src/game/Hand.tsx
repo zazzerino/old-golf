@@ -44,19 +44,21 @@ function shouldHighlight(user: User, game: Game, playerId: number, hoverCard: st
   }
 
   const location = 'H' + i as CardLocation;
-  const name = pos + '-' + location;
+  const name = pos + '-' + location; // e.g. 'LEFT-H5'
   const playableCards = game.playableCards[user.id];
   const uncoveredCards = game.players.find(p => p.id === user.id)?.hand.uncoveredCards;
 
   const isHovered = hoverCard === name;
   const isPlayable = playableCards.includes(location);
-  const isCovered = !uncoveredCards?.includes(i);
+  const isCoveredOrDiscard = !uncoveredCards?.includes(i) || game.stateType === 'DISCARD';
   const isPlayersTurn = game.playerTurn === user.id || game.stateType === 'UNCOVER_TWO';
 
-  return isHovered && isPlayable && isCovered && isPlayersTurn;
+  return isHovered && isPlayable && isCoveredOrDiscard && isPlayersTurn;
 }
 
-export function handClicked(game: Game, user: User, i: number) {
+export function handClicked(game: Game, user: User, playerId: number, i: number) {
+  if (user.id !== playerId) return; // this prevents a user from clicking another player's cards
+
   if (game.stateType === 'UNCOVER_TWO') {
     sendUncover(game.id, user.id, i);
   } else if (game.playerTurn === user.id) {
@@ -92,20 +94,17 @@ export function Hand(props: HandProps) {
   const transform = handTransform(pos, width, height);
 
   return (
-    <g
-      className={className}
-      transform={transform}
-    >
+    <g {...{ className, transform }} >
       {cards.map((card, i) => {
         const name = uncoveredCards.includes(i) ? card : '2B';
         const offset = i % 3;
         const x = CARD_WIDTH * offset + HAND_PADDING * offset;
         const y = i < 3 ? 0 : CARD_HEIGHT + HAND_PADDING;
-        const loc = `${pos}-H${i}`; // e.g. 'BOTTOM-H2' (the 3rd card in the bottom hand)
+        const location = `${pos}-H${i}`; // e.g. 'BOTTOM-H2' (the 3rd card in the bottom hand)
         const highlight = shouldHighlight(user, game, playerId, hoverCard, pos, i);
-        const onMouseOver = () => setHoverCard(loc);
+        const onMouseOver = () => setHoverCard(location);
         const onMouseOut = () => setHoverCard(null);
-        const onClick = () => handClicked(game, user, i);
+        const onClick = () => handClicked(game, user, playerId, i);
         return <Card {...{ key: i, name, x, y, highlight, onMouseOver, onMouseOut, onClick }} />
       })}
     </g>
