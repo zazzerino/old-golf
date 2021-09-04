@@ -1,7 +1,8 @@
 import React, { Dispatch, SetStateAction } from 'react';
 import { Game, User } from '../types';
 import { sendDiscard } from '../websocket';
-import { Card, CARD_HEIGHT } from './Card';
+import { Card, CARD_HEIGHT, CARD_WIDTH } from './Card';
+import { HandPosition, HAND_PADDING } from './Hand';
 
 export function heldCardClicked(user: User, game: Game) {
   const isPlayable = user.id === game.playerTurn
@@ -12,7 +13,34 @@ export function heldCardClicked(user: User, game: Game) {
   }
 }
 
-const RIGHT_OFFSET = 8;
+function heldCardCoord(pos: HandPosition, width: number, height: number) {
+  let x: number;
+  let y: number;
+  let rotate = 0;
+
+  switch (pos) {
+    case 'BOTTOM':
+      x = width * 0.6;
+      y = height - CARD_HEIGHT * 1.5 - HAND_PADDING * 5;
+      break;
+    case 'LEFT':
+      x = CARD_HEIGHT * 1.5 + HAND_PADDING * 6;
+      y = CARD_HEIGHT * 3 + CARD_WIDTH;
+      rotate = 90;
+      break;
+    case 'TOP':
+      x = width * 0.4 - CARD_WIDTH;
+      y = CARD_WIDTH - HAND_PADDING * 5;
+      break;
+    case 'RIGHT':
+      x = width - CARD_WIDTH + HAND_PADDING * 4;
+      y = CARD_HEIGHT * 2 - CARD_WIDTH / 1.5;
+      rotate = 90;
+      break;
+  }
+
+  return `translate(${x},${y}), rotate(${rotate})`;
+}
 
 interface HeldCardProps {
   user: User;
@@ -22,18 +50,20 @@ interface HeldCardProps {
   height: number;
   hoverCard: string | null;
   setHoverCard: Dispatch<SetStateAction<string | null>>;
+  pos: HandPosition;
 }
 
 export function HeldCard(props: HeldCardProps) {
-  const { user, game, width, height, name, hoverCard, setHoverCard } = props;
-  const x = width * 0.75;
-  const y = height - CARD_HEIGHT * 1.5 - RIGHT_OFFSET;
+  const { user, game, width, height, hoverCard, setHoverCard, pos } = props;
+  const className = 'HeldCard ' + pos.toLowerCase();
+  const name = pos === 'BOTTOM' ? props.name : '2B'; // only show the card face to the player
+  const transform = heldCardCoord(pos, width, height);
   const highlight = hoverCard === 'HELD';
   const onMouseOver = () => setHoverCard('HELD');
   const onMouseOut = () => setHoverCard(null);
   const onClick = () => heldCardClicked(user, game);
 
   return (
-    <Card {...{x, y, name, highlight, onClick, onMouseOver, onMouseOut}} />
+    <Card {...{ className, transform, name, highlight, onClick, onMouseOver, onMouseOut }} />
   );
 }

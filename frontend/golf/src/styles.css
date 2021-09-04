@@ -14,6 +14,8 @@ code {
 
 button {
   padding: 0.5rem;
+  color: white;
+  background-color: cornflowerblue;
 }
 
 .Navbar {
@@ -69,6 +71,21 @@ button {
   margin-right: 1rem;
 }
 
+.GameOverMessage {
+  transform-origin: 50% 50%;
+  animation: rotating 8s linear infinite;
+}
+
+@keyframes rotating {
+  from {
+    transform: rotate(0deg);
+  }
+
+  to {
+    transform: rotate(360deg);
+  }
+}
+
 .GameOverMessage rect {
   fill: cornflowerblue;
 }
@@ -83,10 +100,9 @@ button {
   fill: white;
 }
 
-.Card.highlight {
-  filter: drop-shadow(0 0 0.3rem rgba(173, 255, 47, 1.0));
-  cursor: pointer;
-}
+/* .Hand {
+  transform-origin: center;
+} */
 
 .Hand.outline {
   outline: solid 0.2rem plum;
@@ -94,18 +110,36 @@ button {
 }
 
 /* .Card {
-  animation-duration: 2s;
-  animation-name: deckslide;
+  transition: all 500ms;
+} */
+
+/* .Card {
+  transform-origin: center;
+} */
+
+.Card.highlight {
+  filter: drop-shadow(0 0 0.3rem rgba(173, 255, 47, 1.0));
+  cursor: pointer;
 }
 
-@keyframes deckslide {
-  from {
-    margin-left: 0%;
-    width: 0%;
-  }
+.Deck.slide-in {
+  animation-duration: 1s;
+  animation-name: slide-from-left;
+}
 
-  to {
-    margin-left: 50%;
-    width: 10%;
+@keyframes slide-from-left {
+  from {
+    transform: translateX(-100%);
   }
+}
+
+/* .HeldCard {
+  animation-duration: 0.5s;
+  animation-name: slide-from-table-to-held;
+}
+
+@keyframes slide-from-table-to-held {
+  from {
+    transform: translateX(-148px) translateY(-158px);
+  } 
 } */

@@ -13,7 +13,7 @@ export interface Player {
   id: number;
   name: string;
   hand: Hand;
-  heldCard: string;
+  heldCard: string | null;
 }
 
 export type StateType =

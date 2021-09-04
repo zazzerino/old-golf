@@ -3,7 +3,7 @@ import { CardLocation, Game, User } from '../types';
 import { sendSwapCard, sendUncover } from '../websocket';
 import { Card, CARD_HEIGHT, CARD_WIDTH } from './Card';
 
-const HAND_PADDING = 2;
+export const HAND_PADDING = 2;
 
 export type HandPosition = 'BOTTOM' | 'LEFT' | 'TOP' | 'RIGHT';
 
@@ -67,6 +67,7 @@ export function handClicked(game: Game, user: User, i: number) {
       case 'DISCARD':
       case 'FINAL_DISCARD':
         sendSwapCard(game.id, user.id, i);
+        break;
     }
   }
 }
@@ -105,7 +106,7 @@ export function Hand(props: HandProps) {
         const onMouseOver = () => setHoverCard(loc);
         const onMouseOut = () => setHoverCard(null);
         const onClick = () => handClicked(game, user, i);
-        return <Card {...{key: i, name, x, y, highlight, onMouseOver, onMouseOut, onClick}} />
+        return <Card {...{ key: i, name, x, y, highlight, onMouseOver, onMouseOut, onClick }} />
       })}
     </g>
   );
