@@ -37,7 +37,7 @@ export function GameCanvas(props: GameCanvasProps) {
 
   const userId = user.id;
   const gameId = game.id;
-  const { hasStarted, tableCard, players, stateType, playableCards, playerTurn } = game;
+  const { hasStarted, tableCard, players, stateType, playableCards, playerTurn, events } = game;
   const order = game.playerOrders[user.id];
   const positions = handPositions(players.length);
   const player = players.find(p => p.id === user.id);
@@ -51,7 +51,7 @@ export function GameCanvas(props: GameCanvasProps) {
         <>
           <TableCard {...{ tableCard, userId, gameId, width, height, stateType, playerTurn, playableCards, hoverCard, setHoverCard }} />
           <Hands {...{ userId, gameId, width, height, stateType, order, positions, players, playerTurn, playableCards, hoverCard, setHoverCard }} />
-          <HeldCards {...{ userId, gameId, width, height, players, playerTurn, stateType, order, positions, hoverCard, setHoverCard }} />
+          <HeldCards {...{ userId, gameId, width, height, players, playerTurn, events, stateType, order, positions, hoverCard, setHoverCard }} />
           <ScoreDisplay {...{ width, height, score }} />
           {isOver && <GameOverMessage {...{ width, height }} />}
         </>

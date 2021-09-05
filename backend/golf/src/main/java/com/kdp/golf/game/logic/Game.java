@@ -21,6 +21,7 @@ public class Game {
     private State state;
     private Long hostId;
     private int turn;
+    private final List<Event> events;
 
     public final static int DECK_COUNT = 2; // the game is played with two decks
 
@@ -33,6 +34,7 @@ public class Game {
         this.turn = 0;
         this.hostId = host.id;
         this.state = InitState.instance;
+        this.events = new ArrayList<>();
 
         addPlayer(host);
     }
@@ -102,6 +104,7 @@ public class Game {
     }
 
     public Game handleEvent(Event event) {
+        events.add(event);
         return state.handleEvent(this, event);
     }
 
@@ -217,6 +220,10 @@ public class Game {
                 .collect(Collectors.toMap(
                         id -> id,
                         this::playerOrderFrom));
+    }
+
+    public List<Event> getEvents() {
+        return events;
     }
 
     @Override

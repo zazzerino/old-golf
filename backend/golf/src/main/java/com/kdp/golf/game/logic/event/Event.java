@@ -1,8 +1,10 @@
 package com.kdp.golf.game.logic.event;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 public interface Event {
 
-    EventType type();
+    @JsonProperty EventType type();
     Long gameId();
     Long playerId();
 

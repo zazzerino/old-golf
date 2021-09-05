@@ -1,5 +1,5 @@
 import React, { Dispatch, SetStateAction } from 'react';
-import { HandPosition, StateType } from '../types';
+import { Event, HandPosition, StateType } from '../types';
 import { animateFrom } from '../util';
 import { sendDiscard } from '../websocket';
 import { Card, CARD_HEIGHT, CARD_WIDTH } from './Card';
@@ -70,6 +70,31 @@ function distanceFromTableCard(pos: HandPosition) {
   return { x, y };
 }
 
+function distanceFromDeck(pos: HandPosition) {
+  let x: number;
+  let y: number;
+
+  switch (pos) {
+    case 'BOTTOM':
+      x = -122;
+      y = -158;
+      break;
+    case 'TOP':
+      x = 122 - CARD_WIDTH;
+      y = 158;
+      break;
+    case 'LEFT':
+      x = 240 - CARD_WIDTH;
+      y = -98;
+      break;
+    case 'RIGHT':
+      x = -240;
+      y = 98;
+  }
+
+  return { x, y };
+}
+
 interface HeldCardProps {
   userId: number;
   gameId: number;
@@ -80,12 +105,13 @@ interface HeldCardProps {
   playerId: number;
   playerTurn: number;
   stateType: StateType;
+  events: Event[];
   hoverCard: string | null;
   setHoverCard: Dispatch<SetStateAction<string | null>>;
 }
 
 export function HeldCard(props: HeldCardProps) {
-  const { userId, gameId, width, height, pos, playerId, playerTurn, stateType, hoverCard, setHoverCard } = props;
+  const { userId, gameId, width, height, pos, playerId, playerTurn, stateType, events, hoverCard, setHoverCard } = props;
   const className = 'HeldCard ' + pos.toLowerCase();
   const name = pos === 'BOTTOM' ? props.name : '2B'; // only show the card face to the player holding it
   const { x, y, rotate } = heldCardCoord(pos, width, height);
@@ -99,10 +125,16 @@ export function HeldCard(props: HeldCardProps) {
     const img = ref.current;
 
     if (img) {
-      const { x, y } = distanceFromTableCard(pos);
-      animateFrom(img, { x, y });
+      const lastEvent = events.slice(-1).pop();
+      if (lastEvent?.type === 'TAKE_FROM_DECK') {
+        const coord = distanceFromDeck(pos);
+        animateFrom(img, coord);
+      } else if (lastEvent?.type === 'TAKE_FROM_TABLE') {
+        const coord = distanceFromTableCard(pos);
+        animateFrom(img, coord);
+      }
     }
-  }, [name, pos]);
+  }, [name, pos, events]);
 
   return (
     <Card {...{ ref, className, x, y, rotate, name, highlight, onClick, onMouseOver, onMouseOut }} />

@@ -1,5 +1,5 @@
 import React, { Dispatch, SetStateAction } from 'react';
-import { HandPosition, Player, StateType } from '../types';
+import { Event, HandPosition, Player, StateType } from '../types';
 import { HeldCard } from './HeldCard';
 
 interface HeldCardsProps {
@@ -12,12 +12,13 @@ interface HeldCardsProps {
   players: Player[]
   playerTurn: number;
   stateType: StateType;
+  events: Event[];
   hoverCard: string | null;
   setHoverCard: Dispatch<SetStateAction<string | null>>;
 }
 
 export function HeldCards(props: HeldCardsProps) {
-  const { userId, gameId, width, height, positions, order, players, playerTurn, stateType, hoverCard, setHoverCard } = props;
+  const { userId, gameId, width, height, positions, order, players, playerTurn, stateType, events, hoverCard, setHoverCard } = props;
 
   return (
     <>
@@ -36,7 +37,7 @@ export function HeldCards(props: HeldCardsProps) {
           return null;
         }
 
-        return <HeldCard {...{ userId, gameId, key, pos, name: heldCard, width, height, playerTurn, stateType, playerId, hoverCard, setHoverCard }} />
+        return <HeldCard {...{ userId, gameId, key, pos, name: heldCard, events, width, height, playerTurn, stateType, playerId, hoverCard, setHoverCard }} />
       })}
     </>
   );

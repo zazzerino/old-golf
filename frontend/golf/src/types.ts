@@ -37,11 +37,12 @@ export interface Game {
   hasStarted: boolean;
   playableCards: PlayableCards;
   playerOrders: Record<PlayerId, PlayerId[]>;
+  events: Event[];
 }
 
 export type HandPosition = 'BOTTOM' | 'LEFT' | 'TOP' | 'RIGHT';
 
-export type EventType = 'TAKE_FROM_DECK' | 'TAKE_FROM_TABLE' | 'SWAP_CARD' | 'DISCARD';
+export type EventType = 'TAKE_FROM_DECK' | 'TAKE_FROM_TABLE' | 'SWAP_CARD' | 'DISCARD' | 'UNCOVER';
 
 export interface Event {
   type: EventType;
@@ -52,22 +53,8 @@ export interface TakeFromDeckEvent extends Event {
   type: 'TAKE_FROM_DECK';
 }
 
-export function takeFromDeck(playerId: number): TakeFromDeckEvent {
-  return {
-    type: 'TAKE_FROM_DECK',
-    playerId,
-  }
-}
-
 export interface TakeFromTableEvent extends Event {
   type: 'TAKE_FROM_TABLE';
-}
-
-export function takeFromTable(playerId: number): TakeFromTableEvent {
-  return {
-    type: 'TAKE_FROM_TABLE',
-    playerId,
-  }
 }
 
 export interface SwapCardEvent extends Event {
@@ -75,10 +62,33 @@ export interface SwapCardEvent extends Event {
   handIndex: number;
 }
 
-export function swapCard(playerId: number, index: number): SwapCardEvent {
-  return {
-    type: 'SWAP_CARD',
-    playerId,
-    handIndex: index,
-  }
+export interface DiscardEvent extends Event {
+  type: 'DISCARD';
 }
+
+export interface UncoverEvent extends Event {
+  type: 'UNCOVER';
+  handIndex: number;
+}
+
+// export function takeFromDeck(playerId: number): TakeFromDeckEvent {
+//   return {
+//     type: 'TAKE_FROM_DECK',
+//     playerId,
+//   }
+// }
+
+// export function takeFromTable(playerId: number): TakeFromTableEvent {
+//   return {
+//     type: 'TAKE_FROM_TABLE',
+//     playerId,
+//   }
+// }
+
+// export function swapCard(playerId: number, index: number): SwapCardEvent {
+//   return {
+//     type: 'SWAP_CARD',
+//     playerId,
+//     handIndex: index,
+//   }
+// }

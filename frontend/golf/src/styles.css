@@ -90,6 +90,7 @@ button {
   transform-box: fill-box;
   transform-origin: center;
   animation: rotating 8s linear infinite;
+  animation-delay: 2s;
 }
 
 @keyframes rotating {

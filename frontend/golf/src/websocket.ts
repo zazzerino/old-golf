@@ -1,6 +1,6 @@
 import { Dispatch } from "react";
 import { Action } from "./reducer";
-import { Game, User } from "./types";
+import { EventType, Game, User } from "./types";
 
 const WS_URL = 'ws://localhost:8080/ws';
 
@@ -116,14 +116,6 @@ export function sendJoinGame(gameId: number, userId: number) {
 
   send(message);
 }
-
-export type EventType =
-  | 'TAKE_FROM_DECK'
-  | 'TAKE_FROM_TABLE'
-  | 'SWAP_CARD'
-  | 'DISCARD'
-  | 'UNCOVER'
-  ;
 
 export interface EventMessage extends Message {
   eventType: EventType;
