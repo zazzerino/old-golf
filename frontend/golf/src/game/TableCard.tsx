@@ -1,52 +1,57 @@
 import React, { Dispatch, SetStateAction } from 'react';
-import { Game, User } from '../types';
+import { PlayableCards, StateType } from '../types';
 import { sendTakeFromTable } from '../websocket';
-import { Card, CARD_HEIGHT } from './Card';
+import { Card, CARD_WIDTH } from './Card';
 
-export function tableCardClicked(user: User, game: Game) {
-  const isPlayable = game.playerTurn === user.id
-    && ['TAKE', 'FINAL_TAKE'].includes(game.stateType);
+export function tableCardClicked(context: { userId: number, gameId: number, playerTurn: number, stateType: StateType }) {
+  const { userId, gameId, stateType, playerTurn } = context;
+
+  const isPlayable = playerTurn === userId
+    && ['TAKE', 'FINAL_TAKE'].includes(stateType);
 
   if (isPlayable) {
-    sendTakeFromTable(game.id, user.id);
+    sendTakeFromTable(gameId, userId);
   }
 }
 
-function shouldHighlight(user: User, game: Game, hoverCard: string | null): boolean {
-  const playableCards = game.playableCards[user.id];
+function shouldHighlight(context: { userId: number, playerTurn: number, playableCards: PlayableCards, hoverCard: string | null }): boolean {
+  const { userId, playableCards, playerTurn, hoverCard } = context;
+  const cards = playableCards[userId];
 
   const isHovered = hoverCard === 'TABLE';
-  const isPlayable = playableCards.includes('TABLE');
-  const isUsersTurn = user.id === game.playerTurn;
+  const isPlayable = cards.includes('TABLE');
+  const isUsersTurn = userId === playerTurn;
 
   return isHovered && isPlayable && isUsersTurn;
 }
 
 interface TableCardProps {
-  user: User;
-  game: Game;
-  name: string;
-  width: number;
-  height: number;
+  userId: number;
+  gameId: number;
+  tableCard: string;
+  stateType: StateType;
+  playerTurn: number;
+  playableCards: PlayableCards;
   hoverCard: string | null;
   setHoverCard: Dispatch<SetStateAction<string | null>>;
 }
 
 export function TableCard(props: TableCardProps) {
-  const { user, game, name, width, height, hoverCard, setHoverCard } = props;
+  const { userId, gameId, tableCard, stateType, playerTurn, playableCards, hoverCard, setHoverCard } = props;
 
-  if (name == null) {
+  if (tableCard == null) {
     return null;
   }
 
-  const x = width / 2 + 2;
-  const y = height / 2 - CARD_HEIGHT / 2;
-  const highlight = shouldHighlight(user, game, hoverCard);
+  const className = 'TableCard';
+  const x = CARD_WIDTH / 2 + 2;
+  const y = 0;
+  const highlight = shouldHighlight({ userId, playerTurn, playableCards, hoverCard });
   const onMouseOver = () => setHoverCard('TABLE');
   const onMouseOut = () => setHoverCard(null);
-  const onClick = () => tableCardClicked(user, game);
+  const onClick = () => tableCardClicked({ userId, gameId, playerTurn, stateType });
 
   return (
-    <Card {...{ name, x, y, highlight, onClick, onMouseOver, onMouseOut }} />
+    <Card {...{ className, name: tableCard, x, y, highlight, onClick, onMouseOver, onMouseOut }} />
   );
 }

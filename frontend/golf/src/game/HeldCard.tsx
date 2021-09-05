@@ -1,15 +1,17 @@
 import React, { Dispatch, SetStateAction } from 'react';
-import { Game, User } from '../types';
+import { HandPosition, StateType } from '../types';
 import { sendDiscard } from '../websocket';
 import { Card, CARD_HEIGHT, CARD_WIDTH } from './Card';
-import { HandPosition, HAND_PADDING } from './Hand';
+import { HAND_PADDING } from './Hand';
 
-export function heldCardClicked(user: User, game: Game) {
-  const isPlayable = user.id === game.playerTurn
-    && ['DISCARD', 'FINAL_DISCARD'].includes(game.stateType);
+export function heldCardClicked(context: { userId: number, gameId: number, playerTurn: number, stateType: StateType }) {
+  const { userId, gameId, playerTurn, stateType } = context;
+
+  const isPlayable = userId === playerTurn
+    && ['DISCARD', 'FINAL_DISCARD'].includes(stateType);
 
   if (isPlayable) {
-    sendDiscard(game.id, user.id);
+    sendDiscard(gameId, userId);
   }
 }
 
@@ -20,51 +22,70 @@ function heldCardCoord(pos: HandPosition, width: number, height: number) {
 
   switch (pos) {
     case 'BOTTOM':
-      x = width * 0.6;
-      y = height - CARD_HEIGHT * 1.5 - HAND_PADDING * 5;
+      x = CARD_WIDTH * 1.5;
+      y = height / 2 - CARD_HEIGHT - HAND_PADDING * 4;
       break;
     case 'LEFT':
-      x = CARD_HEIGHT * 1.5 + HAND_PADDING * 6;
-      y = CARD_HEIGHT * 3 + CARD_WIDTH;
+      x = -width / 2 + CARD_HEIGHT + HAND_PADDING * 4;
+      y = CARD_WIDTH * 1.5 + HAND_PADDING * 4;
       rotate = 90;
       break;
     case 'TOP':
-      x = width * 0.4 - CARD_WIDTH;
-      y = CARD_WIDTH - HAND_PADDING * 5;
+      x = -CARD_WIDTH * 1.5;
+      y = -height / 2 + CARD_HEIGHT + HAND_PADDING * 4;
       break;
     case 'RIGHT':
-      x = width - CARD_WIDTH + HAND_PADDING * 4;
-      y = CARD_HEIGHT * 2 - CARD_WIDTH / 1.5;
+      x = width / 2 - CARD_HEIGHT - HAND_PADDING * 4;
+      y = -CARD_WIDTH * 1.5 - HAND_PADDING * 4;
       rotate = 90;
       break;
   }
 
-  return `translate(${x},${y}), rotate(${rotate})`;
+  return { x, y, rotate };
 }
 
 interface HeldCardProps {
-  user: User;
-  game: Game;
+  userId: number;
+  gameId: number;
   name: string;
   width: number;
   height: number;
-  hoverCard: string | null;
-  setHoverCard: Dispatch<SetStateAction<string | null>>;
   pos: HandPosition;
   playerId: number;
+  playerTurn: number;
+  stateType: StateType;
+  hoverCard: string | null;
+  setHoverCard: Dispatch<SetStateAction<string | null>>;
 }
 
 export function HeldCard(props: HeldCardProps) {
-  const { user, game, width, height, hoverCard, setHoverCard, pos, playerId } = props;
+  const { userId, gameId, width, height, pos, playerId, playerTurn, stateType, hoverCard, setHoverCard } = props;
   const className = 'HeldCard ' + pos.toLowerCase();
   const name = pos === 'BOTTOM' ? props.name : '2B'; // only show the card face to the player holding it
-  const transform = heldCardCoord(pos, width, height);
-  const highlight = user.id === playerId && hoverCard === 'HELD';
+  const { x, y, rotate } = heldCardCoord(pos, width, height);
+  const highlight = userId === playerId && hoverCard === 'HELD';
   const onMouseOver = () => setHoverCard('HELD');
   const onMouseOut = () => setHoverCard(null);
-  const onClick = () => heldCardClicked(user, game);
+  const onClick = () => heldCardClicked({ userId, gameId, playerTurn, stateType });
+  // const ref = useRef<SVGImageElement>(null);
+
+  // useLayoutEffect(() => {
+  //   const img = ref.current;
+
+  //   if (img) {
+  //     requestAnimationFrame(() => {
+  //       img.style.transform = 'translateX(-58px) translateY(-156px)';
+  //       img.style.transition = 'transform 0s';
+
+  //       requestAnimationFrame(() => {
+  //         img.style.transform = '';
+  //         img.style.transition = 'transform 1s';
+  //       });
+  //     });
+  //   }
+  // });
 
   return (
-    <Card {...{ className, transform, name, highlight, onClick, onMouseOver, onMouseOut }} />
+    <Card {...{ className, x, y, rotate, name, highlight, onClick, onMouseOver, onMouseOut }} />
   );
 }

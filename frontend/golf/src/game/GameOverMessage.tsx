@@ -2,8 +2,8 @@ import React from 'react';
 
 export function GameOverMessage(props: { width: number, height: number }) {
   const { width, height } = props;
-  const x = width / 2;
-  const y = height / 2;
+  const x = 0;
+  const y = 0;
   const rw = width / 2;
   const rh = height / 4;
   const rx = x - rw / 2;

@@ -21,7 +21,9 @@ export type StateType =
 
 export type CardLocation = 'DECK' | 'TABLE' | 'HELD' | 'H0' | 'H1' | 'H2' | 'H3' | 'H4' | 'H5';
 
-type PlayerId = number;
+export type PlayerId = number;
+
+export type PlayableCards = Record<PlayerId, CardLocation[]>;
 
 export interface Game {
   id: number;
@@ -33,9 +35,11 @@ export interface Game {
   turn: number;
   playerTurn: number;
   hasStarted: boolean;
-  playableCards: Record<PlayerId, CardLocation[]>;
+  playableCards: PlayableCards;
   playerOrders: Record<PlayerId, PlayerId[]>;
 }
+
+export type HandPosition = 'BOTTOM' | 'LEFT' | 'TOP' | 'RIGHT';
 
 export type EventType = 'TAKE_FROM_DECK' | 'TAKE_FROM_TABLE' | 'SWAP_CARD' | 'DISCARD';
 

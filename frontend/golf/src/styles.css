@@ -72,7 +72,8 @@ button {
 }
 
 .GameOverMessage {
-  transform-origin: 50% 50%;
+  transform-box: fill-box;
+  transform-origin: center;
   animation: rotating 8s linear infinite;
 }
 
@@ -97,35 +98,40 @@ button {
 }
 
 .ScoreDisplay {
+  transform-box: fill-box;
+  transform-origin: center;
   fill: white;
 }
 
-/* .Hand {
+.Hand {
+  transform-box: fill-box;
   transform-origin: center;
-} */
+}
 
 .Hand.outline {
   outline: solid 0.2rem plum;
   outline-offset: 0.2rem;
 }
 
-/* .Card {
-  transition: all 500ms;
-} */
-
-/* .Card {
+.Card {
+  transform-box: fill-box;
   transform-origin: center;
-} */
+}
 
 .Card.highlight {
   filter: drop-shadow(0 0 0.3rem rgba(173, 255, 47, 1.0));
   cursor: pointer;
 }
 
-.Deck.slide-in {
+/* .Deck {
   animation-duration: 1s;
   animation-name: slide-from-left;
-}
+} */
+
+/* .Deck.slide-in {
+  animation-duration: 1s;
+  animation-name: slide-from-left;
+} */
 
 @keyframes slide-from-left {
   from {
