@@ -17,8 +17,9 @@ public class MessageDecoder implements Decoder.Text<Message> {
 
         switch (messageType) {
             case LOGIN -> {
+                var userId = jsonObject.getLong("userId");
                 var name = jsonObject.getString("name");
-                return new LoginMessage(name);
+                return new LoginMessage(userId, name);
             }
 
             case JOIN_GAME -> {

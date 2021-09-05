@@ -19,13 +19,13 @@ function App() {
   return (
     <div className="App">
       <BrowserRouter>
-        <Navbar />
+        <Navbar user={user} />
         <Switch>
           <Route path="/game">
             <GamePage {...{user, game, dispatch}} />
           </Route>
           <Route path="/login">
-            <LoginPage />
+            <LoginPage user={user} />
           </Route>
           <Route path="/">
             <HomePage {...{user, games}} />

@@ -51,7 +51,9 @@ public class WebSocket {
     public void onMessage(Session session, Message message) {
         log.info("message received: " + message);
 
-        if (message instanceof CreateGameMessage c) {
+        if (message instanceof LoginMessage l) {
+            userController.login(session, l.userId(), l.name());
+        } else if (message instanceof CreateGameMessage c) {
             gameController.createGame(session, c.userId());
         } else if (message instanceof StartGameMessage s) {
             gameController.startGame(session, s.gameId(), s.playerId());

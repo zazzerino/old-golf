@@ -30,8 +30,8 @@ public class UserService {
         return userDao.getBySessionId(sessionId);
     }
 
-    public User login(String sessionId, String name) {
-        var user = getBySessionId(sessionId).orElseThrow();
+    public User login(Long userId, String name) {
+        var user = getById(userId).orElseThrow();
         user.setName(name);
         userDao.save(user);
         return user;

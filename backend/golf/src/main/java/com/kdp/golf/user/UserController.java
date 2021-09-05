@@ -25,9 +25,9 @@ public class UserController {
         webSocket.sendToSession(session, new LoginResponse(user));
     }
 
-    public void login(Session session, String name) {
-        var user = userService.login(session.getId(), name);
-        log.info("user changed name: " + user);
+    public void login(Session session, Long userId, String name) {
+        var user = userService.login(userId, name);
+        log.info("user updated: " + user);
         webSocket.sendToSession(session, new LoginResponse(user));
     }
 

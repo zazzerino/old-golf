@@ -37,7 +37,7 @@ function onError(event: Event) {
 
 function onMessage(event: MessageEvent) {
   const response = JSON.parse(event.data) as Response;
-  console.log('message received ↓')
+  console.log('message received ↓');
   console.log(response);
 
   switch (response.type) {
@@ -53,6 +53,22 @@ export type MessageType = 'LOGIN' | 'CREATE_GAME' | 'START_GAME' | 'EVENT' | 'JO
 
 export interface Message {
   type: MessageType;
+}
+
+export interface LoginMessage extends Message {
+  type: 'LOGIN';
+  userId: number;
+  name: string;
+}
+
+export function sendLogin(userId: number, name: string) {
+  const message: LoginMessage = {
+    type: 'LOGIN',
+    userId,
+    name,
+  };
+
+  send(message);
 }
 
 export interface CreateGameMessage extends Message {

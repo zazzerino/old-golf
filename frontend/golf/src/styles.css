@@ -44,6 +44,11 @@ button {
   margin: auto;
 }
 
+.LoginPage button {
+  margin: auto;
+  margin-top: 1rem;
+}
+
 .HomePage {
   text-align: center;
   display: flex;
@@ -159,3 +164,19 @@ button {
     transform: translateX(-148px) translateY(-158px);
   } 
 } */
+
+.user-info {
+  margin: 0;
+  margin-left: auto;
+  margin-right: 1.5rem;
+  font-size: 80%;
+  color: white;
+}
+
+.user-name {
+  color: lime;
+}
+
+.user-id {
+  color: greenyellow;
+}

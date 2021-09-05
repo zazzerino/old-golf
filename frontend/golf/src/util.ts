@@ -10,10 +10,11 @@ export function animateFrom(elem: SVGElement, coord: { x?: number, y?: number },
       elem.style.transform = `translateY(${y}px)`;
     }
 
-    elem.style.transition = 'transform 0s';
+    elem.style.transition = 'transform 0s'; // move the element immediately
 
     requestAnimationFrame(() => {
-      elem.style.transform = ''; // set the elem back to its original position
+      // set the elem back to its original position over the course of seconds
+      elem.style.transform = '';
       elem.style.transition = `transform ${seconds}s`;
     });
   })
