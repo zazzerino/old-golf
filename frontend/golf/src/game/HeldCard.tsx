@@ -1,5 +1,6 @@
 import React, { Dispatch, SetStateAction } from 'react';
 import { HandPosition, StateType } from '../types';
+import { animateFrom } from '../util';
 import { sendDiscard } from '../websocket';
 import { Card, CARD_HEIGHT, CARD_WIDTH } from './Card';
 import { HAND_PADDING } from './Hand';
@@ -44,6 +45,31 @@ function heldCardCoord(pos: HandPosition, width: number, height: number) {
   return { x, y, rotate };
 }
 
+function distanceFromTableCard(pos: HandPosition) {
+  let x: number;
+  let y: number;
+
+  switch (pos) {
+    case 'BOTTOM':
+      x = -58;
+      y = -156;
+      break;
+    case 'TOP':
+      x = 58 + CARD_WIDTH;
+      y = 156;
+      break;
+    case 'LEFT':
+      x = 240;
+      y = -98;
+      break;
+    case 'RIGHT':
+      x = -240;
+      y = 98;
+  }
+
+  return { x, y };
+}
+
 interface HeldCardProps {
   userId: number;
   gameId: number;
@@ -67,25 +93,18 @@ export function HeldCard(props: HeldCardProps) {
   const onMouseOver = () => setHoverCard('HELD');
   const onMouseOut = () => setHoverCard(null);
   const onClick = () => heldCardClicked({ userId, gameId, playerTurn, stateType });
-  // const ref = useRef<SVGImageElement>(null);
+  const ref = React.useRef<SVGImageElement>(null);
 
-  // useLayoutEffect(() => {
-  //   const img = ref.current;
+  React.useLayoutEffect(() => {
+    const img = ref.current;
 
-  //   if (img) {
-  //     requestAnimationFrame(() => {
-  //       img.style.transform = 'translateX(-58px) translateY(-156px)';
-  //       img.style.transition = 'transform 0s';
-
-  //       requestAnimationFrame(() => {
-  //         img.style.transform = '';
-  //         img.style.transition = 'transform 1s';
-  //       });
-  //     });
-  //   }
-  // });
+    if (img) {
+      const { x, y } = distanceFromTableCard(pos);
+      animateFrom(img, { x, y });
+    }
+  }, [name, pos]);
 
   return (
-    <Card {...{ className, x, y, rotate, name, highlight, onClick, onMouseOver, onMouseOut }} />
+    <Card {...{ ref, className, x, y, rotate, name, highlight, onClick, onMouseOver, onMouseOut }} />
   );
 }

@@ -1,8 +1,8 @@
 import React from 'react';
 import { CARD_HEIGHT, CARD_WIDTH } from './Card';
 
-export function ScoreDisplay(props: { width: number, height: number, score?: number }) {
-  const { width, height, score } = props;
+export function ScoreDisplay(props: { height: number, score?: number }) {
+  const { height, score } = props;
   const x = -CARD_WIDTH * 3;
   const y = height / 2 - CARD_HEIGHT / 2;
 

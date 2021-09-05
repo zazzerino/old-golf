@@ -1,5 +1,6 @@
 import React, { Dispatch, SetStateAction } from 'react';
 import { PlayableCards, StateType } from '../types';
+import { animateFrom } from '../util';
 import { sendTakeFromDeck } from '../websocket';
 import { Card, CARD_WIDTH } from './Card';
 
@@ -38,7 +39,7 @@ interface DeckProps {
 }
 
 export function Deck(props: DeckProps) {
-  const { userId, gameId, width, height, stateType, playableCards, playerTurn, hoverCard, setHoverCard } = props;
+  const { userId, gameId, height, stateType, playableCards, playerTurn, hoverCard, setHoverCard } = props;
   const className = 'Deck';
   const name = '2B';
   const x = stateType === 'INIT' ? 0 : -CARD_WIDTH / 2 - 2;
@@ -53,17 +54,9 @@ export function Deck(props: DeckProps) {
     const img = ref.current;
 
     if (img && stateType === 'INIT') {
-      requestAnimationFrame(() => {
-        img.style.transform = `translate(${-width/2}px, ${-height/2}px)`;
-        img.style.transition = 'transform 0s';
-
-        requestAnimationFrame(() => {
-          img.style.transform = '';
-          img.style.transition = 'transform 1s';
-        });
-      });
+      animateFrom(img, { y: -height/2 });
     }
-  }, [width, height, stateType]);
+  }, [height, stateType, gameId]);
 
   return <Card {...{ ref, className, name, x, y, highlight, onMouseOver, onMouseOut, onClick }} />;
 }

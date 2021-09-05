@@ -25,6 +25,12 @@ public class UserController {
         webSocket.sendToSession(session, new LoginResponse(user));
     }
 
+    public void login(Session session, String name) {
+        var user = userService.login(session.getId(), name);
+        log.info("user changed name: " + user);
+        webSocket.sendToSession(session, new LoginResponse(user));
+    }
+
     public void sessionClosed(Session session) {
         var user = userService.delete(session.getId());
         log.info("user deleted: " + user);

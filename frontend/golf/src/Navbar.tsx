@@ -14,6 +14,11 @@ export function Navbar() {
           Game
         </Link>
       </li>
+      <li>
+        <Link to="/login">
+          Login
+        </Link>
+      </li>
     </ul>
   );
 }

@@ -34,6 +34,16 @@ button {
   color: white;
 }
 
+.LoginPage {
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+}
+
+.LoginPage input {
+  margin: auto;
+}
+
 .HomePage {
   text-align: center;
   display: flex;

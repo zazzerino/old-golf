@@ -94,8 +94,8 @@ export function Hand(props: HandProps) {
   const { userId, gameId, playerId, pos, cards, width, height, stateType, playerTurn, uncoveredCards, playableCards, hoverCard, setHoverCard } = props;
   const transform = handTransform(width, height, pos);
   const ref = useRef<SVGGElement>(null);
+  
   let className = 'Hand';
-
   if (playerId === playerTurn) {
     className += ' outline';
   }
@@ -113,7 +113,7 @@ export function Hand(props: HandProps) {
         const onMouseOver = () => setHoverCard(location);
         const onMouseOut = () => setHoverCard(null);
         const onClick = () => handClicked({ userId, gameId, playerId, stateType, playerTurn, key });
-        return <Card {...{ key, className, name, x, y, highlight, onMouseOver, onMouseOut, onClick }} />
+        return <Card {...{ key, className, name, x, y, highlight, onMouseOver, onMouseOut, onClick }} />;
       })}
     </g>
   );

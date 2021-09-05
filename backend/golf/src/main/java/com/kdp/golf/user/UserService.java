@@ -30,6 +30,13 @@ public class UserService {
         return userDao.getBySessionId(sessionId);
     }
 
+    public User login(String sessionId, String name) {
+        var user = getBySessionId(sessionId).orElseThrow();
+        user.setName(name);
+        userDao.save(user);
+        return user;
+    }
+
     public User save(User user) {
         userDao.save(user);
         return user;
