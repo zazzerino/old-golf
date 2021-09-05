@@ -116,12 +116,21 @@ button {
 .ScoreDisplay {
   transform-box: fill-box;
   transform-origin: center;
+}
+
+.ScoreDisplay rect {
+  fill: cornflowerblue;
+}
+
+.ScoreDisplay text {
   fill: white;
+  text-anchor: middle;
 }
 
 .Hand {
   transform-box: fill-box;
   transform-origin: center;
+  pointer-events: bounding-box;
 }
 
 .Hand.outline {

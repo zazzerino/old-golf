@@ -126,6 +126,7 @@ export function HeldCard(props: HeldCardProps) {
 
     if (img) {
       const lastEvent = events.slice(-1).pop();
+
       if (lastEvent?.type === 'TAKE_FROM_DECK') {
         const coord = distanceFromDeck(pos);
         animateFrom(img, coord);

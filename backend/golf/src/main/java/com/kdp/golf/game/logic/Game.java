@@ -226,6 +226,16 @@ public class Game {
         return events;
     }
 
+    public Game setPlayerName(Long playerId, String name) {
+        var player = players.values().stream()
+                .filter(p -> Objects.equals(p.id, playerId))
+                .findFirst()
+                .orElseThrow();
+
+        player.setName(name);
+        return this;
+    }
+
     @Override
     public String toString() {
         return "Game{" +

@@ -51,6 +51,10 @@ public class GameService {
         return game;
     }
 
+    public Optional<Game> getById(Long id) {
+        return gameDao.getById(id);
+    }
+
     public Collection<Game> getAll() {
         return gameDao.getAll();
     }
@@ -58,6 +62,13 @@ public class GameService {
     public Game handleEvent(Event event) {
         var game = gameDao.getById(event.gameId()).orElseThrow();
         game.handleEvent(event);
+        gameDao.save(game);
+        return game;
+    }
+
+    public Game setPlayerName(Long gameId, Long playerId, String name) {
+        var game = gameDao.getById(gameId).orElseThrow();
+        game.setPlayerName(playerId, name);
         gameDao.save(game);
         return game;
     }

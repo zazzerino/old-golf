@@ -3,6 +3,7 @@ package com.kdp.golf.user;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import java.util.Objects;
+import java.util.Optional;
 
 public class User {
 
@@ -35,8 +36,8 @@ public class User {
     }
 
     @JsonIgnore
-    public Long getGameId() {
-        return gameId;
+    public Optional<Long> getGameId() {
+        return Optional.ofNullable(gameId);
     }
 
     public void setGameId(Long gameId) {

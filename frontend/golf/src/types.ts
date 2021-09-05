@@ -70,25 +70,3 @@ export interface UncoverEvent extends Event {
   type: 'UNCOVER';
   handIndex: number;
 }
-
-// export function takeFromDeck(playerId: number): TakeFromDeckEvent {
-//   return {
-//     type: 'TAKE_FROM_DECK',
-//     playerId,
-//   }
-// }
-
-// export function takeFromTable(playerId: number): TakeFromTableEvent {
-//   return {
-//     type: 'TAKE_FROM_TABLE',
-//     playerId,
-//   }
-// }
-
-// export function swapCard(playerId: number, index: number): SwapCardEvent {
-//   return {
-//     type: 'SWAP_CARD',
-//     playerId,
-//     handIndex: index,
-//   }
-// }

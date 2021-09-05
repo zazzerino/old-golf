@@ -88,28 +88,32 @@ interface HandProps {
   playableCards: PlayableCards;
   hoverCard: string | null;
   setHoverCard: Dispatch<SetStateAction<string | null>>;
+  setHoverPos: Dispatch<SetStateAction<HandPosition | null>>;
 }
 
 export function Hand(props: HandProps) {
-  const { userId, gameId, playerId, pos, cards, width, height, stateType, playerTurn, uncoveredCards, playableCards, hoverCard, setHoverCard } = props;
+  const { userId, gameId, playerId, pos, cards, width, height, stateType, playerTurn, uncoveredCards, playableCards, hoverCard, setHoverCard, setHoverPos } = props;
   const transform = handTransform(width, height, pos);
   const ref = useRef<SVGGElement>(null);
-  
+  const shouldOutline = playerId === playerTurn || (stateType === 'UNCOVER_TWO' && uncoveredCards.length < 2);
+  const onMouseOver = () => setHoverPos(pos);
+  const onMouseOut = () => setHoverPos(null);
+
   let className = 'Hand';
-  if (playerId === playerTurn) {
+  if (shouldOutline) {
     className += ' outline';
   }
 
   return (
-    <g className={className} ref={ref} transform={transform}>
+    <g {...{ className, ref, transform, onMouseOver, onMouseOut }}>
       {cards.map((card, key) => {
-        const className = `${pos}-H${key}`;
+        const location = `${pos}-H${key}`; // e.g. 'BOTTOM-H0' (the 1st card in the bottom hand)
+        const className = location;
         const name = uncoveredCards.includes(key) ? card : '2B';
         const xOffset = key % 3; // the x coords of cards 0-2 are the same as cards 3-5
         const x = CARD_WIDTH * xOffset + HAND_PADDING * xOffset - CARD_WIDTH;
         const y = (key < 3 ? 0 : CARD_HEIGHT + HAND_PADDING) - CARD_HEIGHT / 2;
         const highlight = shouldHighlight({ userId, playerId, stateType, uncoveredCards, playerTurn, key, pos, playableCards, hoverCard });
-        const location = `${pos}-H${key}`; // e.g. 'BOTTOM-H0' (the 1st card in the bottom hand)
         const onMouseOver = () => setHoverCard(location);
         const onMouseOut = () => setHoverCard(null);
         const onClick = () => handClicked({ userId, gameId, playerId, stateType, playerTurn, key });

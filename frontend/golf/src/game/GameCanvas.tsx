@@ -3,9 +3,9 @@ import { Deck } from './Deck';
 import { TableCard } from './TableCard';
 import { Game, HandPosition, User } from '../types';
 import { GameOverMessage } from './GameOverMessage';
-import { ScoreDisplay } from './ScoreDisplay';
 import { Hands } from './Hands';
 import { HeldCards } from './HeldCards';
+import { Scores } from './Scores';
 
 function handPositions(playerCount: number): HandPosition[] {
   switch (playerCount) {
@@ -29,6 +29,7 @@ export function GameCanvas(props: GameCanvasProps) {
   const height = 500;
   const viewBox = `${-width / 2} ${-height / 2} ${width} ${height}`;
   const [hoverCard, setHoverCard] = useState<string | null>(null);
+  const [hoverPos, setHoverPos] = useState<HandPosition | null>(null);
 
   // if there's no game, return an empty svg
   if (game == null) {
@@ -40,8 +41,6 @@ export function GameCanvas(props: GameCanvasProps) {
   const { hasStarted, tableCard, players, stateType, playableCards, playerTurn, events } = game;
   const order = game.playerOrders[user.id];
   const positions = handPositions(players.length);
-  const player = players.find(p => p.id === user.id);
-  const score = player?.hand.visibleScore;
   const isOver = game.stateType === 'GAME_OVER';
 
   return (
@@ -50,9 +49,9 @@ export function GameCanvas(props: GameCanvasProps) {
       {hasStarted &&
         <>
           <TableCard {...{ tableCard, userId, gameId, width, height, stateType, playerTurn, playableCards, hoverCard, setHoverCard }} />
-          <Hands {...{ userId, gameId, width, height, stateType, order, positions, players, playerTurn, playableCards, hoverCard, setHoverCard }} />
+          <Hands {...{ userId, gameId, width, height, stateType, order, positions, players, playerTurn, playableCards, hoverCard, setHoverCard, hoverPos, setHoverPos }} />
           <HeldCards {...{ userId, gameId, width, height, players, playerTurn, events, stateType, order, positions, hoverCard, setHoverCard }} />
-          <ScoreDisplay {...{ width, height, score }} />
+          <Scores {...{ width, height, positions, order, players, hoverPos }} />
           {isOver && <GameOverMessage {...{ width, height }} />}
         </>
       }

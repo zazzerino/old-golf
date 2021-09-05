@@ -3,6 +3,11 @@ import { PlayableCards, StateType } from '../types';
 import { sendTakeFromTable } from '../websocket';
 import { Card, CARD_WIDTH } from './Card';
 
+export const TABLE_CARD_COORD = {
+  x: CARD_WIDTH / 2 + 2,
+  y: 0
+};
+
 export function tableCardClicked(context: { userId: number, gameId: number, playerTurn: number, stateType: StateType }) {
   const { userId, gameId, stateType, playerTurn } = context;
 
@@ -44,8 +49,7 @@ export function TableCard(props: TableCardProps) {
   }
 
   const className = 'TableCard';
-  const x = CARD_WIDTH / 2 + 2;
-  const y = 0;
+  const { x, y } = TABLE_CARD_COORD;
   const highlight = shouldHighlight({ userId, playerTurn, playableCards, hoverCard });
   const onMouseOver = () => setHoverCard('TABLE');
   const onMouseOut = () => setHoverCard(null);

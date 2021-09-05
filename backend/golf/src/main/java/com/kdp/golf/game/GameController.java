@@ -55,12 +55,22 @@ public class GameController {
         notifyPlayers(game);
     }
 
+    public void setPlayerName(Long gameId, Long playerId, String name) {
+        var game = gameService.setPlayerName(gameId, playerId, name);
+        notifyPlayers(game);
+    }
+
     public void notifyPlayers(Game game) {
         for (var player : game.getPlayers()) {
             var user = userService.getById(player.id).orElseThrow();
             webSocket.sendToSessionId(user.sessionId, new GameResponse(game));
         }
     }
+
+//    public void notifyPlayers(Long gameId) {
+//        gameService.getById(gameId)
+//                .ifPresent(this::notifyPlayers);
+//    }
 
     public void broadcastGames() {
         var games = gameService.getAll();

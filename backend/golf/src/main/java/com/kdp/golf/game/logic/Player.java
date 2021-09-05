@@ -8,8 +8,8 @@ import java.util.*;
 public class Player {
 
     public final Long id;
-    public final String name;
     private final Hand hand;
+    private String name;
     private Card heldCard;
 
     public Player(Long id, String name, Hand hand) {
@@ -26,6 +26,15 @@ public class Player {
 
     public static Player from(User user) {
         return new Player(user.id, user.getName());
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public Player setName(String name) {
+        this.name = name;
+        return this;
     }
 
     public Hand getHand() {
