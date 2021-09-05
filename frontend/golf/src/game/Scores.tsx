@@ -12,7 +12,7 @@ interface ScoresProps {
 }
 
 export function Scores(props: ScoresProps) {
-  const { width, height, players, positions, order, hoverPos } = props;
+  const { players, positions, order } = props;
 
   return (
     <>
@@ -26,7 +26,7 @@ export function Scores(props: ScoresProps) {
 
         const score = player.hand.visibleScore;
         const playerName = player.name;
-        return <Score {...{ key, width, height, pos, score, playerName, hoverPos }} />
+        return <Score {...{ ...props, key, score, pos, playerName }} />
       })}
     </>
   );

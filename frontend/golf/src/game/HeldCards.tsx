@@ -18,7 +18,7 @@ interface HeldCardsProps {
 }
 
 export function HeldCards(props: HeldCardsProps) {
-  const { userId, gameId, width, height, positions, order, players, playerTurn, stateType, events, hoverCard, setHoverCard } = props;
+  const { positions, order, players } = props;
 
   return (
     <>
@@ -37,7 +37,7 @@ export function HeldCards(props: HeldCardsProps) {
           return null;
         }
 
-        return <HeldCard {...{ userId, gameId, key, pos, name: heldCard, events, width, height, playerTurn, stateType, playerId, hoverCard, setHoverCard }} />
+        return <HeldCard {...{ ...props, key, name: heldCard, pos, playerId }} />
       })}
     </>
   );

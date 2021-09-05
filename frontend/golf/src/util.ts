@@ -2,6 +2,7 @@ export function animateFrom(elem: SVGElement, coord: { x?: number, y?: number },
   const { x, y } = coord;
 
   requestAnimationFrame(() => {
+    // move the element to `coord` immediately
     if (x != null && y != null) {
       elem.style.transform = `translate(${x}px, ${y}px)`;
     } else if (x != null) {
@@ -10,7 +11,7 @@ export function animateFrom(elem: SVGElement, coord: { x?: number, y?: number },
       elem.style.transform = `translateY(${y}px)`;
     }
 
-    elem.style.transition = 'transform 0s'; // move the element immediately
+    elem.style.transition = 'transform 0s';
 
     requestAnimationFrame(() => {
       // set the elem back to its original position over the course of seconds

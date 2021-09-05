@@ -20,7 +20,7 @@ interface HandsProps {
 }
 
 export function Hands(props: HandsProps) {
-  const { userId, gameId, width, height, hoverCard, setHoverCard, positions, order, players, playerTurn, playableCards, stateType, hoverPos, setHoverPos } = props;
+  const { positions, order, players } = props;
 
   return (
     <>
@@ -34,7 +34,7 @@ export function Hands(props: HandsProps) {
         }
 
         const { cards, uncoveredCards } = player.hand;
-        return <Hand {...{ key, userId, gameId, playerId, width, height, stateType, pos, playableCards, playerTurn, cards, uncoveredCards, hoverCard, setHoverCard, hoverPos, setHoverPos }} />;
+        return <Hand {...{ ...props, key, pos, playerId, cards, uncoveredCards }} />
       })}
     </>
   );

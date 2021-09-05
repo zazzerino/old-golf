@@ -90,7 +90,7 @@ button {
   transform-box: fill-box;
   transform-origin: center;
   animation: rotating 8s linear infinite;
-  animation-delay: 2s;
+  animation-delay: 1.5s;
 }
 
 @keyframes rotating {
@@ -104,7 +104,17 @@ button {
 }
 
 .GameOverMessage rect {
-  fill: cornflowerblue;
+  animation: change-color 3s alternate infinite;
+}
+
+@keyframes change-color {
+  from {
+    fill: deeppink;
+  }
+
+  to {
+    fill: cornflowerblue;
+  }
 }
 
 .GameOverMessage text {
@@ -138,6 +148,12 @@ button {
   outline-offset: 0.2rem;
 }
 
+.Hand rect {
+  transform-box: fill-box;
+  transform-origin: center;
+  opacity: 0;
+}
+
 .Card {
   transform-box: fill-box;
   transform-origin: center;
@@ -147,33 +163,6 @@ button {
   filter: drop-shadow(0 0 0.3rem rgba(173, 255, 47, 1.0));
   cursor: pointer;
 }
-
-/* .Deck {
-  animation-duration: 1s;
-  animation-name: slide-from-left;
-} */
-
-/* .Deck.slide-in {
-  animation-duration: 1s;
-  animation-name: slide-from-left;
-} */
-
-@keyframes slide-from-left {
-  from {
-    transform: translateX(-100%);
-  }
-}
-
-/* .HeldCard {
-  animation-duration: 0.5s;
-  animation-name: slide-from-table-to-held;
-}
-
-@keyframes slide-from-table-to-held {
-  from {
-    transform: translateX(-148px) translateY(-158px);
-  } 
-} */
 
 .user-info {
   margin: 0;

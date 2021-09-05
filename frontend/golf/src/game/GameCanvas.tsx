@@ -38,19 +38,19 @@ export function GameCanvas(props: GameCanvasProps) {
 
   const userId = user.id;
   const gameId = game.id;
-  const { hasStarted, tableCard, players, stateType, playableCards, playerTurn, events } = game;
+  const players = game.players;
   const order = game.playerOrders[user.id];
   const positions = handPositions(players.length);
   const isOver = game.stateType === 'GAME_OVER';
 
   return (
     <svg {...{ className, viewBox, width, height }}>
-      <Deck {...{ userId, gameId, width, height, playableCards, playerTurn, stateType, hoverCard, setHoverCard }} />
-      {hasStarted &&
+      <Deck {...{ ...game, userId, gameId, width, height, hoverCard, setHoverCard }} />
+      {game.hasStarted &&
         <>
-          <TableCard {...{ tableCard, userId, gameId, width, height, stateType, playerTurn, playableCards, hoverCard, setHoverCard }} />
-          <Hands {...{ userId, gameId, width, height, stateType, order, positions, players, playerTurn, playableCards, hoverCard, setHoverCard, hoverPos, setHoverPos }} />
-          <HeldCards {...{ userId, gameId, width, height, players, playerTurn, events, stateType, order, positions, hoverCard, setHoverCard }} />
+          <TableCard {...{ ...game, userId, gameId, hoverCard, setHoverCard }} />
+          <Hands {...{ ...game, userId, gameId, width, height, positions, order, hoverCard, setHoverCard, hoverPos, setHoverPos }} />
+          <HeldCards {...{ ...game, userId, gameId, width, height, positions, order, hoverCard, setHoverCard }} />
           <Scores {...{ width, height, positions, order, players, hoverPos }} />
           {isOver && <GameOverMessage {...{ width, height }} />}
         </>

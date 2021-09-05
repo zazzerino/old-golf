@@ -104,8 +104,16 @@ export function Hand(props: HandProps) {
     className += ' outline';
   }
 
+  const rectWidth = CARD_WIDTH * 3 + HAND_PADDING * 2;
+  const rectHeight = CARD_HEIGHT * 2 + HAND_PADDING;
+  const rectX = -(rectWidth / 2) + 2;
+  const rectY = -(rectHeight / 2) + 2;
+  const onRectOver = () => setHoverPos(pos);
+  const onRectOut = () => setHoverPos(null);
+
   return (
     <g {...{ className, ref, transform, onMouseOver, onMouseOut }}>
+      <rect x={rectX} y={rectY} width={rectWidth} height={rectHeight} onMouseOver={onRectOver} onMouseOut={onRectOut} />
       {cards.map((card, key) => {
         const location = `${pos}-H${key}`; // e.g. 'BOTTOM-H0' (the 1st card in the bottom hand)
         const className = location;
