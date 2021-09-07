@@ -93,7 +93,7 @@ export function Hand(props: HandProps) {
       <rect x={rectX} y={rectY} width={rectWidth} height={rectHeight} onMouseOver={onRectOver} onMouseOut={onRectOut} />
       {cards.map((card, key) => {
         const location = `${pos}-H${key}`; // e.g. 'BOTTOM-H0' (the 1st card in the bottom hand)
-        const className = location;
+        const className = location + ' fade-in';
         const name = uncoveredCards.includes(key) ? card : '2B';
         const xOffset = key % 3; // the x coords of cards 0-2 are the same as cards 3-5
         const x = CARD_WIDTH * xOffset + HAND_PADDING * xOffset - CARD_WIDTH;
