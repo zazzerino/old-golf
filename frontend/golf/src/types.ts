@@ -3,40 +3,41 @@ export interface User {
   name: string;
 }
 
-export interface Hand {
-  cards: string[];
-  uncoveredCards: number[];
-  visibleScore: number;
-}
-
 export interface Player {
   id: number;
   name: string;
-  hand: Hand;
+  handPosition: HandPosition;
+  cards: string[];
+  uncoveredCards: number[];
   heldCard: string | null;
+  score: number;
 }
 
 export type StateType =
-  'INIT' | 'UNCOVER_TWO' | 'TAKE' | 'DISCARD' | 'UNCOVER' | 'FINAL_TAKE' | 'FINAL_DISCARD' | 'GAME_OVER';
+  | 'INIT' 
+  | 'UNCOVER_TWO' 
+  | 'TAKE' 
+  | 'DISCARD' 
+  | 'UNCOVER' 
+  | 'FINAL_TAKE' 
+  | 'FINAL_DISCARD' 
+  | 'GAME_OVER'
+  ;
 
 export type CardLocation = 'DECK' | 'TABLE' | 'HELD' | 'H0' | 'H1' | 'H2' | 'H3' | 'H4' | 'H5';
 
 export type PlayerId = number;
 
-export type PlayableCards = Record<PlayerId, CardLocation[]>;
-
 export interface Game {
   id: number;
-  stateType: StateType;
+  userId: number;
   hostId: number;
   players: Player[];
-  deckCard: string;
-  tableCard: string;
+  stateType: StateType;
   turn: number;
   playerTurn: number;
-  hasStarted: boolean;
-  playableCards: PlayableCards;
-  playerOrders: Record<PlayerId, PlayerId[]>;
+  tableCards: string[];
+  playableCards: CardLocation[];
   events: Event[];
 }
 

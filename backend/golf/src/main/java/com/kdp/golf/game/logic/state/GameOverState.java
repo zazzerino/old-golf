@@ -7,7 +7,7 @@ public class GameOverState implements State {
     }
 
     @Override
-    public StateType type() {
-        return StateType.GAME_OVER;
+    public Type type() {
+        return Type.GAME_OVER;
     }
 }

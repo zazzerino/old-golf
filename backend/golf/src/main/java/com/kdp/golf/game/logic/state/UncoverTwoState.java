@@ -13,8 +13,8 @@ public class UncoverTwoState implements State {
     private UncoverTwoState() {}
 
     @Override
-    public StateType type() {
-        return StateType.UNCOVER_TWO;
+    public Type type() {
+        return Type.UNCOVER_TWO;
     }
 
     @Override

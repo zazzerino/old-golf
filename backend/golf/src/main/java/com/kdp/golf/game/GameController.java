@@ -1,6 +1,7 @@
 package com.kdp.golf.game;
 
 import com.kdp.golf.game.logic.Game;
+import com.kdp.golf.game.logic.GameView;
 import com.kdp.golf.game.logic.event.Event;
 import com.kdp.golf.user.UserService;
 import com.kdp.golf.websocket.WebSocket;
@@ -33,7 +34,7 @@ public class GameController {
     public void createGame(Session session, Long userId) {
         var game = gameService.createGame(userId);
         log.info("game created: " + game);
-        webSocket.sendToSession(session, new GameResponse(game));
+        webSocket.sendToSession(session, new GameResponse(GameView.from(game, userId)));
         broadcastGames();
     }
 
@@ -63,14 +64,9 @@ public class GameController {
     public void notifyPlayers(Game game) {
         for (var player : game.getPlayers()) {
             var user = userService.getById(player.id).orElseThrow();
-            webSocket.sendToSessionId(user.sessionId, new GameResponse(game));
+            webSocket.sendToSessionId(user.sessionId, new GameResponse(GameView.from(game, user.id)));
         }
     }
-
-//    public void notifyPlayers(Long gameId) {
-//        gameService.getById(gameId)
-//                .ifPresent(this::notifyPlayers);
-//    }
 
     public void broadcastGames() {
         var games = gameService.getAll();

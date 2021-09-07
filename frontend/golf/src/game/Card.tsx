@@ -23,13 +23,21 @@ interface CardProps {
 
 export const Card = forwardRef<SVGImageElement, CardProps>((props, ref) => {
   const { id, name, highlight, onMouseOver, onMouseOut, onClick } = props;
-  const className = 'Card' + (highlight ? ' highlight' : '') + (props.className ? ' ' + props.className : '');
   const href = cardPath(name);
   const width = props.scale || '10%';
   const x = props.x - CARD_WIDTH / 2;
   const y = props.y - CARD_HEIGHT / 2;
   const rotate = props.rotate || 0;
   const transform = `rotate(${rotate})`;
+  let className = 'Card';
+
+  if (highlight) {
+    className += ' highlight';
+  }
+
+  if (props.className) {
+    className += ' ' + props.className;
+  }
 
   if (name == null) {
     return null;

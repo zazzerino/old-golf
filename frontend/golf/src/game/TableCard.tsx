@@ -1,12 +1,9 @@
 import React, { Dispatch, SetStateAction } from 'react';
-import { PlayableCards, StateType } from '../types';
+import { CardLocation, Event, StateType } from '../types';
+import { animateFrom } from '../util';
 import { sendTakeFromTable } from '../websocket';
 import { Card, CARD_WIDTH } from './Card';
-
-export const TABLE_CARD_COORD = {
-  x: CARD_WIDTH / 2 + 2,
-  y: 0
-};
+import { heldCardCoord, TABLE_CARD_COORD } from './coords';
 
 export function tableCardClicked(context: { userId: number, gameId: number, playerTurn: number, stateType: StateType }) {
   const { userId, gameId, stateType, playerTurn } = context;
@@ -19,12 +16,13 @@ export function tableCardClicked(context: { userId: number, gameId: number, play
   }
 }
 
-function shouldHighlight(context: { userId: number, playerTurn: number, playableCards: PlayableCards, hoverCard: string | null }): boolean {
+function shouldHighlight(
+  context: { userId: number, playerTurn: number, playableCards: CardLocation[], hoverCard: string | null }
+): boolean {
   const { userId, playableCards, playerTurn, hoverCard } = context;
-  const cards = playableCards[userId];
 
   const isHovered = hoverCard === 'TABLE';
-  const isPlayable = cards.includes('TABLE');
+  const isPlayable = playableCards.includes('TABLE');
   const isUsersTurn = userId === playerTurn;
 
   return isHovered && isPlayable && isUsersTurn;
@@ -33,29 +31,46 @@ function shouldHighlight(context: { userId: number, playerTurn: number, playable
 interface TableCardProps {
   userId: number;
   gameId: number;
-  tableCard: string;
+  width: number;
+  height: number;
+  tableCards: string[];
   stateType: StateType;
   playerTurn: number;
-  playableCards: PlayableCards;
+  playableCards: CardLocation[];
+  events: Event[];
   hoverCard: string | null;
   setHoverCard: Dispatch<SetStateAction<string | null>>;
 }
 
 export function TableCard(props: TableCardProps) {
-  const { userId, gameId, tableCard, stateType, playerTurn, playableCards, hoverCard, setHoverCard } = props;
-
-  if (tableCard == null) {
-    return null;
-  }
-
+  const { userId, gameId, width, height, tableCards, stateType, playerTurn, playableCards, events, hoverCard, setHoverCard } = props;
+  const ref = React.useRef<SVGImageElement>(null);
   const className = 'TableCard';
+  const name = tableCards[0];
   const { x, y } = TABLE_CARD_COORD;
   const highlight = shouldHighlight({ userId, playerTurn, playableCards, hoverCard });
   const onMouseOver = () => setHoverCard('TABLE');
   const onMouseOut = () => setHoverCard(null);
   const onClick = () => tableCardClicked({ userId, gameId, playerTurn, stateType });
 
+  React.useLayoutEffect(() => {
+    const img = ref.current;
+
+    if (img) {
+      const lastEvent = events.slice(-1).pop();
+      if (lastEvent?.type === 'DISCARD') {
+        let { x, y } = heldCardCoord(width, height, 'BOTTOM');
+        x -= CARD_WIDTH / 2;
+        animateFrom(img, { x, y });
+      }
+    }
+  }, [width, height, events]);
+
+  if (name == null) {
+    return null;
+  }
+
   return (
-    <Card {...{ className, name: tableCard, x, y, highlight, onClick, onMouseOver, onMouseOut }} />
+    <Card {...{ className, ref, name, x, y, highlight, onClick, onMouseOver, onMouseOut }} />
   );
 }

@@ -15,8 +15,8 @@ public class DiscardState implements State {
     private DiscardState() {}
 
     @Override
-    public StateType type() {
-        return StateType.DISCARD;
+    public Type type() {
+        return Type.DISCARD;
     }
 
     @Override

@@ -11,6 +11,7 @@ public interface Response {
         ERROR,
         LOGIN,
         GAME,
-        GAMES
+        GAMES,
+        GAME_VIEW,
     }
 }

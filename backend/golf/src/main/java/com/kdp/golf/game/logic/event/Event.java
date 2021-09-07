@@ -9,6 +9,7 @@ public interface Event {
     Long playerId();
 
     enum EventType {
+        START_GAME,
         TAKE_FROM_DECK,
         TAKE_FROM_TABLE,
         SWAP_CARD,

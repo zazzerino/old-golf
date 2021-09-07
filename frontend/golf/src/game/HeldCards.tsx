@@ -1,5 +1,5 @@
 import React, { Dispatch, SetStateAction } from 'react';
-import { Event, HandPosition, Player, StateType } from '../types';
+import { Event, Player, StateType } from '../types';
 import { HeldCard } from './HeldCard';
 
 interface HeldCardsProps {
@@ -7,8 +7,6 @@ interface HeldCardsProps {
   gameId: number;
   width: number;
   height: number;
-  positions: HandPosition[],
-  order: number[],
   players: Player[]
   playerTurn: number;
   stateType: StateType;
@@ -18,26 +16,18 @@ interface HeldCardsProps {
 }
 
 export function HeldCards(props: HeldCardsProps) {
-  const { positions, order, players } = props;
-
   return (
     <>
-      {positions.map((pos, key) => {
-        const playerId = order[key];
-        const player = players.find(p => p.id === playerId);
+      {props.players.map((player, key) => {
+        const playerId = player.id;
+        const pos = player.handPosition;
+        const name = player.heldCard;
 
-        if (player == null) {
-          console.error(`player ${playerId} not found...`);
+        if (name == null) {
           return null;
         }
 
-        const heldCard = player.heldCard;
-
-        if (heldCard == null) {
-          return null;
-        }
-
-        return <HeldCard {...{ ...props, key, name: heldCard, pos, playerId }} />
+        return <HeldCard {...{ ...props, key, playerId, name, pos }} />
       })}
     </>
   );

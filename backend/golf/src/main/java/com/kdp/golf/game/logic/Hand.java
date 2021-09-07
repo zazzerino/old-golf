@@ -70,11 +70,11 @@ public class Hand {
 
     @JsonProperty
     public int visibleScore() {
-        var score = 0;
-
         if (cards.isEmpty()) {
-            return score;
+            return 0;
         }
+
+        var score = 0;
 
         var ranks = cards.stream().map(Card::rank).toList();
         Map<Integer, Card> uncoveredCards = new HashMap<>();

@@ -6,7 +6,7 @@ public class InitState implements State {
     private InitState() {}
 
     @Override
-    public StateType type() {
-        return StateType.INIT;
+    public Type type() {
+        return Type.INIT;
     }
 }

@@ -14,14 +14,15 @@ interface GamePageProps {
 export function GamePage(props: GamePageProps) {
   const { user, game } = props;
   const userIsHost = user.id === game?.hostId;
-  const gameHasStarted = game?.hasStarted;
+  const gameHasStarted = game?.stateType !== 'INIT';
+  const showStartGame = userIsHost && !gameHasStarted;
 
   return (
     <div className="GamePage">
       <GameCanvas {...props} />
       <div className="game-buttons">
         <CreateGameButton userId={user.id} />
-        {game && userIsHost && !gameHasStarted && <StartGameButton userId={user.id} gameId={game.id} />}
+        {game && showStartGame && <StartGameButton userId={user.id} gameId={game.id} />}
       </div>
     </div>
   );

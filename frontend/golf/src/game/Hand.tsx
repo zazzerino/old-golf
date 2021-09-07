@@ -1,54 +1,30 @@
 import React, { Dispatch, SetStateAction, useRef } from 'react';
-import { CardLocation, HandPosition, PlayableCards, StateType } from '../types';
+import { CardLocation, HandPosition, StateType } from '../types';
 import { sendSwapCard, sendUncover } from '../websocket';
 import { Card, CARD_HEIGHT, CARD_WIDTH } from './Card';
+import { handCoord } from './coords';
 
 export const HAND_PADDING = 2;
 
-function handTransform(width: number, height: number, pos: HandPosition): string {
-  let x: number;
-  let y: number;
-  let rotate: number;
-
-  switch (pos) {
-    case 'BOTTOM':
-      x = 0
-      y = height / 2 - CARD_HEIGHT - HAND_PADDING * 4;
-      rotate = 0;
-      break;
-    case 'LEFT':
-      x = -(width / 2) + CARD_HEIGHT + HAND_PADDING * 4;
-      y = 0;
-      rotate = 90;
-      break;
-    case 'TOP':
-      x = 0;
-      y = -(height / 2) + CARD_HEIGHT + HAND_PADDING * 4;
-      rotate = 180;
-      break;
-    case 'RIGHT':
-      x = width / 2 - CARD_HEIGHT - HAND_PADDING * 4;
-      y = 0;
-      rotate = 270;
-      break;
-  }
-
-  return `translate(${x},${y}), rotate(${rotate})`;
+function handTransform(width: number, height: number, pos: HandPosition) {
+  const { x, y, rotate }= handCoord(width, height, pos);
+  return `translate(${x}, ${y}), rotate(${rotate})`;
 }
 
-function shouldHighlight(context: { userId: number, playerId: number, stateType: StateType, playerTurn: number, playableCards: PlayableCards, uncoveredCards: number[], hoverCard: string | null, pos: HandPosition, key: number }) {
-  const { userId, playerId, pos, key: index, stateType, uncoveredCards, playerTurn, hoverCard } = context;
+function shouldHighlight(
+  context: { userId: number, playerId: number, stateType: StateType, playerTurn: number, playableCards: CardLocation[], uncoveredCards: number[], hoverCard: string | null, pos: HandPosition, key: number }
+) {
+  const { userId, playerId, pos, key, stateType, playableCards, uncoveredCards, playerTurn, hoverCard } = context;
+
   if (userId !== playerId) {
     return false;
   }
 
-  const location = 'H' + index as CardLocation;
+  const location = 'H' + key as CardLocation;
   const name = pos + '-' + location; // e.g. 'LEFT-H5'
-  const cards = context.playableCards[userId];
-
   const isHovered = hoverCard === name;
-  const isPlayable = cards.includes(location);
-  const isCoveredOrDiscard = !uncoveredCards?.includes(index) || stateType === 'DISCARD';
+  const isPlayable = playableCards.includes(location);
+  const isCoveredOrDiscard = !uncoveredCards?.includes(key) || stateType === 'DISCARD';
   const isPlayersTurn = playerTurn === userId || stateType === 'UNCOVER_TWO';
 
   return isHovered && isPlayable && isCoveredOrDiscard && isPlayersTurn;
@@ -85,7 +61,7 @@ interface HandProps {
   uncoveredCards: number[];
   stateType: StateType;
   playerTurn: number;
-  playableCards: PlayableCards;
+  playableCards: CardLocation[];
   hoverCard: string | null;
   setHoverCard: Dispatch<SetStateAction<string | null>>;
   setHoverPos: Dispatch<SetStateAction<HandPosition | null>>;
@@ -104,10 +80,11 @@ export function Hand(props: HandProps) {
     className += ' outline';
   }
 
+  // the rect is needed to capture mouse events in between the cards
   const rectWidth = CARD_WIDTH * 3 + HAND_PADDING * 2;
   const rectHeight = CARD_HEIGHT * 2 + HAND_PADDING;
-  const rectX = -(rectWidth / 2) + 2;
-  const rectY = -(rectHeight / 2) + 2;
+  const rectX = -rectWidth / 2 + 2;
+  const rectY = -rectHeight / 2 + 2;
   const onRectOver = () => setHoverPos(pos);
   const onRectOut = () => setHoverPos(null);
 

@@ -76,7 +76,7 @@ public class GameService {
     public Optional<Game> joinGame(Long gameId, Long userId) {
         var game = gameDao.getById(gameId).orElseThrow();
 
-        if (game.getStateType() != State.StateType.INIT
+        if (game.getStateType() != State.Type.INIT
                 && game.getPlayer(userId).isEmpty()) {
             return Optional.empty();
         }

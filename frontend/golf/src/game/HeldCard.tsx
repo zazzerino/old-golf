@@ -2,8 +2,8 @@ import React, { Dispatch, SetStateAction } from 'react';
 import { Event, HandPosition, StateType } from '../types';
 import { animateFrom } from '../util';
 import { sendDiscard } from '../websocket';
-import { Card, CARD_HEIGHT, CARD_WIDTH } from './Card';
-import { HAND_PADDING } from './Hand';
+import { Card, CARD_WIDTH } from './Card';
+import { heldCardCoord } from './coords';
 
 export function heldCardClicked(context: { userId: number, gameId: number, playerTurn: number, stateType: StateType }) {
   const { userId, gameId, playerTurn, stateType } = context;
@@ -14,35 +14,6 @@ export function heldCardClicked(context: { userId: number, gameId: number, playe
   if (isPlayable) {
     sendDiscard(gameId, userId);
   }
-}
-
-function heldCardCoord(pos: HandPosition, width: number, height: number) {
-  let x: number;
-  let y: number;
-  let rotate = 0;
-
-  switch (pos) {
-    case 'BOTTOM':
-      x = CARD_WIDTH * 1.5;
-      y = height / 2 - CARD_HEIGHT - HAND_PADDING * 4;
-      break;
-    case 'LEFT':
-      x = -width / 2 + CARD_HEIGHT + HAND_PADDING * 4;
-      y = CARD_WIDTH * 1.5 + HAND_PADDING * 4;
-      rotate = 90;
-      break;
-    case 'TOP':
-      x = -CARD_WIDTH * 1.5;
-      y = -height / 2 + CARD_HEIGHT + HAND_PADDING * 4;
-      break;
-    case 'RIGHT':
-      x = width / 2 - CARD_HEIGHT - HAND_PADDING * 4;
-      y = -CARD_WIDTH * 1.5 - HAND_PADDING * 4;
-      rotate = 90;
-      break;
-  }
-
-  return { x, y, rotate };
 }
 
 function distanceFromTableCard(pos: HandPosition) {
@@ -114,7 +85,7 @@ export function HeldCard(props: HeldCardProps) {
   const { userId, gameId, width, height, pos, playerId, playerTurn, stateType, events, hoverCard, setHoverCard } = props;
   const className = 'HeldCard ' + pos.toLowerCase();
   const name = pos === 'BOTTOM' ? props.name : '2B'; // only show the card face to the player holding it
-  const { x, y, rotate } = heldCardCoord(pos, width, height);
+  const { x, y, rotate } = heldCardCoord(width, height, pos);
   const highlight = userId === playerId && hoverCard === 'HELD';
   const onMouseOver = () => setHoverCard('HELD');
   const onMouseOut = () => setHoverCard(null);

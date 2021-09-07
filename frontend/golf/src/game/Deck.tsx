@@ -1,10 +1,10 @@
 import React, { Dispatch, SetStateAction } from 'react';
-import { PlayableCards, StateType } from '../types';
+import { CardLocation, StateType } from '../types';
 import { animateFrom } from '../util';
 import { sendTakeFromDeck } from '../websocket';
 import { Card, CARD_WIDTH } from './Card';
 
-function deckCardClicked(context: { userId: number, gameId: number, playerTurn: number, stateType: StateType }) {
+function deckCardClicked(context: { gameId: number, userId: number, playerTurn: number, stateType: StateType }) {
   const { userId, gameId, playerTurn, stateType } = context;
 
   const isPlayable = playerTurn === userId
@@ -15,13 +15,14 @@ function deckCardClicked(context: { userId: number, gameId: number, playerTurn: 
   }
 }
 
-function shouldHighlight(context: { userId: number, playableCards: PlayableCards, playerTurn: number, hoverCard: string | null }): boolean {
+function shouldHighlight(
+  context: { userId: number, playableCards: CardLocation[], playerTurn: number, hoverCard: string | null }
+): boolean {
   const { userId, hoverCard, playableCards, playerTurn } = context;
 
-  const cards = playableCards[userId];
   const isHovered = hoverCard === 'DECK';
-  const isPlayable = cards.includes('DECK');
-  const isPlayersTurn = playerTurn === userId;;
+  const isPlayable = playableCards.includes('DECK');
+  const isPlayersTurn = playerTurn === userId;
 
   return isHovered && isPlayable && isPlayersTurn;
 }
@@ -32,14 +33,14 @@ interface DeckProps {
   width: number;
   height: number;
   stateType: StateType;
-  playableCards: PlayableCards;
+  playableCards: CardLocation[];
   playerTurn: number;
   hoverCard: string | null;
   setHoverCard: Dispatch<SetStateAction<string | null>>;
 }
 
 export function Deck(props: DeckProps) {
-  const { userId, gameId, height, stateType, playableCards, playerTurn, hoverCard, setHoverCard } = props;
+  const { gameId, userId, height, stateType, playableCards, playerTurn, hoverCard, setHoverCard } = props;
   const className = 'Deck';
   const name = '2B';
   const x = stateType === 'INIT' ? 0 : -CARD_WIDTH / 2 - 2;

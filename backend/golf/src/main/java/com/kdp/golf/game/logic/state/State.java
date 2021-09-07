@@ -8,7 +8,7 @@ import java.util.List;
 
 public interface State {
 
-    StateType type();
+    Type type();
 
     default Game handleEvent(Game game, Event event) {
         return game;
@@ -18,7 +18,7 @@ public interface State {
         return List.of();
     };
 
-    enum StateType {
+    enum Type {
         INIT,
         UNCOVER_TWO,
         TAKE,

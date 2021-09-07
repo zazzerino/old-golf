@@ -36,7 +36,7 @@ public class FinalTakeState implements State {
     }
 
     @Override
-    public StateType type() {
-        return StateType.FINAL_TAKE;
+    public Type type() {
+        return Type.FINAL_TAKE;
     }
 }

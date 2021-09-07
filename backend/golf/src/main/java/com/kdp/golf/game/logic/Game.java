@@ -4,9 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.kdp.golf.game.logic.card.Card;
 import com.kdp.golf.game.logic.event.*;
-import com.kdp.golf.game.logic.state.State;
-import com.kdp.golf.game.logic.state.InitState;
-import com.kdp.golf.game.logic.state.UncoverTwoState;
+import com.kdp.golf.game.logic.state.*;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -17,7 +15,7 @@ public class Game {
     private final Deck deck;
     private final Map<Long, Player> players;
     private final List<Long> playerOrder;
-    private final Stack<Card> tableCards;
+    private final Deque<Card> tableCards;
     private State state;
     private Long hostId;
     private int turn;
@@ -30,7 +28,7 @@ public class Game {
         this.deck = new Deck(DECK_COUNT);
         this.players = new HashMap<>();
         this.playerOrder = new ArrayList<>();
-        this.tableCards = new Stack<>();
+        this.tableCards = new ArrayDeque<>();
         this.turn = 0;
         this.hostId = host.id;
         this.state = InitState.instance;
@@ -58,7 +56,7 @@ public class Game {
 
     public Game dealTableCard() {
         var card =  deck.deal().orElseThrow();
-        tableCards.push(card);
+        tableCards.addFirst(card);
         return this;
     }
 
@@ -71,14 +69,14 @@ public class Game {
 
     public Game takeFromTable(Long playerId) {
         var player = getPlayer(playerId).orElseThrow();
-        player.setHeldCard(tableCards.pop());
+        player.setHeldCard(tableCards.removeFirst());
         return this;
     }
 
     public Game discard(Long playerId) {
         var player = getPlayer(playerId).orElseThrow();
         var card = player.getHeldCard().orElseThrow();
-        tableCards.push(card);
+        tableCards.addFirst(card);
         player.setHeldCard(null);
         return this;
     }
@@ -89,7 +87,7 @@ public class Game {
         var heldCard = player.getHeldCard().orElseThrow();
         var cardAtIndex = hand.cardAtIndex(index);
 
-        tableCards.push(cardAtIndex);
+        tableCards.addFirst(cardAtIndex);
         hand.setCardAtIndex(index, heldCard);
         hand.uncover(index);
         player.setHeldCard(null);
@@ -166,10 +164,14 @@ public class Game {
 
     public Optional<Card> getTableCard() {
         try {
-            return Optional.of(tableCards.peek());
-        } catch (EmptyStackException e) {
+            return Optional.of(tableCards.getFirst());
+        } catch (NoSuchElementException e) {
             return Optional.empty();
         }
+    }
+
+    public Deque<Card> getTableCards() {
+        return tableCards;
     }
 
     public Optional<Card> getDeckCard() {
@@ -185,7 +187,7 @@ public class Game {
         return state;
     }
 
-    public State.StateType getStateType() {
+    public State.Type getStateType() {
         return state.type();
     }
 

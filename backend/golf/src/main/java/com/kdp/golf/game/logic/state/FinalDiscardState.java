@@ -52,8 +52,8 @@ public class FinalDiscardState implements State {
     }
 
     @Override
-    public StateType type() {
-        return StateType.FINAL_DISCARD;
+    public Type type() {
+        return Type.FINAL_DISCARD;
     }
 
     @Override

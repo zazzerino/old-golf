@@ -5,27 +5,15 @@ import { Score } from './Score';
 interface ScoresProps {
   width: number;
   height: number;
-  positions: HandPosition[];
-  order: number[];
   players: Player[];
   hoverPos: HandPosition | null;
 }
 
 export function Scores(props: ScoresProps) {
-  const { players, positions, order } = props;
-
   return (
     <>
-      {positions.map((pos, key) => {
-        const playerId = order[key];
-        const player = players.find(p => p.id === playerId);
-
-        if (player == null) {
-          return null;
-        }
-
-        const score = player.hand.visibleScore;
-        const playerName = player.name;
+      {props.players.map((player, key) => {
+        const { score, name: playerName, handPosition: pos } = player;
         return <Score {...{ ...props, key, score, pos, playerName }} />
       })}
     </>

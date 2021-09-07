@@ -14,8 +14,8 @@ public class TakeState implements State {
     private TakeState() {}
 
     @Override
-    public StateType type() {
-        return StateType.TAKE;
+    public Type type() {
+        return Type.TAKE;
     }
 
     @Override

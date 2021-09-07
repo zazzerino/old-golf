@@ -16,10 +16,11 @@ export function GamesTable(props: { user: User, games: Game[] }) {
       </thead>
       <tbody>
         {games.map(game => {
+          const gameId = game.id;
           return (
-            <tr key={game.id}>
-              <td>{game.id}</td>
-              <td><JoinGameButton userId={user.id} gameId={game.id} /></td>
+            <tr key={gameId}>
+              <td>{gameId}</td>
+              <td><JoinGameButton userId={user.id} gameId={gameId} /></td>
             </tr>
           );
         })}
