@@ -10,7 +10,7 @@ import './App.css';
 
 function App() {
   const [state, dispatch] = useReducer(reducer, initialState);
-  const { user, games, game } = state;
+  const { user, games, game, messages } = state;
 
   useEffect(() => {
     initWebSocket(dispatch);
@@ -22,13 +22,13 @@ function App() {
         <Navbar user={user} />
         <Switch>
           <Route path="/game">
-            <GamePage {...{user, game, dispatch}} />
+            <GamePage {...{ user, game, messages, dispatch }} />
           </Route>
           <Route path="/login">
             <LoginPage user={user} />
           </Route>
           <Route path="/">
-            <HomePage {...{user, games}} />
+            <HomePage {...{ user, games }} />
           </Route>
         </Switch>
       </BrowserRouter>

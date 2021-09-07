@@ -9,6 +9,7 @@ import com.kdp.golf.user.UserService;
 
 import javax.enterprise.context.ApplicationScoped;
 import java.util.Collection;
+import java.util.List;
 import java.util.Optional;
 
 @ApplicationScoped

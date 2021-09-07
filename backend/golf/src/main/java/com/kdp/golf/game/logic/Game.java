@@ -125,6 +125,10 @@ public class Game {
     }
 
     public Game addPlayer(Player player) {
+        if (players.values().size() > 4) {
+            throw new IllegalStateException("can only have a maximum of four players");
+        }
+
         players.put(player.id, player);
         playerOrder.add(player.id);
         return this;

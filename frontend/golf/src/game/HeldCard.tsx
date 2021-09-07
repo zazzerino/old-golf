@@ -94,14 +94,13 @@ export function HeldCard(props: HeldCardProps) {
 
   React.useLayoutEffect(() => {
     const img = ref.current;
+    const event = events.slice(-1).pop();
 
-    if (img) {
-      const lastEvent = events.slice(-1).pop();
-
-      if (lastEvent?.type === 'TAKE_FROM_DECK') {
+    if (img && event) {
+      if (event.type === 'TAKE_FROM_DECK') {
         const coord = distanceFromDeck(pos);
         animateFrom(img, coord);
-      } else if (lastEvent?.type === 'TAKE_FROM_TABLE') {
+      } else if (event.type === 'TAKE_FROM_TABLE') {
         const coord = distanceFromTableCard(pos);
         animateFrom(img, coord);
       }

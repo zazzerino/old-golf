@@ -1,5 +1,5 @@
-import React, { Dispatch, SetStateAction, useRef } from 'react';
-import { CardLocation, HandPosition, StateType } from '../types';
+import React, { Dispatch, SetStateAction } from 'react';
+import { CardLocation, Event, HandPosition, StateType } from '../types';
 import { sendSwapCard, sendUncover } from '../websocket';
 import { Card, CARD_HEIGHT, CARD_WIDTH } from './Card';
 import { handCoord } from './coords';
@@ -62,6 +62,7 @@ interface HandProps {
   stateType: StateType;
   playerTurn: number;
   playableCards: CardLocation[];
+  events: Event[];
   hoverCard: string | null;
   setHoverCard: Dispatch<SetStateAction<string | null>>;
   setHoverPos: Dispatch<SetStateAction<HandPosition | null>>;
@@ -70,7 +71,6 @@ interface HandProps {
 export function Hand(props: HandProps) {
   const { userId, gameId, playerId, pos, cards, width, height, stateType, playerTurn, uncoveredCards, playableCards, hoverCard, setHoverCard, setHoverPos } = props;
   const transform = handTransform(width, height, pos);
-  const ref = useRef<SVGGElement>(null);
   const shouldOutline = playerId === playerTurn || (stateType === 'UNCOVER_TWO' && uncoveredCards.length < 2);
   const onMouseOver = () => setHoverPos(pos);
   const onMouseOut = () => setHoverPos(null);
@@ -89,7 +89,7 @@ export function Hand(props: HandProps) {
   const onRectOut = () => setHoverPos(null);
 
   return (
-    <g {...{ className, ref, transform, onMouseOver, onMouseOut }}>
+    <g {...{ className, transform, onMouseOver, onMouseOut }}>
       <rect x={rectX} y={rectY} width={rectWidth} height={rectHeight} onMouseOver={onRectOver} onMouseOut={onRectOut} />
       {cards.map((card, key) => {
         const location = `${pos}-H${key}`; // e.g. 'BOTTOM-H0' (the 1st card in the bottom hand)
@@ -102,6 +102,7 @@ export function Hand(props: HandProps) {
         const onMouseOver = () => setHoverCard(location);
         const onMouseOut = () => setHoverCard(null);
         const onClick = () => handClicked({ userId, gameId, playerId, stateType, playerTurn, key });
+
         return <Card {...{ key, className, name, x, y, highlight, onMouseOver, onMouseOut, onClick }} />;
       })}
     </g>

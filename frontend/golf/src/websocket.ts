@@ -1,6 +1,6 @@
 import { Dispatch } from "react";
 import { Action } from "./reducer";
-import { EventType, Game, User } from "./types";
+import { ChatMessage, EventType, Game, User } from "./types";
 
 const WS_URL = 'ws://localhost:8080/ws';
 
@@ -44,12 +44,13 @@ function onMessage(event: MessageEvent) {
     case 'LOGIN': return handleLogin(response as LoginResponse);
     case 'GAME': return handleGame(response as GameResponse);
     case 'GAMES': return handleGames(response as GamesResponse);
+    case 'CHAT': return handleChat(response as ChatResponse);
   }
 }
 
 // send messages
 
-export type MessageType = 'LOGIN' | 'CREATE_GAME' | 'START_GAME' | 'EVENT' | 'JOIN_GAME';
+export type MessageType = 'LOGIN' | 'CREATE_GAME' | 'START_GAME' | 'EVENT' | 'JOIN_GAME' | 'CHAT';
 
 export interface Message {
   type: MessageType;
@@ -181,9 +182,25 @@ export function sendUncover(gameId: number, playerId: number, handIndex: number)
   send(message);
 }
 
+interface ChatMessageMessage extends Message, ChatMessage {
+  type: 'CHAT';
+}
+
+export function sendChatMessage(gameId: number, userId: number, userName: string, text: string) {
+  const message: ChatMessageMessage = {
+    type: 'CHAT',
+    gameId,
+    userId,
+    userName,
+    text,
+  }
+
+  send(message);
+}
+
 // handle responses
 
-export type ResponseType = 'LOGIN' | 'GAME' | 'GAMES';
+export type ResponseType = 'LOGIN' | 'GAME' | 'GAMES' | 'CHAT';
 
 export interface Response {
   type: ResponseType;
@@ -215,4 +232,13 @@ export interface GamesResponse extends Response {
 
 export function handleGames(response: GamesResponse) {
   dispatch({ type: 'SET_GAMES', games: response.games });
+}
+
+export interface ChatResponse extends Response {
+  type: 'CHAT';
+  message: ChatMessage;
+}
+
+export function handleChat(response: ChatResponse) {
+  dispatch({ type: 'ADD_MESSAGE', message: response.message });
 }

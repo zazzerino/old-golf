@@ -1,5 +1,6 @@
 package com.kdp.golf.websocket.message;
 
+import com.kdp.golf.chat.ChatMessage;
 import com.kdp.golf.game.logic.event.Event;
 import io.vertx.core.json.JsonObject;
 
@@ -45,6 +46,15 @@ public class MessageDecoder implements Decoder.Text<Message> {
                 var eventType = Event.EventType.valueOf(jsonObject.getString("eventType"));
                 var handIndex = Optional.ofNullable(jsonObject.getInteger("handIndex"));
                 return new EventMessage(gameId, playerId, eventType, handIndex);
+            }
+
+            case CHAT -> {
+                var gameId = jsonObject.getLong("gameId");
+                var userId = jsonObject.getLong("userId");
+                var userName = jsonObject.getString("userName");
+                var text = jsonObject.getString("text");
+                var chatMessage = new ChatMessage(gameId, userId, userName, text);
+                return new ChatMessageMessage(chatMessage);
             }
 
             default -> throw new DecodeException(s, "unrecognized message type: " + messageType);

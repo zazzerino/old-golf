@@ -8,11 +8,7 @@ public interface Message {
         JOIN_GAME,
         CREATE_GAME,
         START_GAME,
-        DISCARD,
-        SWAP_CARD,
-        TAKE_FROM_DECK,
-        TAKE_FROM_TABLE,
-        UNCOVER,
         EVENT,
+        CHAT,
     }
 }

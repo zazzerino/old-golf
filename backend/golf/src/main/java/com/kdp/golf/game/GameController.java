@@ -7,6 +7,7 @@ import com.kdp.golf.user.UserService;
 import com.kdp.golf.websocket.WebSocket;
 import com.kdp.golf.websocket.response.GameResponse;
 import com.kdp.golf.websocket.response.GamesResponse;
+import com.kdp.golf.websocket.response.Response;
 import org.jboss.logging.Logger;
 
 import javax.enterprise.context.ApplicationScoped;
@@ -65,6 +66,13 @@ public class GameController {
         for (var player : game.getPlayers()) {
             var user = userService.getById(player.id).orElseThrow();
             webSocket.sendToSessionId(user.sessionId, new GameResponse(GameView.from(game, user.id)));
+        }
+    }
+
+    public void notifyPlayers(Game game, Response response) {
+        for (var player : game.getPlayers()) {
+            var user = userService.getById(player.id).orElseThrow();
+            webSocket.sendToSessionId(user.sessionId, response);
         }
     }
 

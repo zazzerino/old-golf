@@ -207,3 +207,35 @@ button {
     opacity: 0;
   }
 }
+
+.chat-box {
+  outline: solid 0.2rem plum;
+  width: 66%;
+  margin: auto;
+  background-color: white;
+  height: 200px;
+  overflow: scroll;
+}
+
+.Chat h4 {
+  margin-bottom: 0.4rem;
+}
+
+.chat-box input {
+  margin-top: 1rem;
+  margin-bottom: 0.5rem;
+}
+
+.chat-user-name {
+  color: cornflowerblue;
+  font-size: 90%;
+}
+
+.chat-user-id {
+  color: plum;
+  font-size: 80%;
+}
+
+.chat-text {
+  font-size: 80%;
+}

@@ -79,7 +79,7 @@ export function TableCard(props: TableCardProps) {
         setAnimating(false);
       }
     }
-  }, [width, height, events]);
+  }, [width, height, events, players, animating]);
 
   if (name == null) {
     return null;

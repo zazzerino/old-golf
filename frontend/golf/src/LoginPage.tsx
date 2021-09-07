@@ -14,7 +14,6 @@ export function LoginPage(props: { user: User }) {
   }
 
   const onClick = () => name && userId != null && handleLogin(name)
-  // const onKeyPress = event => 
 
   return (
     <div className="LoginPage">

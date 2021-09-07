@@ -71,3 +71,10 @@ export interface UncoverEvent extends Event {
   type: 'UNCOVER';
   handIndex: number;
 }
+
+export interface ChatMessage {
+  gameId: number;
+  userId: number;
+  userName: string;
+  text: string;
+}

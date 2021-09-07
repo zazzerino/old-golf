@@ -1,5 +1,6 @@
 package com.kdp.golf.websocket;
 
+import com.kdp.golf.chat.ChatController;
 import com.kdp.golf.game.GameController;
 import com.kdp.golf.user.UserController;
 import com.kdp.golf.websocket.message.*;
@@ -24,12 +25,14 @@ public class WebSocket {
     private final Map<String, Session> sessions;
     private final UserController userController;
     private final GameController gameController;
+    private final ChatController chatController;
     private final Logger log = Logger.getLogger(WebSocket.class);
 
-    public WebSocket(UserController userController, GameController gameController) {
+    public WebSocket(UserController userController, GameController gameController, ChatController chatController) {
         this.sessions = new ConcurrentHashMap<>();
         this.userController = userController;
         this.gameController = gameController;
+        this.chatController = chatController;
     }
 
     @OnOpen
@@ -61,6 +64,8 @@ public class WebSocket {
             gameController.handleEvent(session, e.event());
         } else if (message instanceof JoinGameMessage j) {
             gameController.joinGame(session, j.gameId(), j.userId());
+        } else if (message instanceof ChatMessageMessage c) {
+            chatController.handleChatMessage(session, c.message());
         }
     }
 

@@ -1,5 +1,5 @@
 import React, { Dispatch, SetStateAction } from 'react';
-import { CardLocation, HandPosition, Player, StateType } from '../types';
+import { CardLocation, Event, HandPosition, Player, StateType } from '../types';
 import { Hand } from './Hand';
 
 interface HandsProps {
@@ -11,6 +11,7 @@ interface HandsProps {
   players: Player[];
   playerTurn: number;
   playableCards: CardLocation[];
+  events: Event[];
   hoverCard: string | null;
   setHoverCard: Dispatch<SetStateAction<string | null>>;
   hoverPos: HandPosition | null;

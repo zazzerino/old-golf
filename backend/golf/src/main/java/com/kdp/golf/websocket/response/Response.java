@@ -12,6 +12,6 @@ public interface Response {
         LOGIN,
         GAME,
         GAMES,
-        GAME_VIEW,
+        CHAT,
     }
 }
